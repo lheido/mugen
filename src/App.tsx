@@ -1,26 +1,50 @@
-import type { Component } from 'solid-js';
+import { Box, Button, Image, Link } from "mugen/ui";
+import { Component, For } from "solid-js";
 
-import logo from './logo.svg';
-import styles from './App.module.css';
+import logo from "./logo.svg";
+import { AppTheme } from "./theme";
 
 const App: Component = () => {
   return (
-    <div class={styles.App}>
-      <header class={styles.header}>
-        <img src={logo} class={styles.logo} alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          class={styles.link}
+    <Box
+      theme={AppTheme.build({
+        padding: "4",
+        background: "primary",
+        color: "primary-content",
+        hover: {
+          background: "primary-focus",
+        },
+      })}
+    >
+      <Box
+        tag="header"
+        theme={AppTheme.build({
+          padding: "2",
+        })}
+      >
+        <Image src={logo} width={200} height={200} />
+        <For each={Array.from({ length: 100 })}>
+          {() => (
+            <Box
+              theme={AppTheme.build({
+                padding: "4",
+                height: "4",
+              })}
+            >
+              Edit <code>src/App.tsx</code> and save to reload.
+            </Box>
+          )}
+        </For>
+        <Link
           href="https://github.com/solidjs/solid"
           target="_blank"
           rel="noopener noreferrer"
         >
           Learn Solid
-        </a>
-      </header>
-    </div>
+        </Link>
+        <Button onClick={() => console.log("Clicked")}>I'm a button !</Button>
+      </Box>
+    </Box>
   );
 };
 
