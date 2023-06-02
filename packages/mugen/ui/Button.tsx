@@ -1,3 +1,4 @@
+import { mergeProps } from "solid-js";
 import { ComponentProps } from "../types";
 import { Box } from "./Box";
 
@@ -7,12 +8,5 @@ type ButtonProps = ComponentProps & {
 };
 
 export const Button = (props: ButtonProps) => {
-  return (
-    <Box
-      {...{
-        as: props.as ?? "button",
-        ...props,
-      }}
-    />
-  );
+  return <Box {...mergeProps({ as: "button" }, props)} />;
 };
