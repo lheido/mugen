@@ -1,11 +1,11 @@
 import { Component, createMemo, splitProps } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import {
+  ComponentProps,
   ImageAttributes,
   LinkAttributes,
   UniversalAttributes,
-} from "../types/attributes.types";
-import { ComponentProps } from "../types/component.types";
+} from "../types";
 
 export type BoxProps = ComponentProps &
   UniversalAttributes &

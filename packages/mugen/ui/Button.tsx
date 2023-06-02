@@ -1,4 +1,4 @@
-import { ComponentProps } from "../types/component.types";
+import { ComponentProps } from "../types";
 import { Box } from "./Box";
 
 type ButtonProps = ComponentProps & {
@@ -7,5 +7,12 @@ type ButtonProps = ComponentProps & {
 };
 
 export const Button = (props: ButtonProps) => {
-  return <Box as={props.as ?? "button"} {...props} />;
+  return (
+    <Box
+      {...{
+        as: props.as ?? "button",
+        ...props,
+      }}
+    />
+  );
 };

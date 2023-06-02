@@ -1,3 +1,4 @@
+import { preflightRules } from "./preflight";
 import {
   ClassList,
   ThemeDescription,
@@ -7,6 +8,13 @@ import {
 } from "./types";
 
 const styleSheet = new CSSStyleSheet();
+for (const rule of preflightRules) {
+  try {
+    styleSheet.insertRule(rule);
+  } catch (error) {
+    /* ignore preflight errors */
+  }
+}
 document.adoptedStyleSheets.push(styleSheet);
 const mediaStyleSheets = new Map<string, CSSStyleSheet>();
 const classNameRefs = new Map<string, boolean>();
