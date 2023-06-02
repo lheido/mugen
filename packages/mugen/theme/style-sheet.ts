@@ -1,262 +1,342 @@
-export type ThemeDescription = {
-  spacing: Record<string, string>;
-  colors: Record<string, string>;
-  sizes: Record<string, string>;
-  breakpoints: Record<string, string>;
-};
-
-/**
- * padding|margin: <all-edges> | [<x>, <y>] | [<left>, <top>, <right>, <bottom>]
- */
-export type ThemePaddingValue<
-  T extends ThemeDescription,
-  S = keyof T["spacing"]
-> = S | [S] | [S, S] | [S, S, S, S];
-
-export type ThemePadding<T extends ThemeDescription> = Partial<
-  Record<"padding" | "margin", ThemePaddingValue<T>>
->;
-
-/**
- * gap: <gap> | [<row-gap>, <column-gap>]
- */
-export type ThemeGap<
-  T extends ThemeDescription,
-  S = keyof T["spacing"]
-> = Partial<Record<"gap", S | [S] | [S, S]>>;
-
-/**
- * width|height: <value>, [<value>, <min-value>, <max-value>]
- */
-export type ThemeSizeValue<
-  T extends ThemeDescription,
-  S = keyof T["sizes"]
-> = S;
-
-export type ThemeSize<T extends ThemeDescription> = Partial<
-  Record<"width" | "height", ThemeSizeValue<T>>
->;
-
-export type ThemeColorValue<
-  T extends ThemeDescription,
-  C = keyof T["colors"]
-> = C;
-
-export type ThemeBackground<T extends ThemeDescription> = Partial<
-  Record<"background", ThemeColorValue<T>>
->;
-
-export type ThemeColor<T extends ThemeDescription> = Partial<
-  Record<"color", ThemeColorValue<T>>
->;
-const themeEventNames = ["hover", "active", "focus", "focus-within"] as const;
-export type ThemeEventNames = (typeof themeEventNames)[number];
-
-export type ThemeEvent<T extends ThemeDescription> = Partial<
-  Record<ThemeEventNames, ThemeElement<T>>
->;
-
-export type ThemeElement<T extends ThemeDescription> = ThemePadding<T> &
-  ThemeGap<T> &
-  ThemeBackground<T> &
-  ThemeColor<T> &
-  ThemeSize<T>;
-
-export type ThemeMedia<T extends ThemeDescription> = Partial<
-  Record<Extract<keyof T["breakpoints"], string>, ThemeElement<T>>
->;
-
-export type ThemeElementApi<T extends ThemeDescription> = ThemeElement<T> &
-  ThemeEvent<T> &
-  ThemeMedia<T>;
+import {
+  ClassList,
+  ThemeDescription,
+  ThemeElementApi,
+  ThemeEventNames,
+  themeEventNames,
+} from "./types";
 
 const styleSheet = new CSSStyleSheet();
 document.adoptedStyleSheets.push(styleSheet);
 const mediaStyleSheets = new Map<string, CSSStyleSheet>();
 const classNameRefs = new Map<string, boolean>();
 
-const paddingHandler = <T extends ThemeDescription>(
-  prop: string,
-  values: ThemePaddingValue<T>,
-  styleSheet: CSSStyleSheet,
-  description: T,
-  emod?: ThemeEventNames
-): string[] => {
-  /**
-   * return p-*, px-*, py-*, pl-*, pt-*, pr-*, pb-* classes.
-   */
-  const prefix = prop[0];
-  if (Array.isArray(values)) {
-    const classNames: string[] = [];
-    let subprefixes: string[] = ["l", "t", "r", "b"];
-    let propSuffixMap: string[][] = [["left"], ["top"], ["right"], ["bottom"]];
-    if (values.length > 0 && values.length < 3) {
-      subprefixes = ["x", "y"];
-      propSuffixMap = [
-        ["left", "right"],
-        ["top", "bottom"],
-      ];
-    }
-    values.forEach((value, i) => {
-      const cls = `${emod ? `${emod}-` : ""}${prefix}${subprefixes[i]}-${(
-        value as string
-      ).replace("/", "-")}`;
-      const val = description.spacing[value as string];
-      classNames.push(cls);
-      const suffixes = propSuffixMap[i];
-      if (!classNameRefs.has(cls)) {
-        classNameRefs.set(cls, true);
-        styleSheet.insertRule(
-          `.${cls}${emod ? `:${emod}` : ""}{${suffixes
-            .map((suffix) => `${prop}-${suffix}:${val};`)
-            .join(" ")}}`
+function processStyle<
+  T extends ThemeDescription,
+  B extends keyof T["breakpoints"] extends string ? string : undefined,
+  V = any
+>(data: {
+  baseCls?: (property: string) => string;
+  computeClassNames: (baseCls: string, value: V) => string[];
+  computeRules: (
+    className: string,
+    property: string,
+    value: V,
+    description: T
+  ) => string[];
+}) {
+  return (
+    property: string,
+    value: V,
+    description: T,
+    emod?: ThemeEventNames,
+    media?: B,
+    ps?: string
+  ): ClassList => {
+    const baseCls = data.baseCls ? data.baseCls(property) : property;
+    const cls = data.computeClassNames(baseCls, value);
+    const classNames = cls.map((className) => {
+      const _emod = emod ? `${emod}:` : "";
+      const _ps = ps ? `${ps}:` : "";
+      const _media = media ? `${media}:` : "";
+      return `${_media}${_emod}${_ps}${className}`.replaceAll(/[/:]/g, "-");
+    });
+    classNames.forEach((className, i) => {
+      if (!classNameRefs.has(className)) {
+        classNameRefs.set(className, true);
+        const ruleContent = data.computeRules(
+          cls[i],
+          property,
+          value,
+          description
         );
+        const _evt = emod ? `:${emod}` : "";
+        const __ps = ps ? `::${ps}` : "";
+        const rule = `.${className}${_evt}${__ps} {${ruleContent.join(";")}}`;
+        let ss = styleSheet;
+        if (media) {
+          if (!mediaStyleSheets.has(media)) {
+            const newMediaStyleSheet = new CSSStyleSheet({
+              media: `(min-width: ${description.breakpoints[media]})`,
+            });
+            document.adoptedStyleSheets.push(newMediaStyleSheet);
+            mediaStyleSheets.set(media, newMediaStyleSheet);
+          }
+          ss = mediaStyleSheets.get(media)!;
+        }
+        ss.insertRule(rule);
       }
     });
-    return classNames;
-  } else {
-    const val = description.spacing[values as string];
-    const cls = `${emod ? `${emod}-` : ""}${prefix}-${(
-      values as string
-    ).replace("/", "-")}`;
-    if (!classNameRefs.has(cls)) {
-      classNameRefs.set(cls, true);
-      styleSheet.insertRule(
-        `.${cls}${emod ? `:${emod}` : ""} { padding: ${val} }`
-      );
-    }
-    return [cls];
-  }
+    return classNames.reduce((list, className) => {
+      list[className] = true;
+      return list;
+    }, {} as ClassList);
+  };
+}
+
+const createPaddingHandler = <T extends ThemeDescription>() => {
+  const dblEdges = ["x", "y"];
+  const edges = ["l", "t", "r", "b"];
+  const propSuffixes = ["left", "top", "right", "bottom"];
+  return processStyle({
+    baseCls: (property: string) => property[0],
+    computeClassNames: (baseCls: string, value: string | string[]) =>
+      Array.isArray(value)
+        ? value.length <= 2
+          ? (value
+              .map((v, i) => v && `${baseCls}${dblEdges[i]}-${v}`)
+              .filter(Boolean) as string[])
+          : (value
+              .map((v, i) => v && `${baseCls}${edges[i]}-${v}`)
+              .filter(Boolean) as string[])
+        : [`${baseCls}-${value}`],
+    computeRules: (
+      className,
+      property,
+      value: string | string[],
+      description
+    ) => {
+      if (Array.isArray(value)) {
+        if (value.length <= 2) {
+          const index = className.includes("x") ? 0 : 1;
+          const val = value[index];
+          if (val)
+            return [
+              `${property}-${index === 0 ? "left" : "top"}: ${
+                description.spacing[val]
+              }`,
+              `${property}-${index === 0 ? "right" : "bottom"}: ${
+                description.spacing[val]
+              }`,
+            ];
+          return [];
+        } else {
+          const index = className.includes("l")
+            ? 0
+            : className.includes("t")
+            ? 1
+            : className.includes("r")
+            ? 2
+            : 3;
+          const val = value[index];
+          const suffix = propSuffixes[index];
+          if (val)
+            return [`${property}-${suffix}: ${description.spacing[val]}`];
+          return [];
+        }
+      }
+      return value ? [`${property}: ${description.spacing[value]}`] : [];
+    },
+  });
 };
 
-const colorHandler = <T extends ThemeDescription>(
-  prop: string,
-  value: ThemeColorValue<T>,
-  styleSheet: CSSStyleSheet,
-  description: T,
-  emod?: ThemeEventNames
-): string[] => {
-  const cls = `${emod ? `${emod}-` : ""}${prop}-${value as string}`;
-  if (!classNameRefs.has(cls)) {
-    classNameRefs.set(cls, true);
-    const val = description.colors[value as string];
-    styleSheet.insertRule(
-      `.${cls}${emod ? `:${emod}` : ""} { ${
-        prop === "color" ? prop : "background-color"
-      }: ${val}; }`
-    );
-  }
-  return [cls];
+const createPositionHandler = <T extends ThemeDescription>() => {
+  const edges = ["left", "right", "top", "bottom"] as const;
+  const positions = ["absolute", "fixed", "relative", "sticky"] as const;
+  return processStyle({
+    computeClassNames: (baseCls: string, value: string[]) =>
+      [
+        baseCls,
+        ...value?.filter(Boolean).map((v, i) => `${edges[i]}-${v}`),
+      ] as string[],
+    computeRules: (className, property, value, description) => {
+      if (positions.includes(className as (typeof positions)[number]))
+        return [`position: ${property}`];
+      return value.reduce<string[]>((acc, v, i) => {
+        if (v) {
+          acc.push(`${edges[i]}: ${description.spacing[v]}`);
+        }
+        return acc;
+      }, []);
+    },
+  });
 };
 
-const sizeHandler = <T extends ThemeDescription>(
-  prop: string,
-  value: ThemeSizeValue<T>,
-  styleSheet: CSSStyleSheet,
-  description: T,
-  emod?: ThemeEventNames
-): string[] => {
-  const cls = `${emod ? `${emod}-` : ""}${prop}-${value as string}`;
-  if (!classNameRefs.has(cls)) {
-    classNameRefs.set(cls, true);
-    const val = description.sizes[value as string];
-    styleSheet.insertRule(
-      `.${cls}${emod ? `:${emod}` : ""} { ${prop}: ${val}; }`
-    );
-  }
-  // TODO: handle min/max values.
-  return [cls];
+const createRoundedHandler = <T extends ThemeDescription>() => {
+  const dblEdges = ["l", "r"];
+  const edges = ["tl", "tr", "br", "bl"];
+  const propSuffixes = ["top-left", "top-right", "bottom-right", "bottom-left"];
+  return processStyle({
+    computeClassNames: (baseCls: string, value: string | string[]) =>
+      Array.isArray(value)
+        ? value.length <= 2
+          ? (value
+              .map((v, i) => (v ? `${baseCls}-${dblEdges[i]}-${v}` : undefined))
+              .filter(Boolean) as string[])
+          : (value
+              .map((v, i) => (v ? `${baseCls}-${edges[i]}-${v}` : undefined))
+              .filter(Boolean) as string[])
+        : [`${baseCls}-${value}`],
+    computeRules: (className, property, value, description) => {
+      if (Array.isArray(value)) {
+        if (value.length <= 2) {
+          const index = className.includes("-l") ? 0 : 1;
+          const val = value[index];
+          if (val)
+            return [
+              `${
+                index === 0
+                  ? "border-top-left-radius"
+                  : "border-top-right-radius"
+              }: ${description.spacing[val]}`,
+              `${
+                index === 0
+                  ? "border-bottom-left-radius"
+                  : "border-bottom-right-radius"
+              }: ${description.spacing[val]}`,
+            ];
+          return [];
+        } else {
+          const index = className.includes("-tl")
+            ? 0
+            : className.includes("-tr")
+            ? 1
+            : className.includes("-br")
+            ? 2
+            : 3;
+          const val = value[index];
+          const suffix = propSuffixes[index];
+          if (val)
+            return [`border-${suffix}-radius: ${description.spacing[val]}`];
+          return [];
+        }
+      }
+      return value ? [`border-radius: ${description.spacing[value]}`] : [];
+    },
+  });
+};
+
+const createSizeHandler = <T extends ThemeDescription>() => {
+  const prefixes = ["", "min-", "max-"];
+  const clsPrefix = ["", "min-", "max-"];
+  return processStyle({
+    baseCls: (property: string) => property[0],
+    computeClassNames: (baseCls: string, value: string | string[]) =>
+      Array.isArray(value)
+        ? (value
+            .map((v, i) => v && `${clsPrefix[i]}${baseCls}-${v}`)
+            .filter(Boolean) as string[])
+        : [`${baseCls}-${value}`],
+    computeRules: (
+      className,
+      property,
+      value: string | string[],
+      description
+    ) => {
+      if (Array.isArray(value)) {
+        const index = className.includes("min")
+          ? 1
+          : className.includes("max")
+          ? 2
+          : 0;
+        const val = value[index];
+        if (!val) return [];
+        const prefix = prefixes[index];
+        return [`${prefix}${property}: ${description.sizes[val]}`];
+      }
+      return value ? [`${property}: ${description.sizes[value]}`] : [];
+    },
+  });
+};
+
+const createColorHandler = <T extends ThemeDescription>() => {
+  const propMap: Record<string, string> = {
+    background: "background-color",
+    color: "color",
+  };
+  return processStyle({
+    baseCls: (property: string) => (property === "background" ? "bg" : "color"),
+    computeClassNames: (baseCls, value: string) =>
+      value ? [`${baseCls}-${value}`] : [],
+    computeRules: (_, property, value: string, description) => {
+      return value
+        ? [`${propMap[property]}: ${description.colors[value as string]}`]
+        : [];
+    },
+  });
 };
 
 export interface ThemeApi {
-  execute(): string[];
+  execute(): ClassList;
 }
 
-export const Theme = <T extends ThemeDescription>(description: T) => {
+const cachedThemes: Record<string, ClassList> = {};
+
+export const Theme = <
+  T extends ThemeDescription,
+  B extends keyof T["breakpoints"] extends string ? string : undefined
+>(
+  description: T
+) => {
+  const handlersMap: Record<string, (...args: any[]) => ClassList> = {
+    spacing: createPaddingHandler<T>(),
+    sizes: createSizeHandler<T>(),
+    colors: createColorHandler<T>(),
+    rounded: createRoundedHandler<T>(),
+    position: createPositionHandler<T>(),
+  };
+
+  const propHandlerMap: Record<string, string> = {
+    padding: "spacing",
+    margin: "spacing",
+    background: "colors",
+    color: "colors",
+    rounded: "rounded",
+    relative: "position",
+    absolute: "position",
+    fixed: "position",
+    sticky: "position",
+    height: "sizes",
+    width: "sizes",
+  };
+
   return class ThemeApi implements ThemeApi {
     static build(theme: ThemeElementApi<T>) {
       return new this(description, theme);
     }
 
-    handlers = new Map<
-      string,
-      (
-        value: any,
-        styleSheet: CSSStyleSheet,
-        description: T,
-        emod?: ThemeEventNames
-      ) => string[]
-    >();
-
     private constructor(
       private description: T,
       private theme: ThemeElementApi<T>
-    ) {
-      this.handlers.set(
-        "padding",
-        (value: ThemePaddingValue<T>, styleSheet, description, emod) =>
-          paddingHandler("padding", value, styleSheet, description, emod)
-      );
-      this.handlers.set(
-        "margin",
-        (value: ThemePaddingValue<T>, styleSheet, description, emod) =>
-          paddingHandler("margin", value, styleSheet, description, emod)
-      );
-      this.handlers.set("background", (value, styleSheet, description, emod) =>
-        colorHandler("background", value, styleSheet, description, emod)
-      );
-      this.handlers.set("color", (value, styleSheet, description, emod) =>
-        colorHandler("color", value, styleSheet, description, emod)
-      );
-      this.handlers.set("width", (value, styleSheet, description, emod) =>
-        sizeHandler("width", value, styleSheet, description, emod)
-      );
-      this.handlers.set("height", (value, styleSheet, description, emod) =>
-        sizeHandler("height", value, styleSheet, description, emod)
-      );
-    }
+    ) {}
 
-    execute(): string[] {
-      const classNames: string[] = [];
+    execute(): ClassList {
+      const cachedKey = JSON.stringify(this.theme);
+      if (cachedThemes[cachedKey]) {
+        return cachedThemes[cachedKey];
+      }
+      const classList: Record<string, boolean> = {};
       Object.entries(this.theme).forEach(([key, value]) => {
-        this.computed(key, value, classNames);
+        this.computed(key, value, classList);
       });
-      return classNames;
+      cachedThemes[cachedKey] = classList;
+      return classList;
     }
 
     private computed(
       key: string,
       value: any,
-      classNames: string[],
-      emod?: ThemeEventNames
+      classList: ClassList,
+      emod?: ThemeEventNames,
+      media?: B
     ) {
-      if (typeof value === "string") {
-        const handler = this.handlers.get(key);
+      if (themeEventNames.includes(key as ThemeEventNames)) {
+        Object.entries(value).forEach(([k, v]) => {
+          this.computed(k, v, classList, key as ThemeEventNames, media);
+        });
+      } else if (key in this.description.breakpoints) {
+        Object.entries(value).forEach(([k, v]) => {
+          this.computed(k, v, classList, emod, key as B);
+        });
+      } else {
+        const handler = handlersMap[propHandlerMap[key]];
         if (handler) {
-          classNames.push(
-            ...handler(value, styleSheet, this.description, emod)
+          Object.assign(
+            classList,
+            handler(key, value, this.description, emod, media)
           );
         }
-      } else if (themeEventNames.includes(key as ThemeEventNames)) {
-        Object.entries(value).forEach(([k, v]) => {
-          this.computed(k, v, classNames, key as ThemeEventNames);
-        });
       }
     }
   };
 };
-
-/*
-spacing:
- gap
- gap-x // row-gap
- gap-y // column-gap
-sizing:
- width
- height
-fontSize
-fontWeight
-lineHeight
-flex
-grid
-*/

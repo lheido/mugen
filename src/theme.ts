@@ -1,4 +1,4 @@
-import { Theme } from "mugen/theme/style-sheet";
+import { Theme } from "mugen/theme";
 
 export const AppTheme = Theme({
   spacing: {
@@ -10,10 +10,13 @@ export const AppTheme = Theme({
     "1/4": "25%",
   },
   colors: {
+    transparent: "transparent",
+    current: "currentColor",
     primary: "#0070f3",
     "primary-focus": "#7070f3",
     "primary-content": "#fff",
     secondary: "#6b7280",
+    "secondary-focus": "#6b8080",
     "secondary-content": "#fff",
   },
   sizes: {
@@ -21,6 +24,7 @@ export const AppTheme = Theme({
     "2": "32px",
     "3": "64px",
     "4": "128px",
+    screen: "100vh",
   },
   breakpoints: {
     sm: "640px",

@@ -23,7 +23,7 @@ export const Box: Component<BoxProps> = (props: BoxProps) => {
     <Dynamic
       component={tag()}
       {...others}
-      class={(local.theme?.execute() ?? []).join(" ")}
+      classList={local.theme?.execute() ?? {}}
     />
   );
 };

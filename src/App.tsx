@@ -4,15 +4,33 @@ import { Component, For } from "solid-js";
 import logo from "./logo.svg";
 import { AppTheme } from "./theme";
 
+const buttonTheme = AppTheme.build({
+  padding: ["4", "2"],
+  background: "secondary",
+  color: "secondary-content",
+  rounded: "3",
+  hover: {
+    background: "secondary-focus",
+  },
+  sm: {
+    background: "primary",
+    color: "primary-content",
+    hover: {
+      background: "primary-focus",
+    },
+  },
+});
+
 const App: Component = () => {
   return (
     <Box
       theme={AppTheme.build({
-        padding: "4",
+        height: [, "screen"],
         background: "primary",
         color: "primary-content",
-        hover: {
-          background: "primary-focus",
+        sm: {
+          background: "secondary",
+          color: "secondary-content",
         },
       })}
     >
@@ -23,12 +41,12 @@ const App: Component = () => {
         })}
       >
         <Image src={logo} width={200} height={200} />
-        <For each={Array.from({ length: 100 })}>
+        <For each={Array.from({ length: 1000 })}>
           {() => (
             <Box
               theme={AppTheme.build({
                 padding: "4",
-                height: "4",
+                background: "primary",
               })}
             >
               Edit <code>src/App.tsx</code> and save to reload.
@@ -42,7 +60,9 @@ const App: Component = () => {
         >
           Learn Solid
         </Link>
-        <Button onClick={() => console.log("Clicked")}>I'm a button !</Button>
+        <Button theme={buttonTheme} onClick={() => console.log("Clicked")}>
+          I'm a button !
+        </Button>
       </Box>
     </Box>
   );
