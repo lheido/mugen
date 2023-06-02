@@ -35,13 +35,13 @@ const App: Component = () => {
       })}
     >
       <Box
-        tag="header"
+        as="header"
         theme={AppTheme.build({
           padding: "2",
         })}
       >
         <Image src={logo} width={200} height={200} />
-        <For each={Array.from({ length: 1000 })}>
+        <For each={Array.from({ length: 1 })}>
           {() => (
             <Box
               theme={AppTheme.build({

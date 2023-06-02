@@ -12,16 +12,16 @@ export type BoxProps = ComponentProps &
   (Partial<ImageAttributes> | Partial<LinkAttributes>);
 
 export const Box: Component<BoxProps> = (props: BoxProps) => {
-  const [local, others] = splitProps(props, ["tag", "theme"]);
-  const tag = createMemo(() => {
-    if (local.tag) return local.tag;
+  const [local, others] = splitProps(props, ["as", "theme"]);
+  const as = createMemo(() => {
+    if (local.as) return local.as;
     if ("src" in others) return "img";
     if ("href" in others) return "a";
     return "div";
   });
   return (
     <Dynamic
-      component={tag()}
+      component={as()}
       {...others}
       classList={local.theme?.execute() ?? {}}
     />
