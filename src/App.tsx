@@ -1,4 +1,4 @@
-import { Box, Button, Image, Link } from "mugen/ui";
+import { Box, Button, Image, Link, Text } from "mugen/ui";
 import { Component, For } from "solid-js";
 
 import logo from "./logo.svg";
@@ -43,14 +43,14 @@ const App: Component = () => {
         <Image src={logo} width={200} height={200} />
         <For each={Array.from({ length: 1 })}>
           {() => (
-            <Box
+            <Text
               theme={AppTheme.build({
                 padding: "4",
                 background: "primary",
               })}
             >
               Edit <code>src/App.tsx</code> and save to reload.
-            </Box>
+            </Text>
           )}
         </For>
         <Link

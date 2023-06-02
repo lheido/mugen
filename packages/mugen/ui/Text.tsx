@@ -1,10 +1,8 @@
 import { children, createRenderEffect } from "solid-js";
-import { ComponentProps, LinkAttributes, UniversalAttributes } from "../types";
+import { ComponentProps, UniversalAttributes } from "../types";
 import { Box } from "./Box";
 
-export const Text = (
-  props: ComponentProps & UniversalAttributes & LinkAttributes
-) => {
+export const Text = (props: ComponentProps & UniversalAttributes) => {
   const resolved = children(() => props.children);
   createRenderEffect(() => {
     console.log(resolved());
