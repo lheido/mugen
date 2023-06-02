@@ -21,6 +21,11 @@ const buttonTheme = AppTheme.build({
   },
 });
 
+const reuseStyle = AppTheme.build({
+  padding: "4",
+  background: "primary",
+});
+
 const App: Component = () => {
   return (
     <Box
@@ -41,14 +46,9 @@ const App: Component = () => {
         })}
       >
         <Image src={logo} width={200} height={200} />
-        <For each={Array.from({ length: 1 })}>
+        <For each={Array.from({ length: 5 })}>
           {() => (
-            <Text
-              theme={AppTheme.build({
-                padding: "4",
-                background: "primary",
-              })}
-            >
+            <Text theme={reuseStyle}>
               Edit <code>src/App.tsx</code> and save to reload.
             </Text>
           )}
