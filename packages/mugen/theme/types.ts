@@ -2,6 +2,7 @@ export type ClassList = Record<string, boolean>;
 
 export type ThemeDescription = {
   spacing: Record<string, string>;
+  rounded: Record<string, string>;
   colors: Record<string, string>;
   sizes: Record<string, string>;
   breakpoints: Record<string, string>;
@@ -24,7 +25,7 @@ export type ThemePadding<T extends ThemeDescription> = Partial<
  */
 export type ThemeRoundedValue<
   T extends ThemeDescription,
-  S = keyof T["spacing"] | undefined
+  S = keyof T["rounded"] | undefined
 > = S | [S] | [S, S] | [S, S, S] | [S, S, S, S];
 
 export type ThemeRounded<T extends ThemeDescription> = Partial<
@@ -75,6 +76,76 @@ export type ThemeBackground<T extends ThemeDescription> = Partial<
 export type ThemeColor<T extends ThemeDescription> = Partial<
   Record<"color", ThemeColorValue<T>>
 >;
+
+export type ThemeDisplay = Partial<
+  Record<
+    "display",
+    | "flex"
+    | "inline-flex"
+    | "none"
+    | "block"
+    | "inline"
+    | "inline-block"
+    | "grid"
+    | "inline-grid"
+    | "contents"
+  >
+>;
+
+export type ThemeJustifyContentValue =
+  | "flex-start"
+  | "flex-end"
+  | "center"
+  | "space-between"
+  | "space-around"
+  | "space-evenly"
+  | "stretch";
+export type ThemeJustifyContent = Partial<
+  Record<"justify-content", ThemeJustifyContentValue>
+>;
+
+export type ThemeAlignItemsValue =
+  | "flex-start"
+  | "flex-end"
+  | "center"
+  | "baseline"
+  | "stretch";
+export type ThemeAlignItems = Partial<
+  Record<"align-items", ThemeAlignItemsValue>
+>;
+
+export type ThemeFlexDirectionValue =
+  | "row"
+  | "row-reverse"
+  | "column"
+  | "column-reverse";
+export type ThemeFlexDirection = Partial<
+  Record<"flex-direction", ThemeFlexDirectionValue>
+>;
+
+export type ThemeFlexWrapValue = "nowrap" | "wrap" | "wrap-reverse";
+export type ThemeFlexWrap = Partial<Record<"flex-wrap", ThemeFlexWrapValue>>;
+
+export type ThemeUserSelectValue = "none" | "text" | "all" | "auto" | "contain";
+export type ThemeUserSelect = Partial<
+  Record<"user-select", ThemeUserSelectValue>
+>;
+
+export type ThemePointerEventsValue = "auto" | "none";
+export type ThemePointerEvents = Partial<
+  Record<"pointer-events", ThemePointerEventsValue>
+>;
+
+export type ThemeOverflowValue = "visible" | "hidden" | "scroll" | "auto";
+export type ThemeOverflow = Partial<
+  Record<
+    "overflow",
+    | ThemeOverflowValue
+    | [ThemeOverflowValue]
+    | [ThemeOverflowValue | undefined, ThemeOverflowValue | undefined]
+  >
+>;
+
 export const themeEventNames = [
   "hover",
   "active",
@@ -93,6 +164,13 @@ export type ThemeElement<T extends ThemeDescription> = ThemePadding<T> &
   ThemeColor<T> &
   ThemeRounded<T> &
   ThemePosition<T> &
+  ThemeDisplay &
+  ThemeJustifyContent &
+  ThemeAlignItems &
+  ThemeFlexWrap &
+  ThemeUserSelect &
+  ThemePointerEvents &
+  ThemeOverflow &
   ThemeSize<T>;
 
 export type ThemeMedia<T extends ThemeDescription> = Partial<

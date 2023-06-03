@@ -1,7 +1,11 @@
 /* @refresh reload */
+import { registerTheme } from "mugen/theme";
 import { render } from "solid-js/web";
 
 import App from "./App";
+import { AppTheme } from "./theme";
+
+registerTheme(AppTheme);
 
 const root = document.getElementById("root");
 

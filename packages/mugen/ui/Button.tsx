@@ -1,11 +1,8 @@
 import { mergeProps } from "solid-js";
-import { ComponentProps } from "../types";
+import { ButtonAttributes, ComponentProps } from "../types";
 import { Box } from "./Box";
 
-type ButtonProps = ComponentProps & {
-  onClick?: (e: Event) => void;
-  type?: "button" | "submit" | "reset";
-};
+type ButtonProps = ComponentProps & ButtonAttributes;
 
 export const Button = (props: ButtonProps) => {
   return <Box {...mergeProps({ as: "button" }, props)} />;

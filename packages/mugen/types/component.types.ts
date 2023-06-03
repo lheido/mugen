@@ -1,8 +1,8 @@
 import { Component, JSX } from "solid-js";
-import { ThemeApi } from "../theme/style-sheet";
+import { ThemeDescription, ThemeElementApi } from "../theme";
 
 export type ComponentProps = {
   as?: string | Component<any>;
-  theme?: ThemeApi;
+  theme?: ThemeElementApi<ThemeDescription>;
   children?: JSX.Element | JSX.Element[];
 };

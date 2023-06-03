@@ -30,8 +30,19 @@ export type LinkAttributes = {
 export type ImageAttributes = {
   src: string;
   alt?: string;
-  width?: number;
-  height?: number;
+  width?: string;
+  height?: string;
   crossorigin?: string;
   refererpolicy?: string;
 };
+
+export type ButtonAttributes = {
+  type?: "button" | "submit" | "reset";
+  disabled?: boolean;
+  onClick?: (e: Event) => void;
+};
+
+export type PartialElementAttributes =
+  | Partial<ImageAttributes>
+  | Partial<LinkAttributes>
+  | Partial<ButtonAttributes>;

@@ -119,7 +119,7 @@ const createPaddingHandler = <T extends ThemeDescription>() => {
             ];
           return [];
         } else {
-          const index = className.includes("l")
+          const index: number = className.includes("l")
             ? 0
             : className.includes("t")
             ? 1
@@ -186,12 +186,12 @@ const createRoundedHandler = <T extends ThemeDescription>() => {
                 index === 0
                   ? "border-top-left-radius"
                   : "border-top-right-radius"
-              }: ${description.spacing[val]}`,
+              }: ${description.rounded[val]}`,
               `${
                 index === 0
                   ? "border-bottom-left-radius"
                   : "border-bottom-right-radius"
-              }: ${description.spacing[val]}`,
+              }: ${description.rounded[val]}`,
             ];
           return [];
         } else {
@@ -205,11 +205,11 @@ const createRoundedHandler = <T extends ThemeDescription>() => {
           const val = value[index];
           const suffix = propSuffixes[index];
           if (val)
-            return [`border-${suffix}-radius: ${description.spacing[val]}`];
+            return [`border-${suffix}-radius: ${description.rounded[val]}`];
           return [];
         }
       }
-      return value ? [`border-radius: ${description.spacing[value]}`] : [];
+      return value ? [`border-radius: ${description.rounded[value]}`] : [];
     },
   });
 };
@@ -264,87 +264,147 @@ const createColorHandler = <T extends ThemeDescription>() => {
   });
 };
 
+const createGapHandler = <T extends ThemeDescription>() => {
+  const axes = ["x", "y"] as const;
+  const propMap = ["row-gap", "column-gap"] as const;
+  return processStyle({
+    computeClassNames: (baseCls, value: string | string[]) =>
+      Array.isArray(value)
+        ? value.map((v, i) => v && `${baseCls}-${axes[i]}-${v}`).filter(Boolean)
+        : [`${baseCls}-${value}`],
+    computeRules: (
+      className,
+      property,
+      value: string | string[],
+      description
+    ) => {
+      if (Array.isArray(value)) {
+        const index = className.includes("-x-") ? 0 : 1;
+        const val = value[index];
+        if (val) {
+          return [`${propMap[index]}: ${description.spacing[val]}`];
+        }
+        return [];
+      }
+      return value ? [`${property}: ${description.spacing[value]}`] : [];
+    },
+  });
+};
+
+const createOverflowHandler = <T extends ThemeDescription>() => {
+  const axes = ["x", "y"] as const;
+  const propMap = ["overflow-x", "overflow-y"] as const;
+  return processStyle({
+    computeClassNames: (baseCls, value: string | string[]) =>
+      Array.isArray(value)
+        ? value.map((v, i) => v && `${baseCls}-${axes[i]}-${v}`).filter(Boolean)
+        : [`${baseCls}-${value}`],
+    computeRules: (className, property, value: string | string[]) => {
+      if (Array.isArray(value)) {
+        const index = className.includes("-x-") ? 0 : 1;
+        const val = value[index];
+        if (val) {
+          return [`${propMap[index]}: ${val}`];
+        }
+        return [];
+      }
+      return value ? [`${property}: ${value}`] : [];
+    },
+  });
+};
+
+const createSimpleHandler = () => {
+  return processStyle({
+    computeClassNames: (baseCls, value: string) => [`${baseCls}-${value}`],
+    computeRules: (_, property, value: string) => {
+      return value ? [`${property}: ${value}`] : [];
+    },
+  });
+};
+
 export interface ThemeApi {
   execute(): ClassList;
 }
 
+let themeDescription: ThemeDescription;
+
 const cachedThemes: Record<string, ClassList> = {};
 
-export const Theme = <
-  T extends ThemeDescription,
-  B extends keyof T["breakpoints"] extends string ? string : undefined
->(
-  description: T
-) => {
-  const handlersMap: Record<string, (...args: any[]) => ClassList> = {
-    spacing: createPaddingHandler<T>(),
-    sizes: createSizeHandler<T>(),
-    colors: createColorHandler<T>(),
-    rounded: createRoundedHandler<T>(),
-    position: createPositionHandler<T>(),
-  };
-
-  const propHandlerMap: Record<string, string> = {
-    padding: "spacing",
-    margin: "spacing",
-    background: "colors",
-    color: "colors",
-    rounded: "rounded",
-    relative: "position",
-    absolute: "position",
-    fixed: "position",
-    sticky: "position",
-    height: "sizes",
-    width: "sizes",
-  };
-
-  return class ThemeApi implements ThemeApi {
-    static build(theme: ThemeElementApi<T>) {
-      return new this(description, theme);
-    }
-
-    private constructor(
-      private description: T,
-      private theme: ThemeElementApi<T>
-    ) {}
-
-    execute(): ClassList {
-      const cachedKey = JSON.stringify(this.theme);
-      if (cachedThemes[cachedKey]) {
-        return cachedThemes[cachedKey];
-      }
-      const classList: Record<string, boolean> = {};
-      Object.entries(this.theme).forEach(([key, value]) => {
-        this.computed(key, value, classList);
-      });
-      cachedThemes[cachedKey] = classList;
-      return classList;
-    }
-
-    private computed(
-      key: string,
-      value: any,
-      classList: ClassList,
-      emod?: ThemeEventNames,
-      media?: B
-    ) {
-      if (themeEventNames.includes(key as ThemeEventNames)) {
-        Object.entries(value).forEach(([k, v]) => {
-          this.computed(k, v, classList, key as ThemeEventNames, media);
-        });
-      } else if (key in this.description.breakpoints) {
-        Object.entries(value).forEach(([k, v]) => {
-          this.computed(k, v, classList, emod, key as B);
-        });
-      } else {
-        const handler = handlersMap[propHandlerMap[key]];
-        if (handler) {
-          Object.assign(
-            classList,
-            handler(key, value, this.description, emod, media)
-          );
-        }
-      }
-    }
-  };
+const handlersMap = {
+  simple: createSimpleHandler(),
+  spacing: createPaddingHandler<ThemeDescription>(),
+  sizes: createSizeHandler<ThemeDescription>(),
+  colors: createColorHandler<ThemeDescription>(),
+  rounded: createRoundedHandler<ThemeDescription>(),
+  position: createPositionHandler<ThemeDescription>(),
+  gap: createGapHandler<ThemeDescription>(),
+  overflow: createOverflowHandler<ThemeDescription>(),
 };
+
+const propHandlerMap: Record<string, keyof typeof handlersMap> = {
+  padding: "spacing",
+  margin: "spacing",
+  background: "colors",
+  color: "colors",
+  rounded: "rounded",
+  relative: "position",
+  absolute: "position",
+  fixed: "position",
+  sticky: "position",
+  height: "sizes",
+  width: "sizes",
+  gap: "gap",
+  overflow: "overflow",
+};
+
+export class Theme<
+  B extends keyof ThemeDescription["breakpoints"] extends string
+    ? string
+    : undefined
+> implements ThemeApi
+{
+  constructor(private theme: ThemeElementApi<ThemeDescription>) {}
+
+  execute(): ClassList {
+    const cachedKey = JSON.stringify(this.theme);
+    if (cachedThemes[cachedKey]) {
+      return cachedThemes[cachedKey];
+    }
+    const classList: Record<string, boolean> = {};
+    Object.entries(this.theme).forEach(([key, value]) => {
+      this.computed(key, value, classList);
+    });
+    cachedThemes[cachedKey] = classList;
+    return classList;
+  }
+
+  private computed(
+    key: string,
+    value: any,
+    classList: ClassList,
+    emod?: ThemeEventNames,
+    media?: B
+  ) {
+    if (themeEventNames.includes(key as ThemeEventNames)) {
+      Object.entries(value).forEach(([k, v]) => {
+        this.computed(k, v, classList, key as ThemeEventNames, media);
+      });
+    } else if (key in themeDescription.breakpoints) {
+      Object.entries(value).forEach(([k, v]) => {
+        this.computed(k, v, classList, emod, key as B);
+      });
+    } else {
+      const handler = handlersMap[propHandlerMap[key] ?? "simple"];
+      if (handler) {
+        Object.assign(
+          classList,
+          handler(key, value, themeDescription, emod, media)
+        );
+      }
+    }
+  }
+}
+
+export function registerTheme(description: ThemeDescription) {
+  themeDescription = description;
+}
