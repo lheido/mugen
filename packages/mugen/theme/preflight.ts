@@ -105,6 +105,7 @@ button,
   -webkit-appearance: button;
   background-color: transparent;
   background-image: none;
+  border: none;
 }`,
   `
 :-moz-focusring {
@@ -214,6 +215,10 @@ video {
   `
 [hidden] {
   display: none;
+}`,
+  `
+* {
+  box-sizing: border-box;
 }`,
 ];
 // const preflightRulesFromTailwind = `

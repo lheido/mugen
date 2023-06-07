@@ -15,8 +15,9 @@
     "vite-plugin-solid": "^2.5.0"
   },
   "dependencies": {
+    "@solidjs/router": "^0.8.2",
     "motion": "^10.16.2",
-    "solid-js": "^1.6.10",
-    "mugen": "workspace:*"
+    "mugen": "workspace:*",
+    "solid-js": "^1.6.10"
   }
 }

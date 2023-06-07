@@ -6,6 +6,7 @@ export type ThemeDescription = {
   colors: Record<string, string>;
   sizes: Record<string, string>;
   breakpoints: Record<string, string>;
+  borderWidth?: Record<string, string>;
 };
 
 /**
@@ -14,7 +15,13 @@ export type ThemeDescription = {
 export type ThemePaddingValue<
   T extends ThemeDescription,
   S = keyof T["spacing"] | undefined
-> = S | [S] | [S, S] | [S, S, S] | [S, S, S, S];
+> =
+  | S
+  | [S]
+  | [S, S]
+  | [S, S, S]
+  | [S, S, S, S]
+  | Partial<Record<"x" | "y" | "left" | "top" | "right" | "bottom", S>>;
 
 export type ThemePadding<T extends ThemeDescription> = Partial<
   Record<"padding" | "margin", ThemePaddingValue<T>>
@@ -26,7 +33,13 @@ export type ThemePadding<T extends ThemeDescription> = Partial<
 export type ThemeRoundedValue<
   T extends ThemeDescription,
   S = keyof T["rounded"] | undefined
-> = S | [S] | [S, S] | [S, S, S] | [S, S, S, S];
+> =
+  | S
+  | [S]
+  | [S, S]
+  | [S, S, S]
+  | [S, S, S, S]
+  | Record<"l" | "r" | "t" | "b" | "tl" | "tr" | "br" | "bl", S>;
 
 export type ThemeRounded<T extends ThemeDescription> = Partial<
   Record<"rounded", ThemeRoundedValue<T>>
@@ -38,10 +51,15 @@ export type ThemeRounded<T extends ThemeDescription> = Partial<
 export type ThemePositionValue<
   T extends ThemeDescription,
   S = keyof T["spacing"] | undefined
-> = [S] | [S, S] | [S, S, S] | [S, S, S, S];
-
+> = [S] | [S, S] | [S, S, S] | [S, S, S, S] | Record<"l" | "t" | "r" | "b", S>;
+export const ThemePositionsValues = [
+  "relative",
+  "absolute",
+  "fixed",
+  "sticky",
+] as const;
 export type ThemePosition<T extends ThemeDescription> = Partial<
-  Record<"relative" | "absolute" | "fixed" | "sticky", ThemePositionValue<T>>
+  Record<(typeof ThemePositionsValues)[number], ThemePositionValue<T>>
 >;
 
 /**
@@ -50,7 +68,7 @@ export type ThemePosition<T extends ThemeDescription> = Partial<
 export type ThemeGap<
   T extends ThemeDescription,
   S = keyof T["spacing"] | undefined
-> = Partial<Record<"gap", S | [S] | [S, S]>>;
+> = Partial<Record<"gap", S | [S] | [S, S] | Record<"x" | "y", S>>>;
 
 /**
  * width|height: <value>, [<value>, <min-value>, <max-value>]
@@ -58,7 +76,7 @@ export type ThemeGap<
 export type ThemeSizeValue<
   T extends ThemeDescription,
   S = keyof T["sizes"] | undefined
-> = S | [S] | [S, S] | [S, S, S];
+> = S | [S] | [S, S] | [S, S, S] | Record<"min" | "max" | "_", S>;
 
 export type ThemeSize<T extends ThemeDescription> = Partial<
   Record<"width" | "height", ThemeSizeValue<T>>
@@ -146,6 +164,37 @@ export type ThemeOverflow = Partial<
   >
 >;
 
+export const defaultThemeBorderWidth = {
+  "0": "0px",
+  "1": "1px",
+  "2": "2px",
+  "4": "4px",
+  "8": "8px",
+} as const;
+export type ThemeBorderWidthValue<
+  T extends ThemeDescription,
+  V = keyof T["borderWidth"] | keyof typeof defaultThemeBorderWidth | undefined
+> = V | [V] | [V, V] | [V, V, V] | [V, V, V, V];
+export const ThemeBorderStyleValue = [
+  "solid",
+  "dotted",
+  "dashed",
+  "double",
+  "hidden",
+  "none",
+] as const;
+// TODO: Improve array types
+export type ThemeBorderValue<T extends ThemeDescription> = {
+  width: ThemeBorderWidthValue<T>;
+  style:
+    | (typeof ThemeBorderStyleValue)[number]
+    | ((typeof ThemeBorderStyleValue)[number] | undefined)[];
+  color: keyof T["colors"] | (keyof T["colors"] | undefined)[];
+};
+export type ThemeBorder<T extends ThemeDescription> = Partial<
+  Record<"border", ThemeBorderValue<T>>
+>;
+
 export const themeEventNames = [
   "hover",
   "active",
@@ -160,6 +209,7 @@ export type ThemeEvent<T extends ThemeDescription> = Partial<
 
 export type ThemeElement<T extends ThemeDescription> = ThemePadding<T> &
   ThemeGap<T> &
+  ThemeBorder<T> &
   ThemeBackground<T> &
   ThemeColor<T> &
   ThemeRounded<T> &

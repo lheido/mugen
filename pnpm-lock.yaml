@@ -4,6 +4,7 @@ importers:
 
   .:
     specifiers:
+      '@solidjs/router': ^0.8.2
       motion: ^10.16.2
       mugen: workspace:*
       solid-js: ^1.6.10
@@ -11,6 +12,7 @@ importers:
       vite: ^4.1.1
       vite-plugin-solid: ^2.5.0
     dependencies:
+      '@solidjs/router': 0.8.2_solid-js@1.6.10
       motion: 10.16.2
       mugen: link:packages/mugen
       solid-js: 1.6.10
@@ -644,6 +646,14 @@ packages:
     dependencies:
       '@motionone/dom': 10.16.2
       tslib: 2.5.2
+    dev: false
+
+  /@solidjs/router/0.8.2_solid-js@1.6.10:
+    resolution: {integrity: sha512-gUKW+LZqxtX6y/Aw6JKyy4gQ9E7dLqp513oB9pSYJR1HM5c56Pf7eijzyXX+b3WuXig18Cxqah4tMtF0YGu80w==}
+    peerDependencies:
+      solid-js: ^1.5.3
+    dependencies:
+      solid-js: 1.6.10
     dev: false
 
   /ansi-styles/3.2.1:
