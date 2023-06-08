@@ -1,20 +1,4 @@
 export const AppTheme = {
-  spacing: {
-    "0": "0",
-    "1": "0.25rem",
-    "2": "0.5rem",
-    "3": "0.75rem",
-    "4": "1rem",
-    "1/4": "25%",
-  },
-  rounded: {
-    "0": "0",
-    "1": "0.25rem",
-    "2": "0.5rem",
-    "3": "0.75rem",
-    "4": "1rem",
-    full: "9999px",
-  },
   colors: {
     transparent: "transparent",
     current: "currentColor",
@@ -24,6 +8,33 @@ export const AppTheme = {
     secondary: "#6b7280",
     "secondary-focus": "#6b8080",
     "secondary-content": "#fff",
+  },
+  themes: {
+    light: {
+      colors: {
+        primary: "#8cbaf1",
+        "primary-focus": "#6ea6e9",
+        "primary-content": "#fff",
+        secondary: "#97a0b3",
+        "secondary-focus": "#868e9f",
+        "secondary-content": "#fff",
+      },
+    },
+  },
+  spacing: {
+    "0": "0",
+    "1": "0.25rem",
+    "2": "0.5rem",
+    "3": "0.75rem",
+    "4": "1rem",
+  },
+  rounded: {
+    "0": "0",
+    "1": "0.25rem",
+    "2": "0.5rem",
+    "3": "0.75rem",
+    "4": "1rem",
+    full: "9999px",
   },
   sizes: {
     "1": "16px",

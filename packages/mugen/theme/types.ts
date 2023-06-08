@@ -7,6 +7,7 @@ export type ThemeDescription = {
   sizes: Record<string, string>;
   breakpoints: Record<string, string>;
   borderWidth?: Record<string, string>;
+  themes?: Record<string, Pick<ThemeDescription, "colors">>;
 };
 
 /**
@@ -39,7 +40,7 @@ export type ThemeRoundedValue<
   | [S, S]
   | [S, S, S]
   | [S, S, S, S]
-  | Record<"l" | "r" | "t" | "b" | "tl" | "tr" | "br" | "bl", S>;
+  | Partial<Record<"l" | "r" | "t" | "b" | "tl" | "tr" | "br" | "bl", S>>;
 
 export type ThemeRounded<T extends ThemeDescription> = Partial<
   Record<"rounded", ThemeRoundedValue<T>>
@@ -51,7 +52,12 @@ export type ThemeRounded<T extends ThemeDescription> = Partial<
 export type ThemePositionValue<
   T extends ThemeDescription,
   S = keyof T["spacing"] | undefined
-> = [S] | [S, S] | [S, S, S] | [S, S, S, S] | Record<"l" | "t" | "r" | "b", S>;
+> =
+  | [S]
+  | [S, S]
+  | [S, S, S]
+  | [S, S, S, S]
+  | Partial<Record<"l" | "t" | "r" | "b", S>>;
 export const ThemePositionsValues = [
   "relative",
   "absolute",
@@ -68,7 +74,7 @@ export type ThemePosition<T extends ThemeDescription> = Partial<
 export type ThemeGap<
   T extends ThemeDescription,
   S = keyof T["spacing"] | undefined
-> = Partial<Record<"gap", S | [S] | [S, S] | Record<"x" | "y", S>>>;
+> = Partial<Record<"gap", S | [S] | [S, S] | Partial<Record<"x" | "y", S>>>>;
 
 /**
  * width|height: <value>, [<value>, <min-value>, <max-value>]
@@ -76,7 +82,7 @@ export type ThemeGap<
 export type ThemeSizeValue<
   T extends ThemeDescription,
   S = keyof T["sizes"] | undefined
-> = S | [S] | [S, S] | [S, S, S] | Record<"min" | "max" | "_", S>;
+> = S | [S] | [S, S] | [S, S, S] | Partial<Record<"min" | "max" | "_", S>>;
 
 export type ThemeSize<T extends ThemeDescription> = Partial<
   Record<"width" | "height", ThemeSizeValue<T>>
@@ -230,6 +236,11 @@ export type ThemeMedia<T extends ThemeDescription> = Partial<
   >
 >;
 
+export type ThemeElementTheme<T extends ThemeDescription> = Partial<
+  Record<keyof T["themes"], boolean>
+>;
+
 export type ThemeElementApi<T extends ThemeDescription> = ThemeElement<T> &
   ThemeEvent<T> &
-  ThemeMedia<T>;
+  ThemeMedia<T> &
+  ThemeElementTheme<T>;

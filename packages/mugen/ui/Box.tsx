@@ -1,6 +1,6 @@
 import { Component, createMemo, splitProps } from "solid-js";
 import { Dynamic } from "solid-js/web";
-import { Theme } from "../theme";
+import { useThemeClassList } from "../theme";
 import {
   ComponentProps,
   PartialElementAttributes,
@@ -20,14 +20,7 @@ export const Box: Component<BoxProps> = (props: BoxProps) => {
     if ("href" in others) return "a";
     return "div";
   });
-  const classList = createMemo(() => {
-    if (local.theme) {
-      return new Theme(local.theme).execute();
-    }
-    // In the case of as={MugenComponent} we need to take into account the classList property built in the "parent".
-    if ((props as any).classList) return (props as any).classList;
-    return {};
-  });
+  const classList2 = useThemeClassList(props);
 
-  return <Dynamic component={as()} {...others} classList={classList()} />;
+  return <Dynamic component={as()} {...others} classList={classList2()} />;
 };

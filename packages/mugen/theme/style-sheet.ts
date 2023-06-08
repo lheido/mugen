@@ -167,7 +167,16 @@ const spacingHandler: Handler = {
 };
 const positionHandler: Handler = {
   clsHandler: createClassNamesHandler({
-    mapIndex: { 0: "left", 1: "top", 2: "right", 3: "bottom" },
+    mapIndex: {
+      0: "left",
+      1: "top",
+      2: "right",
+      3: "bottom",
+      t: "top",
+      b: "bottom",
+      l: "left",
+      r: "right",
+    },
     mergeBaseWithModifier: (_, modifier) => modifier,
     additionalClasses: (property) => [property],
   }),
@@ -331,14 +340,14 @@ const propHandlerMap: Record<string, HandlersKeys> = {
   border: "border",
 } as const;
 
-function compute(
+export function compute(
   key: string,
   value: any,
-  description: ThemeDescription,
   emod?: string,
   media?: string,
   ps?: string
 ) {
+  if (typeof value === "boolean") return { [key]: value };
   const handler = handlers[propHandlerMap[key]] ?? handlers.default;
   const cls = handler.clsHandler(key, value);
   const classNames = cls.map((className) => {
@@ -350,7 +359,7 @@ function compute(
   classNames.forEach((className, i) => {
     if (!classNameRefs.has(className)) {
       classNameRefs.set(className, true);
-      const ruleContent = handler.ruleHandler(cls[i], key, description);
+      const ruleContent = handler.ruleHandler(cls[i], key, themeDescription);
       const _evt = emod ? `:${emod}` : "";
       const __ps = ps ? `::${ps}` : "";
       const rule = `.${className}${_evt}${__ps} {${ruleContent.join(";")}}`;
@@ -358,7 +367,7 @@ function compute(
       if (media) {
         if (!mediaStyleSheets.has(media)) {
           const newMediaStyleSheet = new CSSStyleSheet({
-            media: `(min-width: ${description.breakpoints[media]})`,
+            media: `(min-width: ${themeDescription.breakpoints[media]})`,
           });
           document.adoptedStyleSheets.push(newMediaStyleSheet);
           mediaStyleSheets.set(media, newMediaStyleSheet);
@@ -378,7 +387,7 @@ export interface ThemeApi {
   execute(): ClassList;
 }
 
-let themeDescription: ThemeDescription;
+export let themeDescription: ThemeDescription;
 
 const cachedThemes: Record<string, ClassList> = {};
 
@@ -421,14 +430,40 @@ export class Theme<
         this.computed(k, v, classList, emod, key as B);
       });
     } else {
-      Object.assign(
-        classList,
-        compute(key, value, themeDescription, emod, media)
-      );
+      Object.assign(classList, compute(key, value, emod, media));
     }
   }
 }
 
 export function registerTheme(description: ThemeDescription) {
   themeDescription = description;
+  // Replace colors with custom properties.
+  const themeCustomProperties: Record<string, [string, string][]> = {
+    ":root": [],
+  };
+  Object.entries(description.colors).forEach(([key, value]) => {
+    const propName = `--mugen-color-${key}`;
+    description.colors[key] = `var(${propName})`;
+    themeCustomProperties[":root"].push([propName, value]);
+  });
+  if (description.themes) {
+    Object.entries(description.themes).forEach(([name, theme]) => {
+      const themeName = `.${name}`;
+      themeCustomProperties[themeName] = [];
+      Object.entries(theme.colors).forEach(([key, value]) => {
+        const propName = `--mugen-color-${key}`;
+        themeCustomProperties[themeName].push([propName, value]);
+      });
+    });
+  }
+  Object.entries(themeCustomProperties).forEach(
+    ([themeName, customProperties]) => {
+      styleSheet.insertRule(
+        `${themeName} { ${customProperties
+          .map(([propName, value]) => `${propName}: ${value}`)
+          .join(";")} }`
+      );
+    }
+  );
+  console.log(themeDescription);
 }
