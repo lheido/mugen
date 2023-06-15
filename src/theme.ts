@@ -2,22 +2,20 @@ export const AppTheme = {
   colors: {
     transparent: "transparent",
     current: "currentColor",
-    primary: "#0070f3",
-    "primary-focus": "#7070f3",
-    "primary-content": "#fff",
+    primary: "#8d8dd8",
+    "primary-focus": "#7e7ed3",
     secondary: "#6b7280",
     "secondary-focus": "#6b8080",
-    "secondary-content": "#fff",
+    page: "#30304f",
   },
   themes: {
     light: {
       colors: {
         primary: "#8cbaf1",
         "primary-focus": "#6ea6e9",
-        "primary-content": "#fff",
         secondary: "#97a0b3",
         "secondary-focus": "#868e9f",
-        "secondary-content": "#fff",
+        page: "#efefef",
       },
     },
   },
@@ -27,6 +25,10 @@ export const AppTheme = {
     "2": "0.5rem",
     "3": "0.75rem",
     "4": "1rem",
+    "5": "1.25rem",
+    "6": "1.5rem",
+    "7": "1.75rem",
+    "8": "2rem",
   },
   rounded: {
     "0": "0",
@@ -43,6 +45,8 @@ export const AppTheme = {
     "4": "128px",
     "5": "200px",
     screen: "100vh",
+    safeScreen: "100svh",
+    "2screen": "200svh",
   },
   breakpoints: {
     sm: "640px",

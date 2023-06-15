@@ -1,9 +1,8 @@
+import { splitProps } from "solid-js";
 import { ThemeDescription } from "../theme";
-import {
-  ComponentProps,
-  PartialElementAttributes,
-  UniversalAttributes,
-} from "../types";
+import { BaseComponentProps } from "../types";
+import { Box } from "./Box";
+import { createMugenComponent } from "./createMugenComponent";
 import { alignItemsMap, FlexLayout, justifyContentMap } from "./FlexLayout";
 
 export type RowProps = {
@@ -13,13 +12,15 @@ export type RowProps = {
   reverse?: boolean;
 };
 
-export const Row = (
-  props: ComponentProps &
-    UniversalAttributes &
-    RowProps &
-    PartialElementAttributes
-) => {
-  return (
-    <FlexLayout direction={props.reverse ? "row-reverse" : "row"} {...props} />
-  );
-};
+export const Row = createMugenComponent(
+  (p: BaseComponentProps & RowProps) => {
+    const [local, others] = splitProps(p, ["reverse"]);
+    return FlexLayout.mixin({
+      ...others,
+      direction: local.reverse ? "row-reverse" : "row",
+    })();
+  },
+  (p) => {
+    return <Box {...p} />;
+  }
+);

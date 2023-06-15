@@ -1,14 +1,21 @@
+import { getContrast50 } from "./colors";
 import { preflightRules } from "./preflight";
 import {
   ClassList,
   defaultThemeBorderWidth,
   ThemeBorderStyleValue,
   ThemeDescription,
-  ThemeElementApi,
-  ThemeEventNames,
-  themeEventNames,
   ThemePositionsValues,
 } from "./types";
+
+const COLOR_VAR_PREFIX = "--mugen-color-";
+const NON_CONTENT_COLORS = [
+  "transparent",
+  "inherit",
+  "initial",
+  "unset",
+  "currentColor",
+];
 
 const styleSheet = new CSSStyleSheet();
 for (const rule of preflightRules) {
@@ -172,10 +179,6 @@ const positionHandler: Handler = {
       1: "top",
       2: "right",
       3: "bottom",
-      t: "top",
-      b: "bottom",
-      l: "left",
-      r: "right",
     },
     mergeBaseWithModifier: (_, modifier) => modifier,
     additionalClasses: (property) => [property],
@@ -196,11 +199,21 @@ const colorHandler: Handler = {
     baseCls: (property) => (property === "background" ? "bg" : "color"),
   }),
   ruleHandler: createRulesHandler({
-    extract: (cls, property) => [
-      property,
-      cls.replace(`${property === "background" ? "bg" : "color"}-`, ""),
-    ],
-    toRealValue: (value, description) => description.colors[value],
+    extract: (cls, property) => {
+      const value = cls.split("-")[1];
+      if (
+        opts.autoContentColor !== false &&
+        property === "background" &&
+        !NON_CONTENT_COLORS.includes(value)
+      ) {
+        return [
+          ["background", "color"],
+          [value, `${value}-content`],
+        ];
+      }
+      return [property, value];
+    },
+    toRealValue: (value) => `var(${COLOR_VAR_PREFIX}${value})`,
   }),
 };
 const defaultXYHandler: Handler = {
@@ -346,7 +359,7 @@ export function compute(
   emod?: string,
   media?: string,
   ps?: string
-) {
+): ClassList {
   if (typeof value === "boolean") return { [key]: value };
   const handler = handlers[propHandlerMap[key]] ?? handlers.default;
   const cls = handler.clsHandler(key, value);
@@ -383,87 +396,72 @@ export function compute(
   }, {} as ClassList);
 }
 
-export interface ThemeApi {
-  execute(): ClassList;
-}
-
 export let themeDescription: ThemeDescription;
+export let opts: RegisterThemeOptions<ThemeDescription>;
 
-const cachedThemes: Record<string, ClassList> = {};
+export type RegisterThemeOptions<T extends ThemeDescription> = {
+  defaultTheme?: keyof T["themes"] extends string ? string : undefined;
+  pageColor?: (keyof T["colors"] extends string ? string : undefined) | "page";
+  autoContentColor?: ((color: string) => string) | false;
+};
 
-export class Theme<
-  B extends keyof ThemeDescription["breakpoints"] extends string
-    ? string
-    : undefined
-> implements ThemeApi
-{
-  constructor(private theme: ThemeElementApi<ThemeDescription>) {}
-
-  execute(): ClassList {
-    const cachedKey = JSON.stringify(this.theme);
-    if (cachedThemes[cachedKey]) {
-      return cachedThemes[cachedKey];
-    }
-    console.time("execute");
-    const classList: Record<string, boolean> = {};
-    Object.entries(this.theme).forEach(([key, value]) => {
-      this.computed(key, value, classList);
-    });
-    cachedThemes[cachedKey] = classList;
-    console.timeEnd("execute");
-    return classList;
-  }
-
-  private computed(
-    key: string,
-    value: any,
-    classList: ClassList,
-    emod?: ThemeEventNames,
-    media?: B
-  ) {
-    if (themeEventNames.includes(key as ThemeEventNames)) {
-      Object.entries(value).forEach(([k, v]) => {
-        this.computed(k, v, classList, key as ThemeEventNames, media);
-      });
-    } else if (key in themeDescription.breakpoints) {
-      Object.entries(value).forEach(([k, v]) => {
-        this.computed(k, v, classList, emod, key as B);
-      });
-    } else {
-      Object.assign(classList, compute(key, value, emod, media));
-    }
-  }
-}
-
-export function registerTheme(description: ThemeDescription) {
+export function registerTheme<T extends ThemeDescription>(
+  description: T,
+  options?: RegisterThemeOptions<T>
+): void {
   themeDescription = description;
+  opts = {
+    pageColor: "page",
+    autoContentColor: (color: string) =>
+      getContrast50(color.replace("#", "")) === "black" ? "#000" : "#fff",
+    ...options,
+  };
   // Replace colors with custom properties.
   const themeCustomProperties: Record<string, [string, string][]> = {
     ":root": [],
   };
   Object.entries(description.colors).forEach(([key, value]) => {
-    const propName = `--mugen-color-${key}`;
-    description.colors[key] = `var(${propName})`;
+    const propName = `${COLOR_VAR_PREFIX}${key}`;
+    // description.colors[key] = `var(${propName})`;
     themeCustomProperties[":root"].push([propName, value]);
+    if (opts.autoContentColor && !NON_CONTENT_COLORS.includes(value)) {
+      themeCustomProperties[":root"].push([
+        `${propName}-content`,
+        opts.autoContentColor(value),
+      ]);
+    }
   });
   if (description.themes) {
     Object.entries(description.themes).forEach(([name, theme]) => {
       const themeName = `.${name}`;
       themeCustomProperties[themeName] = [];
       Object.entries(theme.colors).forEach(([key, value]) => {
-        const propName = `--mugen-color-${key}`;
+        const propName = `${COLOR_VAR_PREFIX}${key}`;
         themeCustomProperties[themeName].push([propName, value]);
+        if (opts.autoContentColor && !NON_CONTENT_COLORS.includes(value)) {
+          themeCustomProperties[themeName].push([
+            `${propName}-content`,
+            opts.autoContentColor(value),
+          ]);
+        }
       });
     });
   }
-  Object.entries(themeCustomProperties).forEach(
-    ([themeName, customProperties]) => {
+  Object.entries(themeCustomProperties)
+    // Make sure the :root theme is always at the end.
+    .reverse()
+    .forEach(([themeName, customProperties]) => {
       styleSheet.insertRule(
         `${themeName} { ${customProperties
           .map(([propName, value]) => `${propName}: ${value}`)
           .join(";")} }`
       );
-    }
-  );
-  console.log(themeDescription);
+    });
+  if (themeDescription.colors[opts.pageColor as string] !== undefined) {
+    compute("background", opts.pageColor);
+    document.documentElement.classList.add(`bg-${opts.pageColor as string}`);
+  }
+  if (opts?.defaultTheme) {
+    document.documentElement.classList.add(opts.defaultTheme as string);
+  }
 }

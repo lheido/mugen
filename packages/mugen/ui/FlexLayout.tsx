@@ -1,4 +1,4 @@
-import { splitProps } from "solid-js";
+import { mergeProps, splitProps } from "solid-js";
 import {
   ThemeAlignItemsValue,
   ThemeDescription,
@@ -6,12 +6,9 @@ import {
   ThemeFlexDirectionValue,
   ThemeJustifyContentValue,
 } from "../theme";
-import {
-  ComponentProps,
-  PartialElementAttributes,
-  UniversalAttributes,
-} from "../types";
+import { BaseComponentProps } from "../types";
 import { Box } from "./Box";
+import { createMugenComponent } from "./createMugenComponent";
 
 export type justifyContentKey =
   | "start"
@@ -51,35 +48,60 @@ export type FlexLayoutProps = {
   direction?: ThemeFlexDirectionValue;
 };
 
-export const FlexLayout = (
-  props: ComponentProps &
-    UniversalAttributes &
-    FlexLayoutProps &
-    PartialElementAttributes
-) => {
-  // @ts-ignore
-  const [local, others] = splitProps(props, [
-    "gap",
-    "theme",
-    "content",
-    "items",
-    "direction",
-  ]);
-  return (
-    <Box
-      {...{
+// export function FlexLayout(props: BaseComponentProps & FlexLayoutProps) {
+//   // @ts-ignore
+//   const [local, others] = splitProps(props, [
+//     "gap",
+//     "theme",
+//     "content",
+//     "items",
+//     "direction",
+//   ]);
+//   return (
+//     <Box
+//       {...{
+//         theme: {
+//           display: "flex",
+//           ...(local.content
+//             ? { "justify-content": justifyContentMap[local.content] }
+//             : {}),
+//           ...(local.gap ? { gap: local.gap } : {}),
+//           ...(local.items ? { "align-items": alignItemsMap[local.items] } : {}),
+//           ...(local.direction ? { "flex-direction": local.direction } : {}),
+//           ...(local.theme ?? {}),
+//         } as ThemeElementApi<ThemeDescription>,
+//         ...others,
+//       }}
+//     />
+//   );
+// }
+
+export const FlexLayout = createMugenComponent(
+  (props: BaseComponentProps & FlexLayoutProps) => {
+    const [local, others] = splitProps(props, [
+      "gap",
+      "theme",
+      "content",
+      "items",
+      "direction",
+    ]);
+    return mergeProps(
+      {
         theme: {
-          ...(local.theme ?? {}),
           display: "flex",
-          gap: local.gap,
           ...(local.content
             ? { "justify-content": justifyContentMap[local.content] }
             : {}),
+          ...(local.gap ? { gap: local.gap } : {}),
           ...(local.items ? { "align-items": alignItemsMap[local.items] } : {}),
           ...(local.direction ? { "flex-direction": local.direction } : {}),
+          ...(local.theme ?? {}),
         } as ThemeElementApi<ThemeDescription>,
-        ...others,
-      }}
-    />
-  );
-};
+      },
+      others
+    );
+  },
+  (p) => {
+    return <Box {...p} />;
+  }
+);

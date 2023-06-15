@@ -11,13 +11,14 @@
   "license": "MIT",
   "devDependencies": {
     "typescript": "^4.9.5",
-    "vite": "^4.1.1",
-    "vite-plugin-solid": "^2.5.0"
+    "vite": "^4.3.9",
+    "vite-plugin-solid": "^2.7.0"
   },
   "dependencies": {
+    "@solid-primitives/intersection-observer": "^2.1.2",
     "@solidjs/router": "^0.8.2",
     "motion": "^10.16.2",
     "mugen": "workspace:*",
-    "solid-js": "^1.6.10"
+    "solid-js": "^1.7.6"
   }
 }

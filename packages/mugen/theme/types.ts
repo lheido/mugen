@@ -57,7 +57,7 @@ export type ThemePositionValue<
   | [S, S]
   | [S, S, S]
   | [S, S, S, S]
-  | Partial<Record<"l" | "t" | "r" | "b", S>>;
+  | Partial<Record<"left" | "top" | "right" | "bottom", S>>;
 export const ThemePositionsValues = [
   "relative",
   "absolute",
@@ -160,6 +160,9 @@ export type ThemePointerEvents = Partial<
   Record<"pointer-events", ThemePointerEventsValue>
 >;
 
+export type ThemeListStyleValue = "none" | "disc" | "square" | "decimal";
+export type ThemeListStyle = Partial<Record<"list-style", ThemeListStyleValue>>;
+
 export type ThemeOverflowValue = "visible" | "hidden" | "scroll" | "auto";
 export type ThemeOverflow = Partial<
   Record<
@@ -227,6 +230,7 @@ export type ThemeElement<T extends ThemeDescription> = ThemePadding<T> &
   ThemeUserSelect &
   ThemePointerEvents &
   ThemeOverflow &
+  ThemeListStyle &
   ThemeSize<T>;
 
 export type ThemeMedia<T extends ThemeDescription> = Partial<
@@ -243,4 +247,5 @@ export type ThemeElementTheme<T extends ThemeDescription> = Partial<
 export type ThemeElementApi<T extends ThemeDescription> = ThemeElement<T> &
   ThemeEvent<T> &
   ThemeMedia<T> &
-  ThemeElementTheme<T>;
+  ThemeElementTheme<T> &
+  Record<string, any>;

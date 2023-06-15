@@ -1,5 +1,5 @@
 import { Accessor, createMemo } from "solid-js";
-import { ComponentProps } from "../types";
+import { BaseComponentProps } from "../types";
 import { compute, themeDescription } from "./style-sheet";
 import {
   ClassList,
@@ -8,8 +8,6 @@ import {
   ThemeEventNames,
   themeEventNames,
 } from "./types";
-
-compute;
 
 function themeObjectDiff(
   prev: ThemeElementApi<ThemeDescription>,
@@ -53,27 +51,40 @@ function execute(
   }
 }
 
-export function useThemeClassList(props: ComponentProps): Accessor<ClassList> {
+export function useThemeClassList(
+  ...props: BaseComponentProps[]
+): Accessor<ClassList> {
   const theme = createMemo(
     (previousTheme: ThemeElementApi<ThemeDescription>) => {
-      if (!props.theme) return {};
-      return themeObjectDiff(previousTheme, props.theme, {});
+      const theme = {} as ThemeElementApi<ThemeDescription>;
+      props.forEach((p) => {
+        if (p.theme) {
+          themeObjectDiff(previousTheme, p.theme, theme);
+        }
+      });
+      return theme;
     },
     {}
   );
   return createMemo((previousClassList?: ClassList) => {
+    console.time("getClassList");
     const t = theme();
-    if (t) {
-      console.time("execute2");
+    let clsList = {};
+    if (Object.keys(t).length > 0) {
+      console.time("execute");
       const cls = {};
       Object.entries(t).forEach(([key, value]) => {
         execute(key, value, cls);
       });
-      console.timeEnd("execute2");
-      return Object.assign({}, previousClassList, cls);
+      console.timeEnd("execute");
+      clsList = Object.assign({}, previousClassList, cls);
     }
-    // case: The "as" prop is used and a theme is already computed.
-    if ((props as any).classList) return (props as any).classList;
-    return {};
+    props.forEach((p: any) => {
+      if (p.classList) {
+        clsList = { ...clsList, ...p.classList };
+      }
+    });
+    console.timeEnd("getClassList");
+    return clsList;
   });
 }
