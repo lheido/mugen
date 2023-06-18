@@ -91,7 +91,7 @@ export type ThemeSize<T extends ThemeDescription> = Partial<
 export type ThemeColorValue<
   T extends ThemeDescription,
   C = keyof T["colors"]
-> = C;
+> = C | { from: C; to?: C; linear: "bottom" | "top" | "left" | "right" };
 
 export type ThemeBackground<T extends ThemeDescription> = Partial<
   Record<"background", ThemeColorValue<T>>

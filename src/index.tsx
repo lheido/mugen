@@ -6,7 +6,18 @@ import { render } from "solid-js/web";
 import App from "./App";
 import { AppTheme } from "./theme";
 
-registerTheme(AppTheme);
+registerTheme(AppTheme, {
+  pageTheme: {
+    background: {
+      from: "page",
+      to: "pageTo",
+      linear: "bottom",
+    },
+    height: {
+      min: "screen",
+    },
+  },
+});
 
 const root = document.getElementById("root");
 

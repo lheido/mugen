@@ -1,13 +1,7 @@
 import { Accessor, createMemo } from "solid-js";
 import { BaseComponentProps } from "../types";
-import { compute, themeDescription } from "./style-sheet";
-import {
-  ClassList,
-  ThemeDescription,
-  ThemeElementApi,
-  ThemeEventNames,
-  themeEventNames,
-} from "./types";
+import { execute } from "./execute";
+import { ClassList, ThemeDescription, ThemeElementApi } from "./types";
 
 function themeObjectDiff(
   prev: ThemeElementApi<ThemeDescription>,
@@ -29,26 +23,6 @@ function themeObjectDiff(
   });
   console.timeEnd("diff");
   return diff;
-}
-
-function execute(
-  key: string,
-  value: any,
-  classList: ClassList,
-  emod?: ThemeEventNames,
-  media?: string
-) {
-  if (themeEventNames.includes(key as ThemeEventNames)) {
-    Object.entries(value).forEach(([k, v]) => {
-      execute(k, v, classList, key as ThemeEventNames, media);
-    });
-  } else if (key in themeDescription.breakpoints) {
-    Object.entries(value).forEach(([k, v]) => {
-      execute(k, v, classList, emod, key as string);
-    });
-  } else {
-    Object.assign(classList, compute(key, value, emod, media));
-  }
 }
 
 export function useThemeClassList(

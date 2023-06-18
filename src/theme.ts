@@ -6,7 +6,8 @@ export const AppTheme = {
     "primary-focus": "#7e7ed3",
     secondary: "#6b7280",
     "secondary-focus": "#6b8080",
-    page: "#30304f",
+    page: "#30304F",
+    pageTo: "#07090B",
   },
   themes: {
     light: {
@@ -15,7 +16,8 @@ export const AppTheme = {
         "primary-focus": "#6ea6e9",
         secondary: "#97a0b3",
         "secondary-focus": "#868e9f",
-        page: "#efefef",
+        page: "#30304F",
+        pageTo: "#efefef",
       },
     },
   },

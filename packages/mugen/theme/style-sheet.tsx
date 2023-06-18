@@ -1,4 +1,4 @@
-import { getContrast50 } from "./colors";
+import { COLOR_VAR_PREFIX, global, NON_CONTENT_COLORS } from "./global";
 import { preflightRules } from "./preflight";
 import {
   ClassList,
@@ -8,26 +8,14 @@ import {
   ThemePositionsValues,
 } from "./types";
 
-const COLOR_VAR_PREFIX = "--mugen-color-";
-const NON_CONTENT_COLORS = [
-  "transparent",
-  "inherit",
-  "initial",
-  "unset",
-  "currentColor",
-];
-
-const styleSheet = new CSSStyleSheet();
 for (const rule of preflightRules) {
   try {
-    styleSheet.insertRule(rule);
+    global.styleSheet.insertRule(rule);
   } catch (error) {
     /* ignore preflight errors */
   }
 }
-document.adoptedStyleSheets.push(styleSheet);
-const mediaStyleSheets = new Map<string, CSSStyleSheet>();
-const classNameRefs = new Map<string, boolean>();
+document.adoptedStyleSheets.push(global.styleSheet);
 
 export type ComputeClassConfig = {
   mapIndex: Record<number | string, string>;
@@ -200,11 +188,35 @@ const colorHandler: Handler = {
   }),
   ruleHandler: createRulesHandler({
     extract: (cls, property) => {
-      const value = cls.split("-")[1];
+      let [, valueOrLinearGradientStop, value] = cls.split("-");
+      const gradientStop =
+        value !== undefined ? valueOrLinearGradientStop : undefined;
+      value = value === undefined ? valueOrLinearGradientStop : value;
+      if (gradientStop) {
+        if (gradientStop === "linear") {
+          return [
+            "background",
+            `linear-gradient(to ${value}, var(--mugen-linear-from-stop), var(--mugen-linear-to-stop)) no-repeat`,
+          ];
+        }
+        if (gradientStop === "from") {
+          if (
+            global.opts.autoContentColor !== false &&
+            !NON_CONTENT_COLORS.includes(value as any)
+          ) {
+            return [
+              [`--mugen-linear-${gradientStop}-stop`, "color"],
+              [value, `${value}-content`],
+            ];
+          }
+        }
+        return [`--mugen-linear-${gradientStop}-stop`, value];
+      }
+      // const value = cls.split("-")[1] as string;
       if (
-        opts.autoContentColor !== false &&
+        global.opts.autoContentColor !== false &&
         property === "background" &&
-        !NON_CONTENT_COLORS.includes(value)
+        !NON_CONTENT_COLORS.includes(value as any)
       ) {
         return [
           ["background", "color"],
@@ -213,7 +225,8 @@ const colorHandler: Handler = {
       }
       return [property, value];
     },
-    toRealValue: (value) => `var(${COLOR_VAR_PREFIX}${value})`,
+    toRealValue: (value) =>
+      value.startsWith("linear-") ? value : `var(${COLOR_VAR_PREFIX}${value})`,
   }),
 };
 const defaultXYHandler: Handler = {
@@ -370,22 +383,26 @@ export function compute(
     return `${_media}${_emod}${_ps}${className}`.replaceAll(/[/:]/g, "-");
   });
   classNames.forEach((className, i) => {
-    if (!classNameRefs.has(className)) {
-      classNameRefs.set(className, true);
-      const ruleContent = handler.ruleHandler(cls[i], key, themeDescription);
+    if (!global.classNameRefs.has(className)) {
+      global.classNameRefs.set(className, true);
+      const ruleContent = handler.ruleHandler(
+        cls[i],
+        key,
+        global.themeDescription
+      );
       const _evt = emod ? `:${emod}` : "";
       const __ps = ps ? `::${ps}` : "";
       const rule = `.${className}${_evt}${__ps} {${ruleContent.join(";")}}`;
-      let ss = styleSheet;
+      let ss = global.styleSheet;
       if (media) {
-        if (!mediaStyleSheets.has(media)) {
+        if (!global.mediaStyleSheets.has(media)) {
           const newMediaStyleSheet = new CSSStyleSheet({
-            media: `(min-width: ${themeDescription.breakpoints[media]})`,
+            media: `(min-width: ${global.themeDescription.breakpoints[media]})`,
           });
           document.adoptedStyleSheets.push(newMediaStyleSheet);
-          mediaStyleSheets.set(media, newMediaStyleSheet);
+          global.mediaStyleSheets.set(media, newMediaStyleSheet);
         }
-        ss = mediaStyleSheets.get(media)!;
+        ss = global.mediaStyleSheets.get(media)!;
       }
       ss.insertRule(rule);
     }
@@ -394,74 +411,4 @@ export function compute(
     list[className] = true;
     return list;
   }, {} as ClassList);
-}
-
-export let themeDescription: ThemeDescription;
-export let opts: RegisterThemeOptions<ThemeDescription>;
-
-export type RegisterThemeOptions<T extends ThemeDescription> = {
-  defaultTheme?: keyof T["themes"] extends string ? string : undefined;
-  pageColor?: (keyof T["colors"] extends string ? string : undefined) | "page";
-  autoContentColor?: ((color: string) => string) | false;
-};
-
-export function registerTheme<T extends ThemeDescription>(
-  description: T,
-  options?: RegisterThemeOptions<T>
-): void {
-  themeDescription = description;
-  opts = {
-    pageColor: "page",
-    autoContentColor: (color: string) =>
-      getContrast50(color.replace("#", "")) === "black" ? "#000" : "#fff",
-    ...options,
-  };
-  // Replace colors with custom properties.
-  const themeCustomProperties: Record<string, [string, string][]> = {
-    ":root": [],
-  };
-  Object.entries(description.colors).forEach(([key, value]) => {
-    const propName = `${COLOR_VAR_PREFIX}${key}`;
-    // description.colors[key] = `var(${propName})`;
-    themeCustomProperties[":root"].push([propName, value]);
-    if (opts.autoContentColor && !NON_CONTENT_COLORS.includes(value)) {
-      themeCustomProperties[":root"].push([
-        `${propName}-content`,
-        opts.autoContentColor(value),
-      ]);
-    }
-  });
-  if (description.themes) {
-    Object.entries(description.themes).forEach(([name, theme]) => {
-      const themeName = `.${name}`;
-      themeCustomProperties[themeName] = [];
-      Object.entries(theme.colors).forEach(([key, value]) => {
-        const propName = `${COLOR_VAR_PREFIX}${key}`;
-        themeCustomProperties[themeName].push([propName, value]);
-        if (opts.autoContentColor && !NON_CONTENT_COLORS.includes(value)) {
-          themeCustomProperties[themeName].push([
-            `${propName}-content`,
-            opts.autoContentColor(value),
-          ]);
-        }
-      });
-    });
-  }
-  Object.entries(themeCustomProperties)
-    // Make sure the :root theme is always at the end.
-    .reverse()
-    .forEach(([themeName, customProperties]) => {
-      styleSheet.insertRule(
-        `${themeName} { ${customProperties
-          .map(([propName, value]) => `${propName}: ${value}`)
-          .join(";")} }`
-      );
-    });
-  if (themeDescription.colors[opts.pageColor as string] !== undefined) {
-    compute("background", opts.pageColor);
-    document.documentElement.classList.add(`bg-${opts.pageColor as string}`);
-  }
-  if (opts?.defaultTheme) {
-    document.documentElement.classList.add(opts.defaultTheme as string);
-  }
 }
