@@ -1,4 +1,5 @@
-import { COLOR_VAR_PREFIX, global, NON_CONTENT_COLORS } from "./global";
+import { isServer } from "solid-js/web";
+import { COLOR_VAR_PREFIX, mugenGlobal, NON_CONTENT_COLORS } from "./global";
 import { preflightRules } from "./preflight";
 import {
   ClassList,
@@ -10,12 +11,14 @@ import {
 
 for (const rule of preflightRules) {
   try {
-    global.styleSheet.insertRule(rule);
+    mugenGlobal.styleSheet.insertRule(rule);
   } catch (error) {
     /* ignore preflight errors */
   }
 }
-document.adoptedStyleSheets.push(global.styleSheet);
+if (!isServer) {
+  document.adoptedStyleSheets.push(mugenGlobal.styleSheet as any);
+}
 
 export type ComputeClassConfig = {
   mapIndex: Record<number | string, string>;
@@ -201,7 +204,7 @@ const colorHandler: Handler = {
         }
         if (gradientStop === "from") {
           if (
-            global.opts.autoContentColor !== false &&
+            mugenGlobal.opts.autoContentColor !== false &&
             !NON_CONTENT_COLORS.includes(value as any)
           ) {
             return [
@@ -214,7 +217,7 @@ const colorHandler: Handler = {
       }
       // const value = cls.split("-")[1] as string;
       if (
-        global.opts.autoContentColor !== false &&
+        mugenGlobal.opts.autoContentColor !== false &&
         property === "background" &&
         !NON_CONTENT_COLORS.includes(value as any)
       ) {
@@ -383,26 +386,26 @@ export function compute(
     return `${_media}${_emod}${_ps}${className}`.replaceAll(/[/:]/g, "-");
   });
   classNames.forEach((className, i) => {
-    if (!global.classNameRefs.has(className)) {
-      global.classNameRefs.set(className, true);
+    if (!mugenGlobal.classNameRefs.has(className)) {
+      mugenGlobal.classNameRefs.set(className, true);
       const ruleContent = handler.ruleHandler(
         cls[i],
         key,
-        global.themeDescription
+        mugenGlobal.themeDescription
       );
       const _evt = emod ? `:${emod}` : "";
       const __ps = ps ? `::${ps}` : "";
       const rule = `.${className}${_evt}${__ps} {${ruleContent.join(";")}}`;
-      let ss = global.styleSheet;
+      let ss = mugenGlobal.styleSheet;
       if (media) {
-        if (!global.mediaStyleSheets.has(media)) {
+        if (!mugenGlobal.mediaStyleSheets.has(media)) {
           const newMediaStyleSheet = new CSSStyleSheet({
-            media: `(min-width: ${global.themeDescription.breakpoints[media]})`,
+            media: `(min-width: ${mugenGlobal.themeDescription.breakpoints[media]})`,
           });
-          document.adoptedStyleSheets.push(newMediaStyleSheet);
-          global.mediaStyleSheets.set(media, newMediaStyleSheet);
+          document.adoptedStyleSheets.push(newMediaStyleSheet as any);
+          mugenGlobal.mediaStyleSheets.set(media, newMediaStyleSheet as any);
         }
-        ss = global.mediaStyleSheets.get(media)!;
+        ss = mugenGlobal.mediaStyleSheets.get(media)!;
       }
       ss.insertRule(rule);
     }

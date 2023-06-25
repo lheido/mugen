@@ -1,8 +1,9 @@
-import { RegisterThemeOptions } from "./registerTheme";
-import { ThemeDescription } from "./types";
+import "./SSR.polyfill";
+import { RegisterThemeOptions, ThemeDescription } from "./types";
 
 let themeDescription: ThemeDescription;
 let opts: RegisterThemeOptions<ThemeDescription>;
+
 const styleSheet = new CSSStyleSheet();
 const mediaStyleSheets = new Map<string, CSSStyleSheet>();
 const classNameRefs = new Map<string, boolean>();
@@ -16,7 +17,7 @@ export const NON_CONTENT_COLORS = [
   "currentColor",
 ] as const;
 
-export const global = {
+export const mugenGlobal = {
   get themeDescription() {
     return themeDescription;
   },

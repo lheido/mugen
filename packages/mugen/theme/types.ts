@@ -10,6 +10,13 @@ export type ThemeDescription = {
   themes?: Record<string, Pick<ThemeDescription, "colors">>;
 };
 
+export type RegisterThemeOptions<T extends ThemeDescription> = {
+  defaultTheme?: keyof T["themes"] extends string ? string : undefined;
+  pageColor?: (keyof T["colors"] extends string ? string : undefined) | "page";
+  pageTheme?: ThemeElementApi<T>;
+  autoContentColor?: ((color: string) => string) | false;
+};
+
 /**
  * padding|margin: <all-edges> | [<x>, <y>] | [<left>, <top>, <right>, <bottom>]
  */

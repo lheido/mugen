@@ -1,4 +1,4 @@
-import { global } from "./global";
+import { mugenGlobal } from "./global";
 import { compute } from "./style-sheet";
 import { ClassList, ThemeEventNames, themeEventNames } from "./types";
 
@@ -13,7 +13,10 @@ export function execute(
     Object.entries(value).forEach(([k, v]) => {
       execute(k, v, classList, key as ThemeEventNames, media);
     });
-  } else if (key in global.themeDescription.breakpoints) {
+  } else if (
+    mugenGlobal.themeDescription?.breakpoints &&
+    key in mugenGlobal.themeDescription?.breakpoints
+  ) {
     Object.entries(value).forEach(([k, v]) => {
       execute(k, v, classList, emod, key as string);
     });
