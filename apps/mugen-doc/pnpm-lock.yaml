@@ -4,63 +4,24 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-importers:
+dependencies:
+  solid-js:
+    specifier: ^1.7.6
+    version: 1.7.6
 
-  .:
-    devDependencies:
-      typescript:
-        specifier: ^4.9.5
-        version: 4.9.5
-      vite:
-        specifier: ^4.3.9
-        version: 4.3.9
-      vite-plugin-solid:
-        specifier: ^2.7.0
-        version: 2.7.0(solid-js@1.7.6)(vite@4.3.9)
-
-  apps/mugen-doc:
-    dependencies:
-      '@solidjs/router':
-        specifier: ^0.8.2
-        version: 0.8.2(solid-js@1.7.6)
-      mugen:
-        specifier: workspace:*
-        version: link:../../packages/mugen
-      solid-js:
-        specifier: ^1.7.6
-        version: 1.7.6
-    devDependencies:
-      solid-devtools:
-        specifier: ^0.27.3
-        version: 0.27.3(solid-js@1.7.6)(vite@4.3.9)
-      typescript:
-        specifier: ^5.1.3
-        version: 5.1.3
-      vite:
-        specifier: ^4.3.9
-        version: 4.3.9
-      vite-plugin-solid:
-        specifier: ^2.7.0
-        version: 2.7.0(solid-js@1.7.6)(vite@4.3.9)
-
-  packages/mugen:
-    dependencies:
-      solid-js:
-        specifier: ^1.7.6
-        version: 1.7.6
-    devDependencies:
-      '@solid-primitives/intersection-observer':
-        specifier: ^2.1.2
-        version: 2.1.2(solid-js@1.7.6)
-      typescript:
-        specifier: ^4.9.5
-        version: 4.9.5
-      vite:
-        specifier: ^4.3.9
-        version: 4.3.9
-      vite-plugin-solid:
-        specifier: ^2.7.0
-        version: 2.7.0(solid-js@1.7.6)(vite@4.3.9)
+devDependencies:
+  solid-devtools:
+    specifier: ^0.27.3
+    version: 0.27.3(solid-js@1.7.6)(vite@4.3.9)
+  typescript:
+    specifier: ^5.1.3
+    version: 5.1.3
+  vite:
+    specifier: ^4.3.9
+    version: 4.3.9
+  vite-plugin-solid:
+    specifier: ^2.7.0
+    version: 2.7.0(solid-js@1.7.6)(vite@4.3.9)
 
 packages:
 
@@ -133,7 +94,7 @@ packages:
       '@babel/compat-data': 7.22.5
       '@babel/core': 7.22.5
       '@babel/helper-validator-option': 7.22.5
-      browserslist: 4.21.8
+      browserslist: 4.21.9
       lru-cache: 5.1.1
       semver: 6.3.0
     dev: true
@@ -714,15 +675,6 @@ packages:
       solid-js: 1.7.6
     dev: true
 
-  /@solid-primitives/intersection-observer@2.1.2(solid-js@1.7.6):
-    resolution: {integrity: sha512-liseMkMLwJeg1LtMNMWv91ZFZmBnbFJj+f2p+uXOVwdo7MIC7FMUJxzNplJRpBXZTh3sVazPSrOq2GwtFmXrCg==}
-    peerDependencies:
-      solid-js: ^1.6.12
-    dependencies:
-      '@solid-primitives/utils': 6.2.0(solid-js@1.7.6)
-      solid-js: 1.7.6
-    dev: true
-
   /@solid-primitives/keyboard@1.2.3(solid-js@1.7.6):
     resolution: {integrity: sha512-8EBUk1lARIXVhSs9H2t0rclCuyX1y56Kf9J8VVmlPDSh1L+nSIU0wcDGVeVy3HWG6W8pRoRD7kwlQvXhdW2LAQ==}
     peerDependencies:
@@ -828,14 +780,6 @@ packages:
       solid-js: 1.7.6
     dev: true
 
-  /@solidjs/router@0.8.2(solid-js@1.7.6):
-    resolution: {integrity: sha512-gUKW+LZqxtX6y/Aw6JKyy4gQ9E7dLqp513oB9pSYJR1HM5c56Pf7eijzyXX+b3WuXig18Cxqah4tMtF0YGu80w==}
-    peerDependencies:
-      solid-js: ^1.5.3
-    dependencies:
-      solid-js: 1.7.6
-    dev: false
-
   /@types/babel__core@7.20.1:
     resolution: {integrity: sha512-aACu/U/omhdk15O4Nfb+fHgH/z3QsfQzpnvRZhYhThms83ZnAOZz7zZAWO7mn2yyNQaA4xTO8GLK3uqFU4bYYw==}
     dependencies:
@@ -894,19 +838,19 @@ packages:
       babel-plugin-jsx-dom-expressions: 0.36.10(@babel/core@7.22.5)
     dev: true
 
-  /browserslist@4.21.8:
-    resolution: {integrity: sha512-j+7xYe+v+q2Id9qbBeCI8WX5NmZSRe8es1+0xntD/+gaWXznP8tFEkv5IgSaHf5dS1YwVMbX/4W6m937mj+wQw==}
+  /browserslist@4.21.9:
+    resolution: {integrity: sha512-M0MFoZzbUrRU4KNfCrDLnvyE7gub+peetoTid3TBIqtunaDJyXlwhakT+/VkvSXcfIzFfK/nkCs4nmyTmxdNSg==}
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001502
-      electron-to-chromium: 1.4.428
+      caniuse-lite: 1.0.30001503
+      electron-to-chromium: 1.4.433
       node-releases: 2.0.12
-      update-browserslist-db: 1.0.11(browserslist@4.21.8)
+      update-browserslist-db: 1.0.11(browserslist@4.21.9)
     dev: true
 
-  /caniuse-lite@1.0.30001502:
-    resolution: {integrity: sha512-AZ+9tFXw1sS0o0jcpJQIXvFTOB/xGiQ4OQ2t98QX3NDn2EZTSRBC801gxrsGgViuq2ak/NLkNgSNEPtCr5lfKg==}
+  /caniuse-lite@1.0.30001503:
+    resolution: {integrity: sha512-Sf9NiF+wZxPfzv8Z3iS0rXM1Do+iOy2Lxvib38glFX+08TCYYYGR5fRJXk4d77C4AYwhUjgYgMsMudbh2TqCKw==}
     dev: true
 
   /chalk@2.4.2:
@@ -947,8 +891,8 @@ packages:
       ms: 2.1.2
     dev: true
 
-  /electron-to-chromium@1.4.428:
-    resolution: {integrity: sha512-L7uUknyY286of0AYC8CKfgWstD0Smk2DvHDi9F0GWQhSH90Bzi7iDrmCbZKz75tYJxeGSAc7TYeKpmbjMDoh1w==}
+  /electron-to-chromium@1.4.433:
+    resolution: {integrity: sha512-MGO1k0w1RgrfdbLVwmXcDhHHuxCn2qRgR7dYsJvWFKDttvYPx6FNzCGG0c/fBBvzK2LDh3UV7Tt9awnHnvAAUQ==}
     dev: true
 
   /esbuild@0.17.19:
@@ -1158,25 +1102,19 @@ packages:
     engines: {node: '>=14.16'}
     dev: true
 
-  /typescript@4.9.5:
-    resolution: {integrity: sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==}
-    engines: {node: '>=4.2.0'}
-    hasBin: true
-    dev: true
-
   /typescript@5.1.3:
     resolution: {integrity: sha512-XH627E9vkeqhlZFQuL+UsyAXEnibT0kWR2FWONlr4sTjvxyJYnyefgrkyECLzM5NenmKzRAy2rR/OlYLA1HkZw==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: true
 
-  /update-browserslist-db@1.0.11(browserslist@4.21.8):
+  /update-browserslist-db@1.0.11(browserslist@4.21.9):
     resolution: {integrity: sha512-dCwEFf0/oT85M1fHBg4F0jtLwJrutGoHSQXCh7u4o2t1drG+c0a9Flnqww6XUKSfQMPpJBRjU8d4RXB09qtvaA==}
     hasBin: true
     peerDependencies:
       browserslist: '>= 4.21.0'
     dependencies:
-      browserslist: 4.21.8
+      browserslist: 4.21.9
       escalade: 3.1.1
       picocolors: 1.0.0
     dev: true

@@ -1,4 +1,4 @@
-export const AppTheme = {
+export const theme = {
   colors: {
     transparent: "transparent",
     current: "currentColor",
