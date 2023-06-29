@@ -48,34 +48,6 @@ export type FlexLayoutProps = {
   direction?: ThemeFlexDirectionValue;
 };
 
-// export function FlexLayout(props: BaseComponentProps & FlexLayoutProps) {
-//   // @ts-ignore
-//   const [local, others] = splitProps(props, [
-//     "gap",
-//     "theme",
-//     "content",
-//     "items",
-//     "direction",
-//   ]);
-//   return (
-//     <Box
-//       {...{
-//         theme: {
-//           display: "flex",
-//           ...(local.content
-//             ? { "justify-content": justifyContentMap[local.content] }
-//             : {}),
-//           ...(local.gap ? { gap: local.gap } : {}),
-//           ...(local.items ? { "align-items": alignItemsMap[local.items] } : {}),
-//           ...(local.direction ? { "flex-direction": local.direction } : {}),
-//           ...(local.theme ?? {}),
-//         } as ThemeElementApi<ThemeDescription>,
-//         ...others,
-//       }}
-//     />
-//   );
-// }
-
 export const FlexLayout = createMugenComponent(
   (props: BaseComponentProps & FlexLayoutProps) => {
     const [local, others] = splitProps(props, [

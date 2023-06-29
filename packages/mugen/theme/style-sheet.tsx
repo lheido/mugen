@@ -3,6 +3,7 @@ import { preflightRules } from "./preflight";
 import {
   ClassList,
   defaultThemeBorderWidth,
+  flexBasisStringValues,
   ThemeBorderStyleValue,
   ThemeDescription,
   ThemePositionsValues,
@@ -277,6 +278,15 @@ const sizeHandler: Handler = {
     toRealValue: (value, description) => description.sizes[value],
   }),
 };
+const flexBasisHandler: Handler = {
+  clsHandler: defaultXYHandler.clsHandler,
+  ruleHandler: createRulesHandler({
+    toRealValue: (value, description) =>
+      flexBasisStringValues.includes(value as any)
+        ? value
+        : description.sizes[value],
+  }),
+};
 const borderHandler: Handler = {
   clsHandler: createClassNamesHandler({
     mapIndex: { 0: "l", 1: "t", 2: "r", 3: "b" },
@@ -347,6 +357,7 @@ const handlers = {
   size: sizeHandler,
   border: borderHandler,
   rounded: roundedHandler,
+  flexBasis: flexBasisHandler,
 } as const;
 type HandlersKeys = keyof typeof handlers;
 const propHandlerMap: Record<string, HandlersKeys> = {
@@ -364,6 +375,7 @@ const propHandlerMap: Record<string, HandlersKeys> = {
   gap: "gap",
   overflow: "defaultXY",
   border: "border",
+  "flex-basis": "flexBasis",
 } as const;
 
 export function compute(

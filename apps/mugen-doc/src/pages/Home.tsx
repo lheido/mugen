@@ -1,59 +1,49 @@
-import { Box, Column, List, Row, Text } from "mugen/ui";
+import { Box, FlexItem, Heading, List, Row, Text } from "mugen/ui";
 import { Component } from "solid-js";
 
 const Home: Component = () => {
-  return (
+  console.time("Home");
+  const result = (
     <Box
       theme={{
         padding: "4",
       }}
     >
-      <Box
-        as="h1"
-        theme={{
-          background: "primary",
-          padding: "2",
-          rounded: "2",
-          sticky: { top: "4" },
-        }}
-      >
-        Mugen UI Toolkit - Expérimentation.
-      </Box>
+      <Heading as="h1">Mugen UI</Heading>
       <Text>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt quas
-        ratione nostrum! Adipisci mollitia illum vel architecto optio. Molestias
-        eaque, sunt officiis molestiae eius similique culpa quisquam omnis fugit
-        saepe?
+        An UI toolkit that provides low level components to build app faster and
+        easier. Also bring to us a typed, but simple way to embrace design
+        systems !
       </Text>
-      <Row gap="8" content="evenly" theme={{ padding: "8" }}>
-        <List
-          theme={{ padding: ["8"] }}
-          bullet
-          each={["lorem", "ipsum", "dolor", "sit", "amet"]}
-        >
-          {(item) => <Text>{item}</Text>}
-        </List>
-        <List
-          theme={{ padding: ["8"] }}
-          mixins={[Column.mixin({ gap: "4", reverse: true })]}
-          each={Array.from({ length: 5 }, (_, i) => i)}
-        >
-          {(item) => (
-            <Text theme={{ padding: { x: "4" } }}>{`item ${item}`}</Text>
-          )}
-        </List>
-      </Row>
+      <Text>
+        No need to worry about CSS or semantic/A11y HTML as the toolkit handles
+        that for us.
+      </Text>
+      <Text>
+        CSS is generated dynamically at lightning speed using an incredibly
+        small amount of code.
+      </Text>
+      <Text>
+        It suggests the appropriate semantics or accessibility standards.
+      </Text>
+
       <List
-        theme={{ padding: ["8"], height: { _: "5" }, overflow: [, "scroll"] }}
-        each={Array.from({ length: 50 }, (_, i) => i)}
-        minItemHeight={24}
+        theme={{ padding: "4" }}
+        mixins={[Row.mixin({ gap: "4" })]}
+        each={["1", "2", "3", "4", "5"]}
       >
-        {(item) => (
-          <Text theme={{ padding: { x: "4" } }}>{`item ${item}`}</Text>
+        {(item, i) => (
+          <Text
+            mixins={[FlexItem.mixin({ grow: i() === 0 ? 1 : 0, basis: "3" })]}
+          >
+            {item}
+          </Text>
         )}
       </List>
     </Box>
   );
+  console.timeEnd("Home");
+  return result;
 };
 
 export default Home;

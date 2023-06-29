@@ -113,6 +113,10 @@ export type ThemeDisplay = Partial<
     | "grid"
     | "inline-grid"
     | "contents"
+    | "list-item"
+    | "initial"
+    | "inherit"
+    | "unset"
   >
 >;
 
@@ -204,6 +208,28 @@ export type ThemeBorder<T extends ThemeDescription> = Partial<
   Record<"border", ThemeBorderValue<T>>
 >;
 
+export type ThemeFlexGrowValue = number | "inherit" | "initial" | "unset";
+export type ThemeFlexShrinkValue = number | "inherit" | "initial" | "unset";
+export const flexBasisStringValues = [
+  "auto",
+  "fill",
+  "max-content",
+  "min-content",
+  "content",
+  "fit-content",
+  "initial",
+  "unset",
+  "inherit",
+] as const;
+export type ThemFlexBasisValue<T extends ThemeDescription> =
+  | (typeof flexBasisStringValues)[number]
+  | keyof T["sizes"];
+export type ThemeFlex<T extends ThemeDescription> = Partial<{
+  "flex-grow": ThemeFlexGrowValue;
+  "flex-shrink": ThemeFlexShrinkValue;
+  "flex-basis": ThemFlexBasisValue<T>;
+}>;
+
 export const themeEventNames = [
   "hover",
   "active",
@@ -231,6 +257,7 @@ export type ThemeElement<T extends ThemeDescription> = ThemePadding<T> &
   ThemePointerEvents &
   ThemeOverflow &
   ThemeListStyle &
+  ThemeFlex<T> &
   ThemeSize<T>;
 
 export type ThemeMedia<T extends ThemeDescription> = Partial<
