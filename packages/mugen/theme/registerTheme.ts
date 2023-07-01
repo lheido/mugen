@@ -2,11 +2,16 @@ import { getContrast50 } from "./colors";
 import { execute } from "./execute";
 import { COLOR_VAR_PREFIX, global, NON_CONTENT_COLORS } from "./global";
 import { compute } from "./style-sheet";
-import { ThemeDescription, ThemeElementApi } from "./types";
+import {
+  KeyOfColors,
+  KeyOfThemes,
+  ThemeDescription,
+  ThemeElementApi,
+} from "./types";
 
 export type RegisterThemeOptions<T extends ThemeDescription> = {
-  defaultTheme?: keyof T["themes"] extends string ? string : undefined;
-  pageColor?: (keyof T["colors"] extends string ? string : undefined) | "page";
+  defaultTheme?: KeyOfThemes<T>;
+  pageColor?: (KeyOfColors<T> extends string ? string : undefined) | "page";
   pageTheme?: ThemeElementApi<T>;
   autoContentColor?: ((color: string) => string) | false;
 };

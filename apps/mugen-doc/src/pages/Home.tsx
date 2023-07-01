@@ -6,10 +6,19 @@ const Home: Component = () => {
   const result = (
     <Box
       theme={{
-        padding: "4",
+        padding: "8",
       }}
     >
-      <Heading as="h1">Mugen UI</Heading>
+      <Heading
+        as="h1"
+        theme={{
+          "font-size": "6xl",
+          "font-weight": "black",
+          margin: { bottom: "8" },
+        }}
+      >
+        Mugen UI
+      </Heading>
       <Text>
         An UI toolkit that provides low level components to build app faster and
         easier. Also bring to us a typed, but simple way to embrace design

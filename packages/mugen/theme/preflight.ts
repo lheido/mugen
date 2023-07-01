@@ -5,6 +5,7 @@
 export const preflightRules = [
   `
 html {
+  font-size: 16px;
   line-height: 1.5;
   -webkit-text-size-adjust: 100%;
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -19,6 +20,7 @@ body {
   -moz-tab-size: 4;
   tab-size: 4;
   line-height: inherit;
+  font-size: inherit;
 }`,
   `
 abbr:where([title]) {

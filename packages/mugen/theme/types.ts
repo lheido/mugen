@@ -6,118 +6,142 @@ export type ThemeDescription = {
   colors: Record<string, string>;
   sizes: Record<string, string>;
   breakpoints: Record<string, string>;
-  borderWidth?: Record<string, string>;
-  themes?: Record<string, Pick<ThemeDescription, "colors">>;
+  borderWidth: Record<string, string>;
+  borderStyle: Record<string, string>;
+  flexBasis: Record<string, string>;
+  fontSize: Record<string, string>;
+  fontWeight: Record<string, string>;
+  eventNames: Record<string, string>;
+  themes: Record<string, Pick<ThemeDescription, "colors">>;
 };
 
-/**
- * padding|margin: <all-edges> | [<x>, <y>] | [<left>, <top>, <right>, <bottom>]
- */
-export type ThemePaddingValue<
-  T extends ThemeDescription,
-  S = keyof T["spacing"] | undefined
-> =
-  | S
-  | [S]
-  | [S, S]
-  | [S, S, S]
-  | [S, S, S, S]
-  | Partial<Record<"x" | "y" | "left" | "top" | "right" | "bottom", S>>;
+export type KeyOfSpacing<T extends ThemeDescription> =
+  | keyof T["spacing"]
+  | undefined;
+export type KeyOfRounded<T extends ThemeDescription> =
+  | keyof T["rounded"]
+  | undefined;
+export type KeyOfColors<T extends ThemeDescription> =
+  | keyof T["colors"]
+  | undefined;
+export type KeyOfSizes<T extends ThemeDescription> =
+  | keyof T["sizes"]
+  | undefined;
+export type KeyOfFlexBasis<T extends ThemeDescription> =
+  | keyof T["flexBasis"]
+  | undefined;
+export type KeyOfEventNames<T extends ThemeDescription> = keyof T["eventNames"];
+export type KeyOfBreakpoints<T extends ThemeDescription> =
+  keyof T["breakpoints"];
+export type KeyOfThemes<T extends ThemeDescription> = keyof T["themes"];
+export type KeyOfBorderWidth<T extends ThemeDescription> =
+  | keyof T["borderWidth"]
+  | undefined;
+export type KeyOfBorderStyle<T extends ThemeDescription> =
+  | keyof T["borderStyle"]
+  | undefined;
+export type KeyOfFontSize<T extends ThemeDescription> =
+  | keyof T["fontSize"]
+  | undefined;
+export type KeyOfFontWeight<T extends ThemeDescription> =
+  | keyof T["fontWeight"]
+  | undefined;
 
-export type ThemePadding<T extends ThemeDescription> = Partial<
-  Record<"padding" | "margin", ThemePaddingValue<T>>
+export type BasicCssValue = "inherit" | "initial" | "unset";
+export type ArrayExtactValues = "auto" | "extact";
+export type ThemeArrayValues<
+  S,
+  L = 4,
+  Z extends ArrayExtactValues = "auto"
+> = L extends 4
+  ? Z extends "auto"
+    ? [S] | [S, S] | [S, S, S] | [S, S, S, S]
+    : [S, S, S, S]
+  : L extends 3
+  ? Z extends "auto"
+    ? [S] | [S, S] | [S, S, S]
+    : [S, S, S]
+  : L extends 2
+  ? Z extends "auto"
+    ? [S] | [S, S]
+    : [S, S]
+  : [S];
+export type ThemeRecordValues<K extends string, S> = Partial<Record<K, S>>;
+
+export type ThemePadding<T extends ThemeDescription> = Record<
+  "padding" | "margin",
+  | KeyOfSpacing<T>
+  | ThemeArrayValues<KeyOfSpacing<T>>
+  | ThemeRecordValues<
+      "x" | "y" | "left" | "top" | "right" | "bottom",
+      KeyOfSpacing<T>
+    >
 >;
 
-/**
- * rounded: <all-edges> | [<l>, <r>] | [<tl>, <tr>, <br>, <bl>]
- */
-export type ThemeRoundedValue<
-  T extends ThemeDescription,
-  S = keyof T["rounded"] | undefined
-> =
-  | S
-  | [S]
-  | [S, S]
-  | [S, S, S]
-  | [S, S, S, S]
-  | Partial<Record<"l" | "r" | "t" | "b" | "tl" | "tr" | "br" | "bl", S>>;
-
-export type ThemeRounded<T extends ThemeDescription> = Partial<
-  Record<"rounded", ThemeRoundedValue<T>>
+export type ThemeRounded<T extends ThemeDescription> = Record<
+  "rounded",
+  | KeyOfRounded<T>
+  | ThemeArrayValues<KeyOfRounded<T>>
+  | ThemeRecordValues<
+      "l" | "r" | "t" | "b" | "tl" | "tr" | "br" | "bl",
+      KeyOfRounded<T>
+    >
 >;
 
-/**
- * relative|absolute|fixed|sticky: [<l>, <t>, <r>, <b>]
- */
-export type ThemePositionValue<
-  T extends ThemeDescription,
-  S = keyof T["spacing"] | undefined
-> =
-  | [S]
-  | [S, S]
-  | [S, S, S]
-  | [S, S, S, S]
-  | Partial<Record<"left" | "top" | "right" | "bottom", S>>;
-export const ThemePositionsValues = [
+export const themePositionsValues = [
   "relative",
   "absolute",
   "fixed",
   "sticky",
 ] as const;
-export type ThemePosition<T extends ThemeDescription> = Partial<
-  Record<(typeof ThemePositionsValues)[number], ThemePositionValue<T>>
+export type ThemePosition<T extends ThemeDescription> = Record<
+  (typeof themePositionsValues)[number],
+  | ThemeArrayValues<KeyOfSpacing<T>>
+  | ThemeRecordValues<"left" | "top" | "right" | "bottom", KeyOfSpacing<T>>
 >;
 
-/**
- * gap: <gap> | [<row-gap>, <column-gap>]
- */
-export type ThemeGap<
-  T extends ThemeDescription,
-  S = keyof T["spacing"] | undefined
-> = Partial<Record<"gap", S | [S] | [S, S] | Partial<Record<"x" | "y", S>>>>;
-
-/**
- * width|height: <value>, [<value>, <min-value>, <max-value>]
- */
-export type ThemeSizeValue<
-  T extends ThemeDescription,
-  S = keyof T["sizes"] | undefined
-> = S | [S] | [S, S] | [S, S, S] | Partial<Record<"min" | "max" | "_", S>>;
-
-export type ThemeSize<T extends ThemeDescription> = Partial<
-  Record<"width" | "height", ThemeSizeValue<T>>
+export type ThemeGap<T extends ThemeDescription> = Record<
+  "gap",
+  | KeyOfSpacing<T>
+  | ThemeArrayValues<KeyOfSpacing<T>, 2>
+  | ThemeRecordValues<"x" | "y", KeyOfSpacing<T>>
 >;
 
-export type ThemeColorValue<
-  T extends ThemeDescription,
-  C = keyof T["colors"]
-> = C | { from: C; to?: C; linear: "bottom" | "top" | "left" | "right" };
-
-export type ThemeBackground<T extends ThemeDescription> = Partial<
-  Record<"background", ThemeColorValue<T>>
+export type ThemeSize<T extends ThemeDescription> = Record<
+  "width" | "height",
+  | KeyOfSpacing<T>
+  | ThemeArrayValues<KeyOfSpacing<T>, 3>
+  | ThemeRecordValues<"min" | "max" | "_", KeyOfSpacing<T>>
 >;
 
+export type ThemeBackground<T extends ThemeDescription> = Record<
+  "background",
+  | KeyOfColors<T>
+  | {
+      from: KeyOfColors<T>;
+      to?: KeyOfColors<T>;
+      linear: "bottom" | "top" | "left" | "right";
+    }
+>;
 export type ThemeColor<T extends ThemeDescription> = Partial<
-  Record<"color", ThemeColorValue<T>>
+  Record<"color", KeyOfColors<T>>
 >;
 
-export type ThemeDisplay = Partial<
-  Record<
-    "display",
-    | "flex"
-    | "inline-flex"
-    | "none"
-    | "block"
-    | "inline"
-    | "inline-block"
-    | "grid"
-    | "inline-grid"
-    | "contents"
-    | "list-item"
-    | "initial"
-    | "inherit"
-    | "unset"
-  >
+export type ThemeDisplay = Record<
+  "display",
+  | "flex"
+  | "inline-flex"
+  | "none"
+  | "block"
+  | "inline"
+  | "inline-block"
+  | "grid"
+  | "inline-grid"
+  | "contents"
+  | "list-item"
+  | "initial"
+  | "inherit"
+  | "unset"
 >;
 
 export type ThemeJustifyContentValue =
@@ -177,102 +201,93 @@ export type ThemeOverflow = Partial<
   >
 >;
 
-export const defaultThemeBorderWidth = {
-  "0": "0px",
-  "1": "1px",
-  "2": "2px",
-  "4": "4px",
-  "8": "8px",
-} as const;
-export type ThemeBorderWidthValue<
-  T extends ThemeDescription,
-  V = keyof T["borderWidth"] | keyof typeof defaultThemeBorderWidth | undefined
-> = V | [V] | [V, V] | [V, V, V] | [V, V, V, V];
-export const ThemeBorderStyleValue = [
-  "solid",
-  "dotted",
-  "dashed",
-  "double",
-  "hidden",
-  "none",
-] as const;
-// TODO: Improve array types
-export type ThemeBorderValue<T extends ThemeDescription> = {
-  width: ThemeBorderWidthValue<T>;
-  style:
-    | (typeof ThemeBorderStyleValue)[number]
-    | ((typeof ThemeBorderStyleValue)[number] | undefined)[];
-  color: keyof T["colors"] | (keyof T["colors"] | undefined)[];
-};
-export type ThemeBorder<T extends ThemeDescription> = Partial<
-  Record<"border", ThemeBorderValue<T>>
+export type ThemeBorder<T extends ThemeDescription> = Record<
+  "border",
+  | {
+      width: KeyOfBorderWidth<T>;
+      style: KeyOfBorderStyle<T>;
+      color: KeyOfColors<T>;
+    }
+  | {
+      width: ThemeArrayValues<KeyOfBorderWidth<T>, 4, "extact">;
+      style: ThemeArrayValues<KeyOfBorderStyle<T>, 4, "extact">;
+      color: ThemeArrayValues<KeyOfColors<T>, 4, "extact">;
+    }
+  | {
+      width: ThemeArrayValues<KeyOfBorderWidth<T>, 3, "extact">;
+      style: ThemeArrayValues<KeyOfBorderStyle<T>, 3, "extact">;
+      color: ThemeArrayValues<KeyOfColors<T>, 3, "extact">;
+    }
+  | {
+      width: ThemeArrayValues<KeyOfBorderWidth<T>, 2, "extact">;
+      style: ThemeArrayValues<KeyOfBorderStyle<T>, 2, "extact">;
+      color: ThemeArrayValues<KeyOfColors<T>, 2, "extact">;
+    }
+  | {
+      width: ThemeArrayValues<KeyOfBorderWidth<T>, 1, "extact">;
+      style: ThemeArrayValues<KeyOfBorderStyle<T>, 1, "extact">;
+      color: ThemeArrayValues<KeyOfColors<T>, 1, "extact">;
+    }
 >;
 
-export type ThemeFlexGrowValue = number | "inherit" | "initial" | "unset";
-export type ThemeFlexShrinkValue = number | "inherit" | "initial" | "unset";
-export const flexBasisStringValues = [
-  "auto",
-  "fill",
-  "max-content",
-  "min-content",
-  "content",
-  "fit-content",
-  "initial",
-  "unset",
-  "inherit",
-] as const;
-export type ThemFlexBasisValue<T extends ThemeDescription> =
-  | (typeof flexBasisStringValues)[number]
-  | keyof T["sizes"];
-export type ThemeFlex<T extends ThemeDescription> = Partial<{
-  "flex-grow": ThemeFlexGrowValue;
-  "flex-shrink": ThemeFlexShrinkValue;
-  "flex-basis": ThemFlexBasisValue<T>;
-}>;
+export type ThemeFlex<T extends ThemeDescription> = {
+  "flex-grow": number | BasicCssValue;
+  "flex-shrink": number | BasicCssValue;
+  "flex-basis": KeyOfFlexBasis<T> | KeyOfSizes<T>;
+};
 
-export const themeEventNames = [
-  "hover",
-  "active",
-  "focus",
-  "focus-within",
-] as const;
-export type ThemeEventNames = (typeof themeEventNames)[number];
+export type ThemeTheme<T extends ThemeDescription> = Record<
+  KeyOfThemes<T>,
+  boolean
+>;
+
+export type ThemeFontSize<T extends ThemeDescription> = Record<
+  "font-size",
+  KeyOfFontSize<T>
+>;
+
+export type ThemeFontWeight<T extends ThemeDescription> = Record<
+  "font-weight",
+  KeyOfFontWeight<T>
+>;
+
+export type ThemeElement<T extends ThemeDescription> = Partial<
+  ThemePadding<T> &
+    ThemeRounded<T> &
+    ThemePosition<T> &
+    ThemeBackground<T> &
+    ThemeColor<T> &
+    ThemeDisplay &
+    ThemeJustifyContent &
+    ThemeAlignItems &
+    ThemeFlexDirection &
+    ThemeFlexWrap &
+    ThemeUserSelect &
+    ThemePointerEvents &
+    ThemeListStyle &
+    ThemeOverflow &
+    ThemeSize<T> &
+    ThemeBorder<T> &
+    ThemeFlex<T> &
+    ThemeGap<T> &
+    ThemePosition<T> &
+    ThemeFontSize<T> &
+    ThemeFontWeight<T> &
+    ThemeTheme<T>
+>;
 
 export type ThemeEvent<T extends ThemeDescription> = Partial<
-  Record<ThemeEventNames, ThemeElement<T>>
+  Record<KeyOfEventNames<T>, ThemeElement<T>>
 >;
-
-export type ThemeElement<T extends ThemeDescription> = ThemePadding<T> &
-  ThemeGap<T> &
-  ThemeBorder<T> &
-  ThemeBackground<T> &
-  ThemeColor<T> &
-  ThemeRounded<T> &
-  ThemePosition<T> &
-  ThemeDisplay &
-  ThemeJustifyContent &
-  ThemeAlignItems &
-  ThemeFlexWrap &
-  ThemeUserSelect &
-  ThemePointerEvents &
-  ThemeOverflow &
-  ThemeListStyle &
-  ThemeFlex<T> &
-  ThemeSize<T>;
 
 export type ThemeMedia<T extends ThemeDescription> = Partial<
-  Record<
-    Extract<keyof T["breakpoints"], string>,
-    ThemeElement<T> & ThemeEvent<T>
-  >
+  Record<KeyOfBreakpoints<T>, ThemeElement<T> & ThemeEvent<T>>
 >;
 
-export type ThemeElementTheme<T extends ThemeDescription> = Partial<
-  Record<keyof T["themes"], boolean>
->;
-
+/**
+ * Define wich properties are allowed in the theme object passed to the Box (or inherited) component.
+ */
 export type ThemeElementApi<T extends ThemeDescription> = ThemeElement<T> &
   ThemeEvent<T> &
   ThemeMedia<T> &
-  ThemeElementTheme<T> &
   Record<string, any>;

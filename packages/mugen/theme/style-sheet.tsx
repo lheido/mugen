@@ -1,13 +1,6 @@
 import { COLOR_VAR_PREFIX, global, NON_CONTENT_COLORS } from "./global";
 import { preflightRules } from "./preflight";
-import {
-  ClassList,
-  defaultThemeBorderWidth,
-  flexBasisStringValues,
-  ThemeBorderStyleValue,
-  ThemeDescription,
-  ThemePositionsValues,
-} from "./types";
+import { ClassList, ThemeDescription, themePositionsValues } from "./types";
 
 for (const rule of preflightRules) {
   try {
@@ -88,6 +81,21 @@ export function createClassNamesHandler(
   };
 }
 
+export function computeValue(
+  property: string,
+  value: string | any[]
+): string[] {
+  if (Array.isArray(value)) {
+    return value.map((v) => {
+      if (v.raw) {
+        return v.raw;
+      }
+      return `${property}: ${v}`;
+    });
+  }
+  return [`${property}: ${value}`];
+}
+
 export type ComputeRulesHandlerConfig = {
   clsMap?: Record<string, string | string[]>;
   extract: (
@@ -112,13 +120,18 @@ export function createRulesHandler(
   return (cls, property, description) => {
     const [properties, values] = _config.extract(cls, property);
     if (Array.isArray(properties)) {
-      return properties.map(
-        (prop, i) => `${prop}: ${_config.toRealValue(values[i], description)}`
+      const result: string[] = [];
+      properties.forEach((prop, i) =>
+        result.push(
+          ...computeValue(prop, _config.toRealValue(values[i], description))
+        )
       );
+      return result;
     }
-    return [
-      `${properties}: ${_config.toRealValue(values as string, description)}`,
-    ];
+    return computeValue(
+      properties,
+      _config.toRealValue(values as string, description)
+    );
   };
 }
 
@@ -135,7 +148,16 @@ const spacingHandler: Handler = {
   clsHandler: createClassNamesHandler({
     baseCls: (property: string) => property[0],
     mergeBaseWithModifier: (base, modifier) => `${base}${modifier}`,
-    mapIndex: { 0: "l", 1: "t", 2: "r", 3: "b" },
+    mapIndex: {
+      0: "l",
+      1: "t",
+      2: "r",
+      3: "b",
+      left: "l",
+      right: "r",
+      top: "t",
+      bottom: "b",
+    },
   }),
   ruleHandler: createRulesHandler({
     clsMap: {
@@ -174,11 +196,11 @@ const positionHandler: Handler = {
   }),
   ruleHandler: createRulesHandler({
     extract(cls) {
-      if (ThemePositionsValues.includes(cls as any)) return ["position", cls];
+      if (themePositionsValues.includes(cls as any)) return ["position", cls];
       return cls.split("-") as [string, string];
     },
     toRealValue: (value, description) =>
-      ThemePositionsValues.includes(value as any)
+      themePositionsValues.includes(value as any)
         ? value
         : description.spacing[value],
   }),
@@ -282,9 +304,7 @@ const flexBasisHandler: Handler = {
   clsHandler: defaultXYHandler.clsHandler,
   ruleHandler: createRulesHandler({
     toRealValue: (value, description) =>
-      flexBasisStringValues.includes(value as any)
-        ? value
-        : description.sizes[value],
+      description.flexBasis[value] || description.sizes[value],
   }),
 };
 const borderHandler: Handler = {
@@ -310,12 +330,9 @@ const borderHandler: Handler = {
       ];
     },
     toRealValue: (value, description) =>
-      ThemeBorderStyleValue.includes(value as any)
-        ? value
-        : value in description.colors
-        ? description.colors[value]
-        : description.borderWidth?.[value] ??
-          (defaultThemeBorderWidth as any)[value],
+      description.borderStyle[value] ||
+      description.colors[value] ||
+      description.borderWidth[value],
   }),
 };
 const roundedHandler: Handler = {
@@ -347,6 +364,18 @@ const roundedHandler: Handler = {
     toRealValue: (value, description) => description.rounded[value],
   }),
 };
+const fontSizeHandler: Handler = {
+  clsHandler: createClassNamesHandler(),
+  ruleHandler: createRulesHandler({
+    toRealValue: (value, description) => description.fontSize[value],
+  }),
+};
+const fontWeightHandler: Handler = {
+  clsHandler: createClassNamesHandler(),
+  ruleHandler: createRulesHandler({
+    toRealValue: (value, description) => description.fontWeight[value],
+  }),
+};
 const handlers = {
   default: defaultHandler,
   defaultXY: defaultXYHandler,
@@ -358,6 +387,8 @@ const handlers = {
   border: borderHandler,
   rounded: roundedHandler,
   flexBasis: flexBasisHandler,
+  fontSize: fontSizeHandler,
+  fontWeight: fontWeightHandler,
 } as const;
 type HandlersKeys = keyof typeof handlers;
 const propHandlerMap: Record<string, HandlersKeys> = {
@@ -376,6 +407,8 @@ const propHandlerMap: Record<string, HandlersKeys> = {
   overflow: "defaultXY",
   border: "border",
   "flex-basis": "flexBasis",
+  "font-size": "fontSize",
+  "font-weight": "fontWeight",
 } as const;
 
 export function compute(

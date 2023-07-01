@@ -1,17 +1,17 @@
 import { global } from "./global";
 import { compute } from "./style-sheet";
-import { ClassList, ThemeEventNames, themeEventNames } from "./types";
+import { ClassList } from "./types";
 
 export function execute(
   key: string,
   value: any,
   classList: ClassList,
-  emod?: ThemeEventNames,
+  emod?: string,
   media?: string
 ) {
-  if (themeEventNames.includes(key as ThemeEventNames)) {
+  if (global.themeDescription.eventNames[key] !== undefined) {
     Object.entries(value).forEach(([k, v]) => {
-      execute(k, v, classList, key as ThemeEventNames, media);
+      execute(k, v, classList, key, media);
     });
   } else if (key in global.themeDescription.breakpoints) {
     Object.entries(value).forEach(([k, v]) => {
