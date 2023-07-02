@@ -235,7 +235,6 @@ const colorHandler: Handler = {
         }
         return [`--mugen-linear-${gradientStop}-stop`, value];
       }
-      // const value = cls.split("-")[1] as string;
       if (
         global.opts.autoContentColor !== false &&
         property === "background" &&
@@ -376,6 +375,36 @@ const fontWeightHandler: Handler = {
     toRealValue: (value, description) => description.fontWeight[value],
   }),
 };
+const shadowHandler: Handler = {
+  clsHandler: createClassNamesHandler(),
+  ruleHandler: createRulesHandler({
+    extract: (cls) => ["box-shadow", cls.replace("shadow-", "")],
+    toRealValue: (value, description) => description.shadow[value],
+  }),
+};
+const transitionHandler: Handler = {
+  clsHandler: createClassNamesHandler({
+    simpleValue: (base, value) => `${base}-property-${value}`,
+    additionalClasses: () => ["transition"],
+  }),
+  ruleHandler: createRulesHandler({
+    extract: (cls) => {
+      if (cls === "transition") {
+        return [
+          "transition",
+          "var(--mugen-transition-property) var(--mugen-transition-duration, 0.2s) var(--mugen-transition-timing-function, linear) var(--mugen-transition-delay, 0s)",
+        ];
+      }
+      const prop = cls.split("-")[1];
+      return [`--mugen-transition-${prop}`, cls.split("-")[2]];
+    },
+    toRealValue: (value, description) =>
+      description.transitionProperty[value] ||
+      description.transitionDuration[value] ||
+      description.transitionTimingFunction[value] ||
+      value,
+  }),
+};
 const handlers = {
   default: defaultHandler,
   defaultXY: defaultXYHandler,
@@ -389,6 +418,8 @@ const handlers = {
   flexBasis: flexBasisHandler,
   fontSize: fontSizeHandler,
   fontWeight: fontWeightHandler,
+  shadow: shadowHandler,
+  transition: transitionHandler,
 } as const;
 type HandlersKeys = keyof typeof handlers;
 const propHandlerMap: Record<string, HandlersKeys> = {
@@ -409,6 +440,8 @@ const propHandlerMap: Record<string, HandlersKeys> = {
   "flex-basis": "flexBasis",
   "font-size": "fontSize",
   "font-weight": "fontWeight",
+  shadow: "shadow",
+  transition: "transition",
 } as const;
 
 export function compute(

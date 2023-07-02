@@ -8,7 +8,7 @@ function themeObjectDiff(
   current: ThemeElementApi<ThemeDescription>,
   diff: ThemeElementApi<ThemeDescription>
 ) {
-  console.time("diff");
+  // console.time("diff");
   Object.entries(current).forEach(([key, value]) => {
     if (prev[key]) {
       const currentVal = JSON.stringify(value);
@@ -21,7 +21,7 @@ function themeObjectDiff(
       diff[key] = value as any;
     }
   });
-  console.timeEnd("diff");
+  // console.timeEnd("diff");
   return diff;
 }
 
@@ -41,16 +41,16 @@ export function useThemeClassList(
     {}
   );
   return createMemo((previousClassList?: ClassList) => {
-    console.time("getClassList");
+    // console.time("getClassList");
     const t = theme();
     let clsList = {};
     if (Object.keys(t).length > 0) {
-      console.time("execute");
+      // console.time("execute");
       const cls = {};
       Object.entries(t).forEach(([key, value]) => {
         execute(key, value, cls);
       });
-      console.timeEnd("execute");
+      // console.timeEnd("execute");
       clsList = Object.assign({}, previousClassList, cls);
     }
     props.forEach((p: any) => {
@@ -58,7 +58,7 @@ export function useThemeClassList(
         clsList = { ...clsList, ...p.classList };
       }
     });
-    console.timeEnd("getClassList");
+    // console.timeEnd("getClassList");
     return clsList;
   });
 }

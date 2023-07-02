@@ -1,6 +1,11 @@
-import { getContrast50 } from "./colors";
+import { getContrast50, hexToRgb } from "./colors";
 import { execute } from "./execute";
-import { COLOR_VAR_PREFIX, global, NON_CONTENT_COLORS } from "./global";
+import {
+  COLOR_VAR_PREFIX,
+  global,
+  NON_CONTENT_COLORS,
+  RGB_COLOR_VAR_PREFIX,
+} from "./global";
 import { compute } from "./style-sheet";
 import {
   KeyOfColors,
@@ -33,8 +38,12 @@ export function registerTheme<T extends ThemeDescription>(
   };
   Object.entries(description.colors).forEach(([key, value]) => {
     const propName = `${COLOR_VAR_PREFIX}${key}`;
-    // description.colors[key] = `var(${propName})`;
     themeCustomProperties[":root"].push([propName, value]);
+    if (value.startsWith("#")) {
+      const propRgbName = `${RGB_COLOR_VAR_PREFIX}${key}`;
+      const rgbValue = hexToRgb(value).join(" ");
+      themeCustomProperties[":root"].push([propRgbName, rgbValue]);
+    }
     if (
       global.opts.autoContentColor &&
       !NON_CONTENT_COLORS.includes(value as any)

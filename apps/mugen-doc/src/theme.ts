@@ -40,4 +40,10 @@ export const theme = {
     lg: "1024px",
     xl: "1280px",
   },
+  shadow: {
+    ...themeDescriptionDefaults.shadow,
+    "neon-primary":
+      "0 0 10px rgb(var(--mugen-rgb-color-primary)), 0 0 32px rgb(var(--mugen-rgb-color-primary) / 0.4)",
+    "neon-teal": "0 0 10px rgb(0 255 125), 0 0 32px rgb(0 255 125 / 0.4)",
+  },
 };

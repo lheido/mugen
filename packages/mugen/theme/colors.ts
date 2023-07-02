@@ -13,3 +13,18 @@ export function getContrastYIQ(color: string) {
 export function getContrast50(color: string) {
   return parseInt(color, 16) > 0xffffff / 2 ? "black" : "white";
 }
+
+export function hexToRgb(hex: string) {
+  if (hex.length === 4) {
+    return [
+      parseInt(hex[1] + hex[1], 16),
+      parseInt(hex[2] + hex[2], 16),
+      parseInt(hex[3] + hex[3], 16),
+    ];
+  }
+  return [
+    parseInt(hex.slice(1, 3), 16),
+    parseInt(hex.slice(3, 5), 16),
+    parseInt(hex.slice(5, 7), 16),
+  ];
+}

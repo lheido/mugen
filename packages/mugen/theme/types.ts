@@ -11,6 +11,11 @@ export type ThemeDescription = {
   flexBasis: Record<string, string>;
   fontSize: Record<string, string>;
   fontWeight: Record<string, string>;
+  shadow: Record<string, string>;
+  transitionProperty: Record<string, string>;
+  transitionDuration: Record<string, string>;
+  transitionTimingFunction: Record<string, string>;
+  transitionDelay: Record<string, string>;
   eventNames: Record<string, string>;
   themes: Record<string, Pick<ThemeDescription, "colors">>;
 };
@@ -45,6 +50,21 @@ export type KeyOfFontSize<T extends ThemeDescription> =
   | undefined;
 export type KeyOfFontWeight<T extends ThemeDescription> =
   | keyof T["fontWeight"]
+  | undefined;
+export type KeyOfShadow<T extends ThemeDescription> =
+  | keyof T["shadow"]
+  | undefined;
+export type KeyOfTransitionProperty<T extends ThemeDescription> =
+  | keyof T["transitionProperty"]
+  | undefined;
+export type KeyOfTransitionDuration<T extends ThemeDescription> =
+  | keyof T["transitionDuration"]
+  | undefined;
+export type KeyOfTransitionTiming<T extends ThemeDescription> =
+  | keyof T["transitionTimingFunction"]
+  | undefined;
+export type KeyOfTransitionDelay<T extends ThemeDescription> =
+  | keyof T["transitionDelay"]
   | undefined;
 
 export type BasicCssValue = "inherit" | "initial" | "unset";
@@ -109,9 +129,9 @@ export type ThemeGap<T extends ThemeDescription> = Record<
 
 export type ThemeSize<T extends ThemeDescription> = Record<
   "width" | "height",
-  | KeyOfSpacing<T>
-  | ThemeArrayValues<KeyOfSpacing<T>, 3>
-  | ThemeRecordValues<"min" | "max" | "_", KeyOfSpacing<T>>
+  | KeyOfSizes<T>
+  | ThemeArrayValues<KeyOfSizes<T>, 3>
+  | ThemeRecordValues<"min" | "max" | "_", KeyOfSizes<T>>
 >;
 
 export type ThemeBackground<T extends ThemeDescription> = Record<
@@ -251,6 +271,22 @@ export type ThemeFontWeight<T extends ThemeDescription> = Record<
   KeyOfFontWeight<T>
 >;
 
+export type ThemeShadow<T extends ThemeDescription> = Record<
+  "shadow",
+  KeyOfShadow<T>
+>;
+
+export type ThemeTransition<T extends ThemeDescription> = Record<
+  "transition",
+  | KeyOfTransitionProperty<T>
+  | {
+      property: KeyOfTransitionProperty<T>;
+      duration?: KeyOfTransitionDuration<T>;
+      timing?: KeyOfTransitionTiming<T>;
+      delay?: KeyOfTransitionDelay<T>;
+    }
+>;
+
 export type ThemeElement<T extends ThemeDescription> = Partial<
   ThemePadding<T> &
     ThemeRounded<T> &
@@ -273,6 +309,8 @@ export type ThemeElement<T extends ThemeDescription> = Partial<
     ThemePosition<T> &
     ThemeFontSize<T> &
     ThemeFontWeight<T> &
+    ThemeShadow<T> &
+    ThemeTransition<T> &
     ThemeTheme<T>
 >;
 

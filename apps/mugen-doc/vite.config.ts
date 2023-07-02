@@ -17,8 +17,4 @@ export default defineConfig(({ mode }) => ({
   build: {
     target: "esnext",
   },
-  esbuild: {
-    // Remove console.X on production build
-    drop: mode === "production" ? ["console", "debugger"] : [],
-  },
 }));

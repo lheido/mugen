@@ -1,11 +1,26 @@
-import { Box, FlexItem, Heading, List, Row, Text } from "mugen/ui";
+import { Theme } from "mugen/types";
+import { Column, FlexItem, Heading, List, Row, Text } from "mugen/ui";
 import { Component } from "solid-js";
 
 const Home: Component = () => {
   console.time("Home");
+  const textBoxTheme: Theme = {
+    padding: "4",
+    background: "secondary",
+    rounded: "lg",
+    shadow: "neon-primary",
+    transition: "shadow",
+    "flex-basis": "1",
+    "flex-grow": 1,
+    hover: {
+      shadow: "neon-teal",
+    },
+  };
   const result = (
-    <Box
+    <Column
+      gap="8"
       theme={{
+        height: "screen",
         padding: "8",
       }}
     >
@@ -14,42 +29,44 @@ const Home: Component = () => {
         theme={{
           "font-size": "6xl",
           "font-weight": "black",
-          margin: { bottom: "8" },
         }}
       >
         Mugen UI
       </Heading>
-      <Text>
-        An UI toolkit that provides low level components to build app faster and
-        easier. Also bring to us a typed, but simple way to embrace design
-        systems !
-      </Text>
-      <Text>
-        No need to worry about CSS or semantic/A11y HTML as the toolkit handles
-        that for us.
-      </Text>
-      <Text>
-        CSS is generated dynamically at lightning speed using an incredibly
-        small amount of code.
-      </Text>
-      <Text>
-        It suggests the appropriate semantics or accessibility standards.
-      </Text>
+      <Row gap="4">
+        <Text theme={{ ...textBoxTheme, "flex-grow": 2 }}>
+          An UI toolkit that provides low level components to build app faster
+          and easier. Also bring to us a typed, but simple way to embrace design
+          systems !
+        </Text>
+        <Text theme={textBoxTheme}>
+          No need to worry about CSS or semantic/A11y HTML as the toolkit
+          handles that for us.
+        </Text>
+        <Text theme={textBoxTheme}>
+          CSS is generated dynamically at lightning speed using an incredibly
+          small amount of code.
+        </Text>
+        <Text theme={textBoxTheme}>
+          It suggests the appropriate semantics or accessibility standards.
+        </Text>
+      </Row>
 
-      <List
-        theme={{ padding: "4" }}
-        mixins={[Row.mixin({ gap: "4" })]}
-        each={["1", "2", "3", "4", "5"]}
-      >
+      <List mixins={[Row.mixin({ gap: "4" })]} each={["1", "2", "3", "4", "5"]}>
         {(item, i) => (
           <Text
-            mixins={[FlexItem.mixin({ grow: i() === 0 ? 1 : 0, basis: "3" })]}
+            theme={{
+              background: "primary",
+              rounded: "4xl",
+              padding: { x: "6", y: "4" },
+            }}
+            mixins={[FlexItem.mixin({ grow: i() === 0 ? 1 : 0, basis: "4" })]}
           >
             {item}
           </Text>
         )}
       </List>
-    </Box>
+    </Column>
   );
   console.timeEnd("Home");
   return result;

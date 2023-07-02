@@ -8,6 +8,7 @@ const mediaStyleSheets = new Map<string, CSSStyleSheet>();
 const classNameRefs = new Map<string, boolean>();
 
 export const COLOR_VAR_PREFIX = "--mugen-color-" as const;
+export const RGB_COLOR_VAR_PREFIX = "--mugen-rgb-color-" as const;
 export const NON_CONTENT_COLORS = [
   "transparent",
   "inherit",
