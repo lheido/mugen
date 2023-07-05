@@ -1,3 +1,12 @@
+# Mugen
+
+![](https://badgen.net/github/licence/lheido/mugen?label=licence)
+![](https://badgen.net/github/release/lheido/mugen)
+![](https://badgen.net/github/stars/lheido/mugen?label=★)
+![](https://badgen.net/github/open-issues/lheido/mugen)
+![](https://badgen.net/github/dependabot/lheido/mugen?label=&icon=dependabot)
+
+
 An UI toolkit that provides low level components to build app faster and easier.
 Also bring to us a typed, but simple way to embrace design systems !
 
