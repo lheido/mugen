@@ -1,6 +1,6 @@
 # Mugen
 
-![](https://badgen.net/github/licence/lheido/mugen?label=licence)
+![](https://badgen.net/github/license/lheido/mugen)
 ![](https://badgen.net/github/release/lheido/mugen)
 ![](https://badgen.net/github/stars/lheido/mugen?label=★)
 ![](https://badgen.net/github/open-issues/lheido/mugen)
@@ -12,8 +12,8 @@ Also bring to us a typed, but simple way to embrace design systems !
 
 No need to worry about CSS or semantic/A11y HTML as the toolkit handles that for us.
 
-* CSS is generated dynamically at lightning speed using an incredibly small amount of code.
-* It suggests the appropriate semantics or accessibility standards (comming soon).
+- CSS is generated dynamically at lightning speed using an incredibly small amount of code.
+- It suggests the appropriate semantics or accessibility standards (comming soon).
 
 
 ## Setup
@@ -39,7 +39,7 @@ declare module "mugen/theme" {
 ## Usage
 
 ```tsx
-import { Box, List, Row, FlexItem, Text } from "mugen/ui"
+import { Box, List, Row, FlexItem, Text } from "mugen/ui";
 
 function MyComponent() {
   return (
