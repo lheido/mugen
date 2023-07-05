@@ -1,34 +1,55 @@
-## Usage
+An UI toolkit that provides low level components to build app faster and easier.
+Also bring to us a typed, but simple way to embrace design systems !
 
-Those templates dependencies are maintained via [pnpm](https://pnpm.io) via `pnpm up -Lri`.
+No need to worry about CSS or semantic/A11y HTML as the toolkit handles that for us.
 
-This is the reason you see a `pnpm-lock.yaml`. That being said, any package manager will work. This file can be safely be removed once you clone a template.
+* CSS is generated dynamically at lightning speed using an incredibly small amount of code.
+* It suggests the appropriate semantics or accessibility standards (comming soon).
 
-```bash
-$ npm install # or pnpm install or yarn install
+
+## Setup
+
+TODO
+
+```typescript
+// src/theme.ts
+import { themeDescriptionDefaults } from "mugen/theme";
+
+const theme = themeDescriptionDefaults;
 ```
 
-### Learn more on the [Solid Website](https://solidjs.com) and come chat with us on our [Discord](https://discord.com/invite/solidjs)
+```typescript
+// src/mugen.d.ts
+import { theme } from "./theme";
 
-## Available Scripts
+declare module "mugen/theme" {
+  type ThemeDescription = typeof theme;
+}
+```
 
-In the project directory, you can run:
+## Usage
 
-### `npm dev` or `npm start`
+```tsx
+import { Box, List, Row, FlexItem, Text } from "mugen/ui"
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.<br>
-
-### `npm run build`
-
-Builds the app for production to the `dist` folder.<br>
-It correctly bundles Solid in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
-
-## Deployment
-
-You can deploy the `dist` folder to any static host provider (netlify, surge, now, etc.)
+function MyComponent() {
+  return (
+    <Box theme={{ padding: "4", hover: { padding: "6" }, transition: "all" }}>
+      <List mixins={[Row.mixin({ gap: "4" })]} each={["1", "2", "3", "4", "5"]}>
+        {(item, i) => (
+          <Text
+            theme={{
+              background: "primary",
+              rounded: "4xl",
+              padding: { x: "6", y: "4" },
+            }}
+            mixins={[FlexItem.mixin({ grow: i() === 0 ? 1 : 0, basis: "4" })]}
+          >
+            {item}
+          </Text>
+        )}
+      </List>
+    </Box>
+  );
+}
+```
