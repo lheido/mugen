@@ -7,7 +7,7 @@
     "dev": "pnpm -F mugen-doc run dev"
   },
   "devDependencies": {
-    "typescript": "^4.9.5",
+    "typescript": "^5.1.6",
     "vite": "^4.3.9",
     "vite-plugin-solid": "^2.7.0"
   }
