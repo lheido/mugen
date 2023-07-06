@@ -10,7 +10,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "solid-js": "^1.7.6"
+    "solid-js": "^1.7.7"
   },
   "devDependencies": {
     "@solid-primitives/intersection-observer": "^2.1.2",
