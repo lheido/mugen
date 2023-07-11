@@ -1,5 +1,5 @@
-import { global } from "./global";
-import { compute } from "./style-sheet";
+import { mugen } from "./global";
+import { compute } from "./properties";
 import { ClassList } from "./types";
 
 export function execute(
@@ -9,11 +9,11 @@ export function execute(
   emod?: string,
   media?: string
 ) {
-  if (global.themeDescription.eventNames[key] !== undefined) {
+  if (mugen.themeDescription.eventNames[key] !== undefined) {
     Object.entries(value).forEach(([k, v]) => {
       execute(k, v, classList, key, media);
     });
-  } else if (key in global.themeDescription.breakpoints) {
+  } else if (key in mugen.themeDescription.breakpoints) {
     Object.entries(value).forEach(([k, v]) => {
       execute(k, v, classList, emod, key as string);
     });

@@ -8,5 +8,6 @@ export * from "./Heading";
 export * from "./Image";
 export * from "./Link";
 export * from "./List";
+export * from "./Paragraph";
 export * from "./Row";
 export * from "./Text";

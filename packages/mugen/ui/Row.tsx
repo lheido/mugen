@@ -3,12 +3,13 @@ import { ThemeDescription } from "../theme";
 import { BaseComponentProps } from "../types";
 import { Box } from "./Box";
 import { createMugenComponent } from "./createMugenComponent";
-import { alignItemsMap, FlexLayout, justifyContentMap } from "./FlexLayout";
+import { FlexLayout } from "./FlexLayout";
 
 export type RowProps = {
   gap?: keyof ThemeDescription["spacing"];
-  content?: keyof typeof justifyContentMap;
-  items?: keyof typeof alignItemsMap;
+  justify?: keyof ThemeDescription["justifyContent"];
+  items?: keyof ThemeDescription["alignItems"];
+  wrap?: keyof ThemeDescription["flexWrap"];
   reverse?: boolean;
 };
 

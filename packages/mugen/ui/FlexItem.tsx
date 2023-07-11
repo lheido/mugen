@@ -23,10 +23,12 @@ export const FlexItem = createMugenComponent(
     return mergeProps(
       {
         theme: {
-          ...(local.basis ? { "flex-basis": local.basis } : {}),
-          ...(local.grow ? { "flex-grow": local.grow } : {}),
-          ...(local.shrink ? { "flex-shrink": local.shrink } : {}),
-          ...(local.order ? { order: local.order } : {}),
+          flexItem: {
+            ...(local.basis ? { basis: local.basis } : {}),
+            ...(local.grow ? { grow: local.grow } : {}),
+            ...(local.shrink ? { shrink: local.shrink } : {}),
+            ...(local.order ? { order: local.order } : {}),
+          },
           ...(local.theme ?? {}),
         } as ThemeElementApi<ThemeDescription>,
       },

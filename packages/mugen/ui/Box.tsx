@@ -4,25 +4,6 @@ import { useThemeClassList } from "../theme";
 import { BaseComponentProps } from "../types";
 import { createMugenComponent } from "./createMugenComponent";
 
-// export type BoxProps<A> = ComponentProps<A> & UniversalAttributes;
-// UniversalAttributes &
-// PartialElementAttributes;
-
-// export function Box<P, A extends string | MugenComponent<P>>(
-//   props: ComponentProps<P>
-// ) {
-//   const [local, others] = splitProps(props, ["as", "theme"]);
-//   const as = createMemo(() => {
-//     if (local.as) return local.as as A;
-//     if ("src" in others) return "img";
-//     if ("href" in others) return "a";
-//     return "div";
-//   });
-//   const classList = useThemeClassList(props);
-
-//   return <Dynamic component={as()} {...others} classList={classList()} />;
-// }
-
 export type BoxProps = BaseComponentProps;
 
 export const Box = createMugenComponent(

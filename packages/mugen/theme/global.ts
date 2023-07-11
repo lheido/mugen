@@ -17,7 +17,7 @@ export const NON_CONTENT_COLORS = [
   "currentColor",
 ] as const;
 
-export const global = {
+export const mugen = {
   get themeDescription() {
     return themeDescription;
   },

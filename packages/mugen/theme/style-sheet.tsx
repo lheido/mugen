@@ -1,20 +1,29 @@
-import { COLOR_VAR_PREFIX, global, NON_CONTENT_COLORS } from "./global";
+import { COLOR_VAR_PREFIX, mugen, NON_CONTENT_COLORS } from "./global";
 import { preflightRules } from "./preflight";
-import { ClassList, ThemeDescription, themePositionsValues } from "./types";
+import { escapeClassName } from "./properties/escapeClassName";
+import { ClassList, ThemeDescription } from "./types";
 
 for (const rule of preflightRules) {
   try {
-    global.styleSheet.insertRule(rule);
+    mugen.styleSheet.insertRule(rule);
   } catch (error) {
     /* ignore preflight errors */
   }
 }
-document.adoptedStyleSheets.push(global.styleSheet);
+try {
+  document.adoptedStyleSheets.push(mugen.styleSheet);
+} catch (error) {
+  /** ignore */
+}
+
+// mugen.styleSheet.insertRule(
+//   String.raw`.hover\:my-cls:hover { border: 1px solid red; }`
+// );
 
 export type ComputeClassConfig = {
   mapIndex: Record<number | string, string>;
   baseCls: (property: string) => string;
-  simpleValue: (base: string, value: string) => string;
+  simpleValue: (base: string, value: string) => string | undefined;
   arrayValue: (base: string, values: (string | undefined)[]) => string[];
   objectValue: (
     base: string,
@@ -55,7 +64,11 @@ const defaultComputeClassConfig: ComputeClassConfig = {
           ...this.arrayValue(this.mergeBaseWithModifier(base, _key), val)
         );
       } else {
-        cls.push(this.simpleValue(this.mergeBaseWithModifier(base, _key), val));
+        const simpleValue = this.simpleValue(
+          this.mergeBaseWithModifier(base, _key),
+          val
+        );
+        if (simpleValue) cls.push(simpleValue);
       }
       return cls;
     }, [] as string[]);
@@ -74,7 +87,8 @@ export function createClassNamesHandler(
     } else if (typeof value === "object") {
       cls.push(..._config.objectValue(base, value));
     } else {
-      cls.push(_config.simpleValue(base, value));
+      const simpleValue = _config.simpleValue(base, value);
+      if (simpleValue) cls.push(simpleValue);
     }
     cls.push(...(_config.additionalClasses?.(key) ?? []));
     return cls;
@@ -193,14 +207,21 @@ const positionHandler: Handler = {
     },
     mergeBaseWithModifier: (_, modifier) => modifier,
     additionalClasses: (property) => [property],
+    simpleValue: (base, value) => {
+      return [true, false].includes(value as any)
+        ? undefined
+        : `${base}-${value}`;
+    },
   }),
   ruleHandler: createRulesHandler({
     extract(cls) {
-      if (themePositionsValues.includes(cls as any)) return ["position", cls];
-      return cls.split("-") as [string, string];
+      const [pos, value] = cls.split("-");
+      if (["relative", "absolute", "fixed", "sticky"].includes(pos as any))
+        return ["position", cls];
+      return [pos, value] as [string, string];
     },
     toRealValue: (value, description) =>
-      themePositionsValues.includes(value as any)
+      ["relative", "absolute", "fixed", "sticky"].includes(value as any)
         ? value
         : description.spacing[value],
   }),
@@ -224,7 +245,7 @@ const colorHandler: Handler = {
         }
         if (gradientStop === "from") {
           if (
-            global.opts.autoContentColor !== false &&
+            mugen.opts.autoContentColor !== false &&
             !NON_CONTENT_COLORS.includes(value as any)
           ) {
             return [
@@ -236,7 +257,7 @@ const colorHandler: Handler = {
         return [`--mugen-linear-${gradientStop}-stop`, value];
       }
       if (
-        global.opts.autoContentColor !== false &&
+        mugen.opts.autoContentColor !== false &&
         property === "background" &&
         !NON_CONTENT_COLORS.includes(value as any)
       ) {
@@ -349,7 +370,7 @@ const roundedHandler: Handler = {
       t: ["border-top-left-radius", "border-top-right-radius"],
       b: ["border-bottom-left-radius", "border-bottom-right-radius"],
     },
-    extract(cls, property) {
+    extract(cls) {
       const splitCls = cls.split("-");
       if (splitCls.length === 2) {
         return ["border-radius", splitCls[1]];
@@ -399,10 +420,19 @@ const transitionHandler: Handler = {
       return [`--mugen-transition-${prop}`, cls.split("-")[2]];
     },
     toRealValue: (value, description) =>
-      description.transitionProperty[value] ||
+      description.transitionProperties[value] ||
       description.transitionDuration[value] ||
       description.transitionTimingFunction[value] ||
       value,
+  }),
+};
+const transformHandler: Handler = {
+  clsHandler: createClassNamesHandler({
+    mapIndex: { 0: "x", 1: "y", 2: "z" },
+  }),
+  ruleHandler: createRulesHandler({
+    extract: (cls) => cls.split("-") as [string, string],
+    toRealValue: (value, description) => "0",
   }),
 };
 const handlers = {
@@ -444,6 +474,45 @@ const propHandlerMap: Record<string, HandlersKeys> = {
   transition: "transition",
 } as const;
 
+// export function oldBuildClassNames(
+//   key: string,
+//   value: any,
+//   emod?: string,
+//   media?: string,
+//   ps?: string
+// ): string[] {
+//   const handler = handlers[propHandlerMap[key]] ?? handlers.default;
+//   if (!handler && typeof value === "boolean") return [key];
+//   const cls = handler.clsHandler(key, value);
+//   const classNames = cls.map((className) => {
+//     const _emod = emod ? `${emod}:` : "";
+//     const _ps = ps ? `${ps}:` : "";
+//     const _media = media ? `${media}:` : "";
+//     return `${_media}${_emod}${_ps}${className}`.replaceAll(/[/:]/g, "-");
+//   });
+//   return classNames;
+// }
+export function* oldBuildClassNames(
+  key: string,
+  value: any,
+  emod?: string,
+  media?: string,
+  ps?: string
+): Generator<string> {
+  const handler = handlers[propHandlerMap[key]] ?? handlers.default;
+  if (!handler && typeof value === "boolean") {
+    yield key;
+  } else {
+    const cls = handler.clsHandler(key, value);
+    for (const className of cls) {
+      const _emod = emod ? `${emod}:` : "";
+      const _ps = ps ? `${ps}:` : "";
+      const _media = media ? `${media}:` : "";
+      yield `${_media}${_emod}${_ps}${className}`;
+    }
+  }
+}
+
 export function compute(
   key: string,
   value: any,
@@ -451,40 +520,69 @@ export function compute(
   media?: string,
   ps?: string
 ): ClassList {
-  if (typeof value === "boolean") return { [key]: value };
   const handler = handlers[propHandlerMap[key]] ?? handlers.default;
   const cls = handler.clsHandler(key, value);
-  const classNames = cls.map((className) => {
-    const _emod = emod ? `${emod}:` : "";
-    const _ps = ps ? `${ps}:` : "";
-    const _media = media ? `${media}:` : "";
-    return `${_media}${_emod}${_ps}${className}`.replaceAll(/[/:]/g, "-");
-  });
-  classNames.forEach((className, i) => {
-    if (!global.classNameRefs.has(className)) {
-      global.classNameRefs.set(className, true);
+  // if (!handler && typeof value === "boolean") return { [key]: value };
+  // const classNames = cls.map((className) => {
+  //   const _emod = emod ? `${emod}:` : "";
+  //   const _ps = ps ? `${ps}:` : "";
+  //   const _media = media ? `${media}:` : "";
+  //   return escapeClassName(`${_media}${_emod}${_ps}${className}`);
+  // });
+  const classNames = [];
+  for (const c of oldBuildClassNames(key, value, emod, media, ps)) {
+    const i = classNames.push(c) - 1;
+    if (!mugen.classNameRefs.has(c)) {
+      mugen.classNameRefs.set(c, true);
       const ruleContent = handler.ruleHandler(
         cls[i],
         key,
-        global.themeDescription
+        mugen.themeDescription
       );
       const _evt = emod ? `:${emod}` : "";
       const __ps = ps ? `::${ps}` : "";
-      const rule = `.${className}${_evt}${__ps} {${ruleContent.join(";")}}`;
-      let ss = global.styleSheet;
+      const rule = `.${escapeClassName(c)}${_evt}${__ps} {${ruleContent.join(
+        ";"
+      )}}`;
+      let ss = mugen.styleSheet;
       if (media) {
-        if (!global.mediaStyleSheets.has(media)) {
+        if (!mugen.mediaStyleSheets.has(media)) {
           const newMediaStyleSheet = new CSSStyleSheet({
-            media: `(min-width: ${global.themeDescription.breakpoints[media]})`,
+            media: `(min-width: ${mugen.themeDescription.breakpoints[media]})`,
           });
           document.adoptedStyleSheets.push(newMediaStyleSheet);
-          global.mediaStyleSheets.set(media, newMediaStyleSheet);
+          mugen.mediaStyleSheets.set(media, newMediaStyleSheet);
         }
-        ss = global.mediaStyleSheets.get(media)!;
+        ss = mugen.mediaStyleSheets.get(media)!;
       }
       ss.insertRule(rule);
     }
-  });
+  }
+  // classNames.forEach((className, i) => {
+  //   if (!global.classNameRefs.has(className)) {
+  //     global.classNameRefs.set(className, true);
+  //     const ruleContent = handler.ruleHandler(
+  //       cls[i],
+  //       key,
+  //       global.themeDescription
+  //     );
+  //     const _evt = emod ? `:${emod}` : "";
+  //     const __ps = ps ? `::${ps}` : "";
+  //     const rule = `.${className}${_evt}${__ps} {${ruleContent.join(";")}}`;
+  //     let ss = global.styleSheet;
+  //     if (media) {
+  //       if (!global.mediaStyleSheets.has(media)) {
+  //         const newMediaStyleSheet = new CSSStyleSheet({
+  //           media: `(min-width: ${global.themeDescription.breakpoints[media]})`,
+  //         });
+  //         document.adoptedStyleSheets.push(newMediaStyleSheet);
+  //         global.mediaStyleSheets.set(media, newMediaStyleSheet);
+  //       }
+  //       ss = global.mediaStyleSheets.get(media)!;
+  //     }
+  //     ss.insertRule(rule);
+  //   }
+  // });
   return classNames.reduce((list, className) => {
     list[className] = true;
     return list;

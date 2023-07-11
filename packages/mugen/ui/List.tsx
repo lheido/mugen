@@ -58,7 +58,7 @@ export function List<I>(
                   style.bullet || style.square || style.ordered
                     ? "list-item"
                     : "contents",
-              } as ThemeElementApi<ThemeDescription>
+              } as unknown as ThemeElementApi<ThemeDescription>
             }
           >
             {props.children(item, i)}

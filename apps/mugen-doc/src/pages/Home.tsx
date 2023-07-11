@@ -1,72 +1,75 @@
-import { Theme } from "mugen/types";
-import { Column, FlexItem, Heading, List, Row, Text } from "mugen/ui";
+import { Box, Column, FlexLayout, Paragraph, Row } from "mugen/ui";
 import { Component } from "solid-js";
+import appCode from "../App.tsx?raw";
+import { Button } from "../components/Button";
+import { CAButton } from "../components/CAButton";
+import { Code } from "../components/Code";
+import basicUsage from "../examples/basic_usage.tsx?raw";
 
 const Home: Component = () => {
   console.time("Home");
-  const textBoxTheme: Theme = {
-    padding: "4",
-    background: "secondary",
-    rounded: "lg",
-    shadow: "neon-primary",
-    transition: "shadow",
-    "flex-basis": "1",
-    "flex-grow": 1,
-    hover: {
-      shadow: "neon-teal",
-    },
-  };
   const result = (
-    <Column
-      gap="8"
-      theme={{
-        height: "screen",
-        padding: "8",
-      }}
-    >
-      <Heading
-        as="h1"
+    <>
+      <FlexLayout
+        justify="center"
+        items="center"
         theme={{
-          "font-size": "6xl",
-          "font-weight": "black",
+          height: "screen",
+          relative: true,
+          background: {
+            from: "page",
+            to: "pageTo",
+            direction: "bottom",
+          },
         }}
       >
-        Mugen UI
-      </Heading>
-      <Row gap="4">
-        <Text theme={{ ...textBoxTheme, "flex-grow": 2 }}>
-          An UI toolkit that provides low level components to build app faster
-          and easier. Also bring to us a typed, but simple way to embrace design
-          systems !
-        </Text>
-        <Text theme={textBoxTheme}>
+        <Box
+          aria-hidden="true"
+          theme={{
+            absolute: { top: "0", left: "0" },
+            width: "full",
+            height: "full",
+            overflow: "hidden",
+            opacity: 25,
+            filter: {
+              blur: 5,
+            },
+          }}
+        >
+          <Code language="tsx">{appCode}</Code>
+        </Box>
+        <Column gap="16" theme={{ width: "2/3", margin: "auto", zIndex: 1 }}>
+          <Paragraph theme={{ font: { size: "6xl" } }}>
+            An <strong>UI toolkit</strong> that provides low level components to
+            build app faster and easier.
+          </Paragraph>
+          <Paragraph theme={{ font: { size: "5xl" } }}>
+            It provides a typed way to adopt <strong>design systems</strong>{" "}
+            easily!🎉
+          </Paragraph>
+          <Row gap="8" justify="center">
+            <CAButton>Get Started</CAButton>
+            <Button theme={{ padding: "8" }}>Github</Button>
+          </Row>
+        </Column>
+      </FlexLayout>
+      <Box theme={{ height: "screen" }}>
+        <Paragraph>
           No need to worry about CSS or semantic/A11y HTML as the toolkit
           handles that for us.
-        </Text>
-        <Text theme={textBoxTheme}>
+        </Paragraph>
+        <Paragraph>
           CSS is generated dynamically at lightning speed using an incredibly
           small amount of code.
-        </Text>
-        <Text theme={textBoxTheme}>
+        </Paragraph>
+        <Paragraph>
           It suggests the appropriate semantics or accessibility standards.
-        </Text>
-      </Row>
+          (comming soon?)
+        </Paragraph>
 
-      <List mixins={[Row.mixin({ gap: "4" })]} each={["1", "2", "3", "4", "5"]}>
-        {(item, i) => (
-          <Text
-            theme={{
-              background: "primary",
-              rounded: "4xl",
-              padding: { x: "6", y: "4" },
-            }}
-            mixins={[FlexItem.mixin({ grow: i() === 0 ? 1 : 0, basis: "4" })]}
-          >
-            {item}
-          </Text>
-        )}
-      </List>
-    </Column>
+        <Code language="tsx">{basicUsage}</Code>
+      </Box>
+    </>
   );
   console.timeEnd("Home");
   return result;

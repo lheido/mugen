@@ -222,6 +222,10 @@ video {
 * {
   box-sizing: border-box;
 }`,
+  `
+[aria-hidden="true"] {
+  user-select: none;
+}`,
 ];
 // const preflightRulesFromTailwind = `
 // /*

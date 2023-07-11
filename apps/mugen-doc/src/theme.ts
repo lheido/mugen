@@ -7,10 +7,12 @@ export const theme = {
     current: "currentColor",
     primary: "#8d8dd8",
     "primary-focus": "#7e7ed3",
+    accent: "#e7c069",
     secondary: "#6b7280",
     "secondary-focus": "#6b8080",
     page: "#30304F",
     pageTo: "#07090B",
+    code: "#1b1b2c",
   },
   themes: {
     light: {
@@ -23,22 +25,6 @@ export const theme = {
         pageTo: "#efefef",
       },
     },
-  },
-  sizes: {
-    "1": "16px",
-    "2": "32px",
-    "3": "64px",
-    "4": "128px",
-    "5": "200px",
-    screen: "100vh",
-    safeScreen: "100svh",
-    "2screen": "200svh",
-  },
-  breakpoints: {
-    sm: "640px",
-    md: "768px",
-    lg: "1024px",
-    xl: "1280px",
   },
   shadow: {
     ...themeDescriptionDefaults.shadow,

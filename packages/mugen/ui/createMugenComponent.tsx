@@ -20,27 +20,3 @@ export function createMugenComponent<Props, Return extends object>(
   component.mixin = (p: any) => () => mixin(p);
   return component;
 }
-
-// type BoxProps = { mixins?: any[] } & Record<string, any>;
-// const Box = createComponent(
-//   (p: BoxProps) => {
-//     const [local, others] = splitProps(p, ["mixins"]);
-//     let mixedProps = {};
-//     if (local?.mixins) {
-//       local.mixins.forEach((m: () => any) => {
-//         mixedProps = { ...mixedProps, ...m() };
-//       });
-//     }
-//     return { component: "div", ...(others ?? {}), ...mixedProps };
-//   },
-//   (p) => <Dynamic {...p} />
-// );
-
-// const Foo = createComponent(
-//   (p: { lorem: boolean }) => ({ onClick: () => console.log("click", p.lorem) }),
-//   (p) => <Box {...p} />
-// );
-
-// function App() {
-//   return <Box mixins={[Foo.mixin({ lorem: true })]} />;
-// }

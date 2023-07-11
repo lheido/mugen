@@ -1,51 +1,15 @@
 import { mergeProps, splitProps } from "solid-js";
-import {
-  ThemeAlignItemsValue,
-  ThemeDescription,
-  ThemeElementApi,
-  ThemeFlexDirectionValue,
-  ThemeJustifyContentValue,
-} from "../theme";
+import { ThemeDescription, ThemeElementApi } from "../theme";
 import { BaseComponentProps } from "../types";
 import { Box } from "./Box";
 import { createMugenComponent } from "./createMugenComponent";
 
-export type justifyContentKey =
-  | "start"
-  | "end"
-  | "center"
-  | "between"
-  | "around"
-  | "evenly"
-  | "stretch";
-export type alignItemsKey = "start" | "end" | "center" | "baseline" | "stretch";
-
-export const justifyContentMap: Record<
-  justifyContentKey,
-  ThemeJustifyContentValue
-> = {
-  start: "flex-start",
-  end: "flex-end",
-  center: "center",
-  between: "space-between",
-  around: "space-around",
-  evenly: "space-evenly",
-  stretch: "stretch",
-} as const;
-
-export const alignItemsMap: Record<alignItemsKey, ThemeAlignItemsValue> = {
-  start: "flex-start",
-  end: "flex-end",
-  center: "center",
-  baseline: "baseline",
-  stretch: "stretch",
-} as const;
-
 export type FlexLayoutProps = {
   gap?: keyof ThemeDescription["spacing"];
-  content?: keyof typeof justifyContentMap;
-  items?: keyof typeof alignItemsMap;
-  direction?: ThemeFlexDirectionValue;
+  justify?: keyof ThemeDescription["justifyContent"];
+  items?: keyof ThemeDescription["alignItems"];
+  direction?: keyof ThemeDescription["flexDirection"];
+  wrap?: keyof ThemeDescription["flexWrap"];
 };
 
 export const FlexLayout = createMugenComponent(
@@ -53,20 +17,21 @@ export const FlexLayout = createMugenComponent(
     const [local, others] = splitProps(props, [
       "gap",
       "theme",
-      "content",
+      "justify",
       "items",
       "direction",
+      "wrap",
     ]);
     return mergeProps(
       {
         theme: {
-          display: "flex",
-          ...(local.content
-            ? { "justify-content": justifyContentMap[local.content] }
-            : {}),
-          ...(local.gap ? { gap: local.gap } : {}),
-          ...(local.items ? { "align-items": alignItemsMap[local.items] } : {}),
-          ...(local.direction ? { "flex-direction": local.direction } : {}),
+          flex: {
+            ...(local.gap ? { gap: local.gap } : {}),
+            ...(local.justify ? { justify: local.justify } : {}),
+            ...(local.items ? { items: local.items } : {}),
+            ...(local.direction ? { direction: local.direction } : {}),
+            ...(local.wrap ? { wrap: local.wrap } : {}),
+          },
           ...(local.theme ?? {}),
         } as ThemeElementApi<ThemeDescription>,
       },

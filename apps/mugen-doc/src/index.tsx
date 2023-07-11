@@ -3,6 +3,7 @@
 import { Router } from "@solidjs/router";
 import { createApp } from "mugen/base";
 import App from "./App";
+import "./styles/index.css";
 import { theme } from "./theme";
 
 createApp({
@@ -18,7 +19,7 @@ createApp({
         background: {
           from: "page",
           to: "pageTo",
-          linear: "bottom",
+          direction: "bottom",
         },
         height: {
           min: "screen",

@@ -2,21 +2,30 @@ import { getContrast50, hexToRgb } from "./colors";
 import { execute } from "./execute";
 import {
   COLOR_VAR_PREFIX,
-  global,
+  mugen,
   NON_CONTENT_COLORS,
   RGB_COLOR_VAR_PREFIX,
 } from "./global";
-import { compute } from "./style-sheet";
-import {
-  KeyOfColors,
-  KeyOfThemes,
-  ThemeDescription,
-  ThemeElementApi,
-} from "./types";
+import { preflightRules } from "./preflight";
+import { compute } from "./properties";
+import { ThemeDescription, ThemeElementApi } from "./types";
+
+for (const rule of preflightRules) {
+  try {
+    mugen.styleSheet.insertRule(rule);
+  } catch (error) {
+    /* ignore preflight errors */
+  }
+}
+try {
+  document.adoptedStyleSheets.push(mugen.styleSheet);
+} catch (error) {
+  /** ignore */
+}
 
 export type RegisterThemeOptions<T extends ThemeDescription> = {
-  defaultTheme?: KeyOfThemes<T>;
-  pageColor?: (KeyOfColors<T> extends string ? string : undefined) | "page";
+  defaultTheme?: keyof T["themes"];
+  pageColor?: (keyof T["colors"] extends string ? string : undefined) | "page";
   pageTheme?: ThemeElementApi<T>;
   autoContentColor?: ((color: string) => string) | false;
 };
@@ -25,8 +34,8 @@ export function registerTheme<T extends ThemeDescription>(
   description: T,
   options?: RegisterThemeOptions<T>
 ): void {
-  global.themeDescription = description;
-  global.opts = {
+  mugen.themeDescription = description;
+  mugen.opts = {
     pageColor: "page",
     autoContentColor: (color: string) =>
       getContrast50(color.replace("#", "")) === "black" ? "#000" : "#fff",
@@ -45,12 +54,12 @@ export function registerTheme<T extends ThemeDescription>(
       themeCustomProperties[":root"].push([propRgbName, rgbValue]);
     }
     if (
-      global.opts.autoContentColor &&
+      mugen.opts.autoContentColor &&
       !NON_CONTENT_COLORS.includes(value as any)
     ) {
       themeCustomProperties[":root"].push([
         `${propName}-content`,
-        global.opts.autoContentColor(value),
+        mugen.opts.autoContentColor(value),
       ]);
     }
   });
@@ -62,12 +71,12 @@ export function registerTheme<T extends ThemeDescription>(
         const propName = `${COLOR_VAR_PREFIX}${key}`;
         themeCustomProperties[themeName].push([propName, value]);
         if (
-          global.opts.autoContentColor &&
+          mugen.opts.autoContentColor &&
           !NON_CONTENT_COLORS.includes(value as any)
         ) {
           themeCustomProperties[themeName].push([
             `${propName}-content`,
-            global.opts.autoContentColor(value),
+            mugen.opts.autoContentColor(value),
           ]);
         }
       });
@@ -77,30 +86,30 @@ export function registerTheme<T extends ThemeDescription>(
     // Make sure the :root theme is always at the end.
     .reverse()
     .forEach(([themeName, customProperties]) => {
-      global.styleSheet.insertRule(
+      mugen.styleSheet.insertRule(
         `${themeName} { ${customProperties
           .map(([propName, value]) => `${propName}: ${value}`)
           .join(";")} }`
       );
     });
-  if (global.opts.pageTheme !== undefined) {
+  if (mugen.opts.pageTheme !== undefined) {
     const bodyClassList = {};
-    Object.entries(global.opts.pageTheme).forEach(([k, v]) => {
+    Object.entries(mugen.opts.pageTheme).forEach(([k, v]) => {
       execute(k, v, bodyClassList);
     });
     document.body.classList.add(...Object.keys(bodyClassList));
   } else {
     if (
-      global.themeDescription.colors[global.opts.pageColor as string] !==
+      mugen.themeDescription.colors[mugen.opts.pageColor as string] !==
       undefined
     ) {
-      compute("background", global.opts.pageColor);
+      compute("background", mugen.opts.pageColor);
       document.documentElement.classList.add(
-        `bg-${global.opts.pageColor as string}`
+        `bg-${mugen.opts.pageColor as string}`
       );
     }
   }
-  if (global.opts?.defaultTheme) {
-    document.documentElement.classList.add(global.opts.defaultTheme as string);
+  if (mugen.opts?.defaultTheme) {
+    document.documentElement.classList.add(mugen.opts.defaultTheme as string);
   }
 }
