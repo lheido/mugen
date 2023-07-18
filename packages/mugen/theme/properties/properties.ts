@@ -114,6 +114,34 @@ const buildSize = (p: string) => {
   };
 };
 
+const buildBorder = (edge?: string[] | string) => {
+  const _properties = (p: string) => {
+    const edges = edge && Array.isArray(edge) ? edge : [edge];
+    return edges.map((e) => `border-${e ? `${e}-${p}` : p}`);
+  };
+  return {
+    width: {
+      _cls: "w",
+      _before: "-",
+      _properties: _properties("width"),
+      _themeDescription: "borderWidth",
+    },
+    style: {
+      _cls: "s",
+      _before: "-",
+      _properties: _properties("style"),
+      _themeDescription: "borderStyle",
+    },
+    color: {
+      _cls: "c",
+      _before: "-",
+      _properties: _properties("color"),
+      _propertiesValues: ["var(--mugen-color-<value>)"],
+      _themeDescription: "colors",
+    },
+  };
+};
+
 export const properties = {
   padding: buildSpacing("padding"),
   margin: buildSpacing("margin"),
@@ -341,23 +369,33 @@ export const properties = {
   height: buildSize("height"),
   border: {
     _cls: "border",
-    width: {
-      _cls: "width",
-      _properties: "border-width",
-      _themeDescription: "borderWidth",
-      _before: "-",
+    _additionals: ["border"],
+    _properties: "border-color",
+    _themeDescription: "colors",
+    ...buildBorder(),
+    x: {
+      _cls: "border-x",
+      ...buildBorder(["left", "right"]),
     },
-    style: {
-      _cls: "style",
-      _before: "-",
-      _properties: "border-style",
-      _themeDescription: "borderStyle",
+    y: {
+      _cls: "border-y",
+      ...buildBorder(["top", "bottom"]),
     },
-    color: {
-      _cls: "color",
-      _before: "-",
-      _properties: "border-color",
-      _themeDescription: "colors",
+    left: {
+      _cls: "border-l",
+      ...buildBorder("left"),
+    },
+    right: {
+      _cls: "border-r",
+      ...buildBorder("right"),
+    },
+    top: {
+      _cls: "border-t",
+      ...buildBorder("top"),
+    },
+    bottom: {
+      _cls: "border-b",
+      ...buildBorder("bottom"),
     },
   },
   transition: {

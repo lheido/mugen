@@ -12,27 +12,33 @@ function forHelper(fn: any, p: string, v: any, a1?: string, a2?: string) {
 describe("buildClassNames1", () => {
   bench("new version", () => {
     forHelper(buildClassNames, "width", "1/2");
+    forHelper(buildClassNames, "width", "1/2");
   });
 
   bench("old version", () => {
+    forHelper(oldBuildClassNames, "width", "1/2");
     forHelper(oldBuildClassNames, "width", "1/2");
   });
 });
 describe("buildClassNames2", () => {
   bench("new version", () => {
     forHelper(buildClassNames, "padding", { x: "1/2" });
+    forHelper(buildClassNames, "padding", { x: "1/2" });
   });
 
   bench("old version", () => {
+    forHelper(oldBuildClassNames, "padding", { x: "1/2" });
     forHelper(oldBuildClassNames, "padding", { x: "1/2" });
   });
 });
 describe("buildClassNames3", () => {
   bench("new version", () => {
     forHelper(buildClassNames, "padding", { x: "1/2" }, "lg", "hover");
+    forHelper(buildClassNames, "padding", { x: "1/2" }, "lg", "hover");
   });
 
   bench("old version", () => {
+    forHelper(oldBuildClassNames, "padding", { x: "1/2" }, "hover", "lg");
     forHelper(oldBuildClassNames, "padding", { x: "1/2" }, "hover", "lg");
   });
 });

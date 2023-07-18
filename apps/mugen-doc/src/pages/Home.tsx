@@ -48,27 +48,51 @@ const Home: Component = () => {
             easily!🎉
           </Paragraph>
           <Row gap="8" justify="center">
-            <CAButton>Get Started</CAButton>
-            <Button theme={{ padding: "8" }}>Github</Button>
+            <CAButton href="#get-started">Get Started</CAButton>
+            <Button href="https://github.com/lheido/mugen" target="_blank">
+              Github
+            </Button>
           </Row>
         </Column>
       </FlexLayout>
-      <Box theme={{ height: "screen" }}>
-        <Paragraph>
-          No need to worry about CSS or semantic/A11y HTML as the toolkit
-          handles that for us.
-        </Paragraph>
-        <Paragraph>
-          CSS is generated dynamically at lightning speed using an incredibly
-          small amount of code.
-        </Paragraph>
-        <Paragraph>
-          It suggests the appropriate semantics or accessibility standards.
-          (comming soon?)
-        </Paragraph>
+      <Column
+        gap="16"
+        theme={{
+          height: "screen",
+          relative: true,
+          padding: { top: "64", left: "48", right: "48" },
+          background: {
+            to: "pageTo",
+            from: "page",
+            direction: "top",
+          },
+          border: {
+            top: {
+              color: "primary",
+              width: "16",
+            },
+            width: "0",
+          },
+        }}
+        id="get-started"
+      >
+        <Row gap="8">
+          <Paragraph>
+            No need to worry about CSS or semantic/A11y HTML as the toolkit
+            handles that for us.
+          </Paragraph>
+          <Paragraph>
+            CSS is generated dynamically at lightning speed using an incredibly
+            small engine.
+          </Paragraph>
+          <Paragraph>
+            It suggests the appropriate semantics or accessibility standards.
+            (comming soon?)
+          </Paragraph>
+        </Row>
 
         <Code language="tsx">{basicUsage}</Code>
-      </Box>
+      </Column>
     </>
   );
   console.timeEnd("Home");

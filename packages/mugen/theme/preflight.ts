@@ -226,21 +226,13 @@ video {
 [aria-hidden="true"] {
   user-select: none;
 }`,
+  `
+.border {
+  border-style: solid;
+}
+`,
 ];
 // const preflightRulesFromTailwind = `
-// /*
-// 1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
-// 2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
-// */
-
-// *,
-// ::before,
-// ::after {
-//   box-sizing: border-box; /* 1 */
-//   border-width: 0; /* 2 */
-//   border-style: solid; /* 2 */
-//   border-color: theme('borderColor.DEFAULT', currentColor); /* 2 */
-// }
 
 // ::before,
 // ::after {

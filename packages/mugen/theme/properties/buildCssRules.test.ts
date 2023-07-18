@@ -504,11 +504,19 @@ const tests = [
       return [
         {
           message() {
-            return `should transform { ${prop}: { width: "8" } } => "${this.expected}"`;
+            return `should transform { ${prop}: { width: "8", color: "primary" } } => "${this.expected.slice(
+              0,
+              20
+            )}..."`;
           },
-          expected: "border-width: 8px",
+          expected: [
+            "border-width: 8px",
+            `border-color: ${mugen.themeDescription["colors"]["primary"]}`,
+          ].join("; "),
           fn() {
-            expect(getRuleContent(prop, { width: "8" })).toBe(this.expected);
+            expect(getRuleContent(prop, { width: "8", color: "primary" })).toBe(
+              this.expected
+            );
           },
         },
         {
@@ -531,6 +539,26 @@ const tests = [
             expect(getRuleContent(prop, { color: "primary" })).toBe(
               this.expected
             );
+          },
+        },
+        {
+          message() {
+            return `should transform { ${prop}: { left: { color: "primary" } } } => "${this.expected}"`;
+          },
+          expected: `border-left-color: ${mugen.themeDescription["colors"]["primary"]}`,
+          fn() {
+            expect(getRuleContent(prop, { left: { color: "primary" } })).toBe(
+              this.expected
+            );
+          },
+        },
+        {
+          message() {
+            return `should transform { ${prop}: "primary" } => "${this.expected}"`;
+          },
+          expected: `border-color: ${mugen.themeDescription["colors"]["primary"]}`,
+          fn() {
+            expect(getRuleContent(prop, "primary")).toBe(this.expected);
           },
         },
       ];

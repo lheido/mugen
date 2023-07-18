@@ -1,10 +1,10 @@
 import { createMemo, mergeProps, splitProps } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import { useThemeClassList } from "../theme";
-import { BaseComponentProps } from "../types";
+import { BaseComponentProps, LinkAttributes } from "../types";
 import { createMugenComponent } from "./createMugenComponent";
 
-export type BoxProps = BaseComponentProps;
+export type BoxProps = BaseComponentProps & Partial<LinkAttributes>;
 
 export const Box = createMugenComponent(
   (p: BoxProps) => p,

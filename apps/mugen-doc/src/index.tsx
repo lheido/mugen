@@ -16,11 +16,7 @@ createApp({
     description: theme,
     options: {
       pageTheme: {
-        background: {
-          from: "page",
-          to: "pageTo",
-          direction: "bottom",
-        },
+        background: "pageTo",
         height: {
           min: "screen",
         },

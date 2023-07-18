@@ -1,6 +1,14 @@
-import { BaseComponentProps, ButtonAttributes } from "../types";
+import {
+  BaseComponentProps,
+  ButtonAttributes,
+  Either,
+  LinkAttributes,
+} from "../types";
 import { Box } from "./Box";
 
-export function Button(props: BaseComponentProps & ButtonAttributes) {
-  return <Box as="button" {...props} />;
+export type ButtonProps = BaseComponentProps &
+  Either<Partial<ButtonAttributes>, Partial<LinkAttributes>>;
+
+export function Button(props: ButtonProps) {
+  return <Box as={props.href ? "a" : "button"} {...props} />;
 }

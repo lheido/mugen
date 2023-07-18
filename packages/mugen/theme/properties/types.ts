@@ -1,10 +1,5 @@
+import { Either } from "../../types";
 import { ThemeDescription } from "../types";
-
-type Only<T, U> = {
-  [P in keyof T]: T[P];
-} & Omit<{ [P in keyof U]?: never }, keyof T>;
-
-type Either<T, U> = Only<T, U> | Only<U, T>;
 
 type ThemePropertyValue<ValueType, Or1 extends string> =
   | ValueType
@@ -133,6 +128,22 @@ export type ThemeElement<T extends ThemeDescription> = Partial<{
     | {
         x?: "hidden" | "visible" | "scroll" | "auto";
         y?: "hidden" | "visible" | "scroll" | "auto";
+      };
+  border:
+    | Partial<
+        Record<
+          "left" | "right" | "top" | "bottom" | "x" | "y",
+          {
+            width: keyof T["borderWidth"];
+            style?: keyof T["borderStyle"];
+            color: keyof T["colors"];
+          }
+        >
+      >
+    | {
+        width: keyof T["borderWidth"];
+        style?: keyof T["borderStyle"];
+        color: keyof T["colors"];
       };
 }>;
 

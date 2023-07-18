@@ -490,7 +490,7 @@ const tests = [
           message() {
             return `should transform { ${prop}: { width: "8" } } => "${this.expected}"`;
           },
-          expected: "border-width-8",
+          expected: "border border-w-8",
           fn() {
             expect(_buildClassNames(prop, { width: "8" })).toBe(this.expected);
           },
@@ -499,7 +499,7 @@ const tests = [
           message() {
             return `should transform { ${prop}: { style: "solid" } } => "${this.expected}"`;
           },
-          expected: "border-style-solid",
+          expected: "border border-s-solid",
           fn() {
             expect(_buildClassNames(prop, { style: "solid" })).toBe(
               this.expected
@@ -510,9 +510,20 @@ const tests = [
           message() {
             return `should transform { ${prop}: { color: "primary" } } => "${this.expected}"`;
           },
-          expected: "border-color-primary",
+          expected: "border border-c-primary",
           fn() {
             expect(_buildClassNames(prop, { color: "primary" })).toBe(
+              this.expected
+            );
+          },
+        },
+        {
+          message() {
+            return `should transform { ${prop}: { left: { color: "primary" } } } => "${this.expected}"`;
+          },
+          expected: "border border-l-c-primary",
+          fn() {
+            expect(_buildClassNames(prop, { left: { color: "primary" } })).toBe(
               this.expected
             );
           },

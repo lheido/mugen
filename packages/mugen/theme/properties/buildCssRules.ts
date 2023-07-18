@@ -41,6 +41,7 @@ export function* buildCssRules(
         };
       } else {
         if (clsInfo.isAdditional) {
+          if (!clsInfo.property) continue;
           const props = Array.isArray(clsInfo.property)
             ? clsInfo.property
             : [clsInfo.property];

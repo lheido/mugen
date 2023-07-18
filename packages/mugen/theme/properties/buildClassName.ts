@@ -4,14 +4,7 @@ import {
   PropertyDefinitions,
 } from "./properties";
 
-export function* buildClassNames<V extends string | object | boolean>(
-  property: string,
-  value: V,
-  media?: string,
-  evt?: string,
-  definition: any = properties,
-  base?: string
-): Generator<{
+type ClassInfo<V> = {
   className: string;
   parent: PropertyDefinitions | PropertyDefinition;
   definition: PropertyDefinition;
@@ -19,7 +12,27 @@ export function* buildClassNames<V extends string | object | boolean>(
   value: V;
   isAdditional?: boolean;
   useParent?: boolean;
-}> {
+};
+
+const cacheClassNames = new Map<string, ClassInfo<any>[]>();
+
+export function* buildClassNames<V extends string | object | boolean>(
+  property: string,
+  value: V,
+  media?: string,
+  evt?: string,
+  definition: any = properties,
+  base?: string
+): Generator<ClassInfo<V>> {
+  // TODO: use cache system to improve performance.
+  // const cacheKey = `${property}-${JSON.stringify(
+  //   value
+  // )}-${media}-${evt}-${base}`;
+  // if (cacheClassNames.has(cacheKey)) {
+  //   for (const clsInfo of cacheClassNames.get(cacheKey)!) {
+  //     yield clsInfo;
+  //   }
+  // };
   const baseCls = definition[property]?._cls ?? "";
   const separator = definition[property]?._separator ?? "-";
   const additionals = (definition[property]?._additionals ?? []) as string[];
@@ -31,7 +44,7 @@ export function* buildClassNames<V extends string | object | boolean>(
   const ignoreBase = definition[property]?._ignoreBase ?? false;
   const useParent = (definition[property]?._useParent as boolean) ?? false;
   for (const [i, className] of additionals.entries()) {
-    yield {
+    const clsInfo = {
       className,
       property: _additionalsProperties[i],
       value: (_additionalsPropertiesValues[i] ?? className) as any,
@@ -40,6 +53,8 @@ export function* buildClassNames<V extends string | object | boolean>(
       isAdditional: true,
       useParent,
     };
+    // cacheClassNames.set(cacheKey, );
+    yield clsInfo;
   }
   if (typeof value === "object") {
     const keys = Object.keys(value);

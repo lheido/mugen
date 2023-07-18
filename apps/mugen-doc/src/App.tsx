@@ -41,35 +41,48 @@ const App: Component = () => {
             </Text>
           )}
         </List>
+        {/* <Row
+          gap="1"
+          theme={{
+            fixed: { bottom: "0" },
+            padding: "4",
+          }}
+        >
+          <Image src="https://badgen.net/github/license/lheido/mugen" />
+          <Image src="https://badgen.net/github/release/lheido/mugen" />
+          <Image src="https://badgen.net/github/stars/lheido/mugen?label=★" />
+        </Row> */}
       </Column>
       <Box as="header" theme={{ relative: true }}>
         <Box theme={{ sticky: { top: "0" }, zIndex: 1 }}>
-          <Heading
-            as="h1"
-            theme={{
-              font: {
-                size: "base",
-                weight: "black",
-              },
-              absolute: { top: "14", left: "0" },
-              width: "max",
-              color: {
-                direction: "right",
-                from: "page",
-                to: "primary",
-                fromOffset: "50",
-                toOffset: "50",
-              },
-              transform: {
-                translate: {
-                  x: "-1/2",
+          <Box href="/">
+            <Heading
+              as="h1"
+              theme={{
+                font: {
+                  size: "base",
+                  weight: "black",
                 },
-                scale: "600",
-              },
-            }}
-          >
-            Mugen
-          </Heading>
+                absolute: { top: "14", left: "0" },
+                width: "max",
+                color: {
+                  direction: "right",
+                  from: "page",
+                  to: "primary",
+                  fromOffset: "50",
+                  toOffset: "50",
+                },
+                transform: {
+                  translate: {
+                    x: "-1/2",
+                  },
+                  scale: "600",
+                },
+              }}
+            >
+              Mugen
+            </Heading>
+          </Box>
         </Box>
       </Box>
       <FlexItem as="main" grow={1} theme={{ relative: true }}>

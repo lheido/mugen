@@ -11,11 +11,6 @@ describe("properties:escapeValue", () => {
     expect(escapeClassName("]")).toBe(String.raw`\]`);
   });
 
-  it(`should escape '{}'`, () => {
-    expect(escapeClassName("{")).toBe(String.raw`\{`);
-    expect(escapeClassName("}")).toBe(String.raw`\}`);
-  });
-
   it(`should escape '$'`, () => {
     expect(escapeClassName("$")).toBe(String.raw`\$`);
   });

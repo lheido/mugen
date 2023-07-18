@@ -3,8 +3,6 @@ export function escapeClassName(value: string) {
     value.includes(":") ||
     value.includes("[") ||
     value.includes("]") ||
-    value.includes("{") ||
-    value.includes("}") ||
     value.includes("_") ||
     value.includes("/") ||
     value.includes("$")
