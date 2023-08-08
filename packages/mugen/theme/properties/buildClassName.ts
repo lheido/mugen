@@ -44,8 +44,10 @@ export function* buildClassNames<V extends string | object | boolean>(
   const ignoreBase = definition[property]?._ignoreBase ?? false;
   const useParent = (definition[property]?._useParent as boolean) ?? false;
   for (const [i, className] of additionals.entries()) {
+    const _evt = evt ? `${evt}:` : "";
+    const _media = media ? `${media}:` : "";
     const clsInfo = {
-      className,
+      className: `${_media}${_evt}${className}`,
       property: _additionalsProperties[i],
       value: (_additionalsPropertiesValues[i] ?? className) as any,
       parent: definition,

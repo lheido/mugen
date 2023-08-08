@@ -1,5 +1,6 @@
 import { Box } from "mugen/ui";
 import Prism from "prismjs";
+import "prismjs/components/prism-bash";
 import "prismjs/components/prism-jsx";
 import "prismjs/components/prism-tsx";
 import "prismjs/components/prism-typescript";
@@ -22,6 +23,7 @@ function CodeWrapper(props: { inline?: boolean; children: JSX.Element }) {
           padding: "4",
           margin: "0",
           rounded: "lg",
+          overflow: "auto",
         }}
       >
         {props.children}

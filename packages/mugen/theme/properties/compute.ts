@@ -1,5 +1,5 @@
 import { mugen } from "../global";
-import { ClassList } from "../types";
+import { ClassList, ThemeDescription } from "../types";
 import { buildCssRules } from "./buildCssRules";
 import { escapeClassName } from "./escapeClassName";
 
@@ -7,7 +7,7 @@ export function compute(
   key: string,
   value: any,
   emod?: string,
-  media?: string,
+  media?: keyof ThemeDescription["breakpoints"],
   ps?: string
 ): ClassList {
   const classes: string[] = [];

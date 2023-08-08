@@ -2,6 +2,10 @@ import { themeDescriptionDefaults } from "mugen/theme";
 
 export const theme = {
   ...themeDescriptionDefaults,
+  spacing: {
+    ...themeDescriptionDefaults.spacing,
+    "2/1": "200%",
+  },
   colors: {
     transparent: "transparent",
     current: "currentColor",

@@ -515,4 +515,16 @@ export const properties = {
       _propertiesValues: ["<value>px"],
     },
   },
+  overflow: {
+    _cls: "of",
+    _properties: "overflow",
+    x: {
+      _cls: "of-x",
+      _properties: "overflow-x",
+    },
+    y: {
+      _cls: "of-y",
+      _properties: "overflow-y",
+    },
+  },
 };

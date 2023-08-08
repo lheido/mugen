@@ -38,7 +38,7 @@ export function useThemeClassList(
       });
       return theme;
     },
-    {}
+    {} as ThemeElementApi<ThemeDescription>
   );
   return createMemo((previousClassList?: ClassList) => {
     // console.time("getClassList");

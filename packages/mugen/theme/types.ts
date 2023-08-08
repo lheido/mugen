@@ -3,10 +3,10 @@ import { ThemeElement } from "./properties";
 
 export type ClassList = Record<string, boolean>;
 
-export type ThemeDescription = Record<
-  keyof typeof themeDescriptionDefaults,
-  any
-> & {
+export type ThemePropertyValue = string | { raw: string };
+export type ThemePropertyValues = ThemePropertyValue[];
+
+export type ThemeDescription = typeof themeDescriptionDefaults & {
   colors: Record<string, string>;
   eventNames: Record<string, string>;
   themes: Record<string, Pick<ThemeDescription, "colors">>;

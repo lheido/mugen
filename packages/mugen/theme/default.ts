@@ -68,8 +68,9 @@ export const themeDescriptionDefaults = {
     ...spacing,
     auto: "auto",
     full: "100%",
-    screen: "100vh",
-    safeScreen: "100svh",
+    wscreen: "100vw",
+    hscreen: "100vh",
+    safeHScreen: "100svh",
     min: "min-content",
     max: "max-content",
     fit: "fit-content",
@@ -277,4 +278,4 @@ export const themeDescriptionDefaults = {
     90: "0.9",
     100: "1",
   },
-};
+} as const;

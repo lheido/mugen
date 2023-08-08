@@ -1,7 +1,7 @@
 import type { Component } from "solid-js";
 
 import { useRoutes } from "@solidjs/router";
-import { Box, Column, FlexItem, Heading, List, Row, Text } from "mugen/ui";
+import { Box, Column, FlexItem, Heading, List, Text } from "mugen/ui";
 import { routes } from "./app.routing";
 
 const categories = [
@@ -17,18 +17,44 @@ const categories = [
 const App: Component = () => {
   const Routes = useRoutes(routes);
   return (
-    <Row>
+    <Box
+      theme={{
+        flex: { direction: "column" },
+        md: {
+          flex: { direction: "row" },
+        },
+      }}
+    >
       <Column
         as="aside"
         theme={{
+          padding: { top: "32" },
           background: "primary",
-          height: { min: "screen" },
+          fixed: { top: "0", left: "0" },
+          zIndex: 2,
+          md: {
+            relative: true,
+            height: { min: "hscreen" },
+          },
         }}
       >
         <List
           each={categories}
-          theme={{ sticky: { top: "64" } }}
-          mixins={[Column.mixin({})]}
+          theme={{
+            flex: {
+              direction: "row",
+            },
+            overflow: { x: "scroll" },
+            width: { max: "wscreen" },
+            md: {
+              sticky: { top: "64" },
+              width: "auto",
+              overflow: "auto",
+              flex: {
+                direction: "column",
+              },
+            },
+          }}
         >
           {(category) => (
             <Text
@@ -54,7 +80,7 @@ const App: Component = () => {
         </Row> */}
       </Column>
       <Box as="header" theme={{ relative: true }}>
-        <Box theme={{ sticky: { top: "0" }, zIndex: 1 }}>
+        <Box theme={{ sticky: { top: "0" }, zIndex: 3 }}>
           <Box href="/">
             <Heading
               as="h1"
@@ -63,20 +89,26 @@ const App: Component = () => {
                   size: "base",
                   weight: "black",
                 },
-                absolute: { top: "14", left: "0" },
+                absolute: { top: "14", left: "1/2" },
                 width: "max",
-                color: {
-                  direction: "right",
-                  from: "page",
-                  to: "primary",
-                  fromOffset: "50",
-                  toOffset: "50",
-                },
+                color: "page",
                 transform: {
                   translate: {
                     x: "-1/2",
                   },
-                  scale: "600",
+                  scale: "400",
+                },
+                md: {
+                  color: {
+                    direction: "right",
+                    from: "page",
+                    to: "primary",
+                    fromOffset: "50",
+                    toOffset: "50",
+                  },
+                  transform: {
+                    scale: "600",
+                  },
                 },
               }}
             >
@@ -88,7 +120,7 @@ const App: Component = () => {
       <FlexItem as="main" grow={1} theme={{ relative: true }}>
         <Routes />
       </FlexItem>
-    </Row>
+    </Box>
   );
 };
 
