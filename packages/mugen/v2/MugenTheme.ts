@@ -1,40 +1,55 @@
-import { ThemeDescription } from "../theme/types";
+import { ThemeDescription } from "./types";
 
-export class MugenTheme {
-  style = new CSSStyleSheet();
-  mediaStyleSheets = new Map<string, CSSStyleSheet>();
-  handlers = new Map<string, () => string[]>();
-  classNameRefs = new Map<string, boolean>();
+export class MugenTheme<T extends ThemeDescription> {
+  private style = new CSSStyleSheet();
+  private mediaStyleSheets = new Map<string, CSSStyleSheet>();
+  private classNameRefs = new Map<string, boolean>();
+  private handlers = new Map<string, () => string[]>();
 
-  constructor(public description: ThemeDescription) {
+  constructor(public description: T) {
+    document.adoptedStyleSheets.push(this.style);
     Object.entries(this.description.breakpoints ?? {}).forEach(
       ([name, minWidth]) => {
-        this.mediaStyleSheets.set(
-          name,
-          new CSSStyleSheet({
-            media: `(min-width: ${minWidth})`,
-          })
-        );
+        const mediaStyleSheets = new CSSStyleSheet({
+          media: `(min-width: ${minWidth})`,
+        });
+        this.mediaStyleSheets.set(name, mediaStyleSheets);
+        document.adoptedStyleSheets.push(mediaStyleSheets);
       }
     );
+  }
+
+  classExists(className: string) {
+    return this.classNameRefs.has(className);
   }
 
   insertRule(
     className: string,
     properties: string[],
-    breakpoint?: keyof ThemeDescription["breakpoints"]
+    breakpoint?: keyof T["breakpoints"]
   ) {
     if (this.classNameRefs.has(className)) return;
     this.classNameRefs.set(className, true);
     const rule = `.${className}{${properties.join(";")}}`;
     if (breakpoint) {
-      this.mediaStyleSheets.get(breakpoint)?.insertRule(rule);
+      this.mediaStyleSheets.get(breakpoint as string)?.insertRule(rule);
     } else {
       this.style.insertRule(rule);
     }
   }
 
   add(name: string, handler: () => string[]) {
+    if (this.handlers.has(name)) return;
     this.handlers.set(name, handler);
+  }
+
+  consume(name: string) {
+    const handler = this.handlers.get(name)!;
+    this.handlers.delete(name);
+    return handler;
+  }
+
+  consumeAvailable() {
+    return Array.from(this.handlers.keys()).map((k) => this.consume(k));
   }
 }

@@ -1,11 +1,11 @@
 import { FlowProps, createContext, useContext } from "solid-js";
-import { ThemeDescription } from "../theme/types";
 import { MugenTheme } from "./MugenTheme";
+import { ThemeDescription } from "./types";
 
-export const MugenThemeContext = createContext<MugenTheme>();
+export const MugenThemeContext = createContext<MugenTheme<ThemeDescription>>();
 
-export function useMugenThemeContext() {
-  return useContext(MugenThemeContext) as MugenTheme;
+export function useMugenThemeContext<T extends ThemeDescription>() {
+  return useContext(MugenThemeContext) as MugenTheme<T>;
 }
 
 export const MugenThemeProvider = <T extends ThemeDescription>(
