@@ -8,14 +8,16 @@ import {
 
 export type CreateAppOptions = {
   root: () => JSX.Element;
-  theme: {
+  theme?: {
     description: ThemeDescription;
     options?: RegisterThemeOptions<ThemeDescription>;
   };
 };
 
 export function createApp(options: CreateAppOptions) {
-  registerTheme(options.theme.description, options.theme.options);
+  if (options.theme) {
+    registerTheme(options.theme.description, options.theme.options);
+  }
 
   const root = document.getElementById("root");
 

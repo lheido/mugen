@@ -1,31 +1,30 @@
-import {
-  MugenThemeProvider,
-  Padding,
-  ThemeConsumer,
-  themeDescriptionDefaults,
-} from "mugen/v2";
+import { Height, Padding, Rounded, ThemeConsumer } from "mugen/v2";
 import { FlowProps } from "solid-js";
 
 const Fooo = (props: FlowProps) => {
   return (
-    <Padding value="4">
-      <ThemeConsumer>{props.children}</ThemeConsumer>
-    </Padding>
+    <Height min="1/2">
+      <Padding value="4">
+        <ThemeConsumer>{props.children}</ThemeConsumer>
+      </Padding>
+    </Height>
   );
 };
 
 const HomeV2 = () => {
   console.time("HomeV2");
   const result = (
-    <MugenThemeProvider description={themeDescriptionDefaults as any}>
+    <Height value="hscreen">
       <Padding value="2">
         <Fooo>
           <Padding value="6">
-            <ThemeConsumer>Lorem ipsum</ThemeConsumer>
+            <Rounded value="lg">
+              <ThemeConsumer>Lorem ipsum</ThemeConsumer>
+            </Rounded>
           </Padding>
         </Fooo>
       </Padding>
-    </MugenThemeProvider>
+    </Height>
   );
   console.timeEnd("HomeV2");
   return result;

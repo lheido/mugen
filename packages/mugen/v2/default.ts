@@ -209,17 +209,17 @@ export const themeDescriptionDefaults = {
     baseline: "baseline",
     stretch: "stretch",
   },
-  flexWrap: {
-    nowrap: "nowrap",
-    wrap: "wrap",
-    "wrap-reverse": "wrap-reverse",
-  },
-  flexDirection: {
-    row: "row",
-    "row-reverse": "row-reverse",
-    column: "column",
-    "column-reverse": "column-reverse",
-  },
+  // flexWrap: {
+  //   nowrap: "nowrap",
+  //   wrap: "wrap",
+  //   "wrap-reverse": "wrap-reverse",
+  // },
+  // flexDirection: {
+  //   row: "row",
+  //   "row-reverse": "row-reverse",
+  //   column: "column",
+  //   "column-reverse": "column-reverse",
+  // },
   transformScale: {
     "0": "0",
     "50": "0.5",
