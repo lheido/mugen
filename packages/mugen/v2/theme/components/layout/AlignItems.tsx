@@ -1,17 +1,17 @@
 import { FlowProps } from "solid-js";
-import { Split } from "../../../types";
-import { useMugenThemeContext } from "../../context";
+import { Either, Split, ThemeDescription } from "../../../types";
 import { MugenTheme } from "../../MugenTheme";
-import { ThemeDescription } from "../../types";
+import { useMugenThemeContext } from "../../context";
+import { themeDisplayFlexHandler } from "./displayFlexHandler";
 
-type AvailableAlignItemsProps = {
-  center?: boolean;
-  end?: boolean;
-  start?: boolean;
-  baseline?: boolean;
-  stretch?: boolean;
-  value?: "start" | "end" | "center" | "baseline" | "stretch";
-};
+type AlignItemsValues = "start" | "end" | "center" | "baseline" | "stretch";
+
+type AvailableAlignItemsProps = Either<
+  {
+    [k in AlignItemsValues]?: boolean;
+  },
+  { value?: AlignItemsValues }
+>;
 
 export type AlignItemsProps = Split<AvailableAlignItemsProps>;
 
@@ -58,6 +58,7 @@ export const AlignItems = <T extends ThemeDescription>(
   props: FlowProps & AlignItemsProps
 ) => {
   const theme = useMugenThemeContext<T>();
+  theme.add("flex", () => themeDisplayFlexHandler(theme));
   theme.add("alignItems", () => themeAlignItemsHandler(theme, props));
   return props.children;
 };

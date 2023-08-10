@@ -1,7 +1,8 @@
 import { FlowProps } from "solid-js";
-import { useMugenThemeContext } from "../../context";
+import { ThemeDescription } from "../../../types";
 import { MugenTheme } from "../../MugenTheme";
-import { ThemeDescription } from "../../types";
+import { useMugenThemeContext } from "../../context";
+import { themeDisplayFlexHandler } from "./displayFlexHandler";
 
 export type FlexDirectionProps = {
   reverse?: boolean;
@@ -57,6 +58,7 @@ export const FlexDirection = <T extends ThemeDescription>(
   props: FlowProps & FlexDirectionProps
 ) => {
   const theme = useMugenThemeContext<T>();
+  theme.add("flex", () => themeDisplayFlexHandler(theme));
   theme.add("flexDirection", () => themeFlexDirectionHandler(theme, props));
   return props.children;
 };

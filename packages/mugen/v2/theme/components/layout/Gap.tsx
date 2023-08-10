@@ -1,14 +1,17 @@
 import { FlowProps } from "solid-js";
+import { Either, ThemeDescription } from "../../../types";
 import { MugenTheme } from "../../MugenTheme";
 import { useMugenThemeContext } from "../../context";
-import { ThemeDescription } from "../../types";
 import { escapeClassName } from "../../utils/escapeClassName";
+import { themeDisplayFlexHandler } from "./displayFlexHandler";
 
-export type GapProps<T extends ThemeDescription> = {
-  value?: keyof T["spacing"];
-  x?: keyof T["spacing"];
-  y?: keyof T["spacing"];
-};
+export type GapProps<T extends ThemeDescription> = Either<
+  {
+    x?: keyof T["spacing"];
+    y?: keyof T["spacing"];
+  },
+  { value?: keyof T["spacing"] }
+>;
 
 export function themeGapHandler<T extends ThemeDescription>(
   theme: MugenTheme<T>,
@@ -64,6 +67,11 @@ export const Gap = <T extends ThemeDescription>(
   props: FlowProps & GapProps<T>
 ) => {
   const theme = useMugenThemeContext<T>();
+  if (props.value !== undefined) {
+    theme.add("flex", () => themeDisplayFlexHandler(theme));
+  } else {
+    console.warn("TODO: implement grid handler");
+  }
   theme.add("gap", () => themeGapHandler(theme, props));
   return props.children;
 };

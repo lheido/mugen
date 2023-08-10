@@ -1,18 +1,23 @@
 import { FlowProps } from "solid-js";
-import { Split } from "../../../types";
-import { useMugenThemeContext } from "../../context";
+import { Either, Split, ThemeDescription } from "../../../types";
 import { MugenTheme } from "../../MugenTheme";
-import { ThemeDescription } from "../../types";
+import { useMugenThemeContext } from "../../context";
+import { themeDisplayFlexHandler } from "./displayFlexHandler";
 
-type AvailableJustifyContentProps = {
-  center?: boolean;
-  end?: boolean;
-  start?: boolean;
-  between?: boolean;
-  around?: boolean;
-  evenly?: boolean;
-  value?: "start" | "end" | "center" | "between" | "around" | "evenly";
-};
+type JustifyContentValues =
+  | "start"
+  | "end"
+  | "center"
+  | "between"
+  | "around"
+  | "evenly";
+
+type AvailableJustifyContentProps = Either<
+  {
+    [k in JustifyContentValues]?: boolean;
+  },
+  { value?: JustifyContentValues }
+>;
 
 export type JustifyContentProps = Split<AvailableJustifyContentProps>;
 
@@ -63,6 +68,7 @@ export const JustifyContent = <T extends ThemeDescription>(
   props: FlowProps & JustifyContentProps
 ) => {
   const theme = useMugenThemeContext<T>();
+  theme.add("flex", () => themeDisplayFlexHandler(theme));
   theme.add("justifyContent", () => themeJustifyContentHandler(theme, props));
   return props.children;
 };

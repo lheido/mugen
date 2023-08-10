@@ -1,8 +1,8 @@
 import { FlowProps } from "solid-js";
-import { useMugenThemeContext } from "../../context";
-import { MugenTheme } from "../../MugenTheme";
 import { ThemeDescription } from "../../types";
-import { escapeClassName } from "../../utils/escapeClassName";
+import { MugenTheme } from "../MugenTheme";
+import { useMugenThemeContext } from "../context";
+import { escapeClassName } from "../utils/escapeClassName";
 
 export type RoundedProps<T extends ThemeDescription> = {
   value?: keyof T["rounded"];

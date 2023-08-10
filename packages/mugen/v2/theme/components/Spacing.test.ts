@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { MugenTheme } from "../../MugenTheme";
+import { MugenTheme } from "../MugenTheme";
 import { themeSpacingHandler } from "./Spacing";
 
 describe("themeSpacingHandler", () => {

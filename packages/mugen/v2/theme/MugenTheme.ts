@@ -38,8 +38,12 @@ export class MugenTheme<T extends ThemeDescription> {
     }
   }
 
+  hasHandler(name: string) {
+    return this.handlers.has(name);
+  }
+
   add(name: string, handler: () => string[]) {
-    if (this.handlers.has(name)) return;
+    if (this.hasHandler(name)) return;
     this.handlers.set(name, handler);
   }
 

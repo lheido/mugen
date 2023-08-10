@@ -1,8 +1,8 @@
 import { FlowProps } from "solid-js";
-import { MugenTheme } from "../../MugenTheme";
-import { useMugenThemeContext } from "../../context";
 import { ThemeDescription } from "../../types";
-import { escapeClassName } from "../../utils/escapeClassName";
+import { MugenTheme } from "../MugenTheme";
+import { useMugenThemeContext } from "../context";
+import { escapeClassName } from "../utils/escapeClassName";
 
 export type SpacingProps<T extends ThemeDescription> = {
   value?: keyof T["spacing"];
@@ -29,7 +29,7 @@ export function themeSpacingHandler<T extends ThemeDescription>(
     if (!theme.classExists(className)) {
       cls.push({
         className,
-        // ! TODO: fix type issue and remove the any usage...
+        // ! TODO: fix type issue and remove the any...
         properties: [
           `${prop}: ${(theme.description as any)["spacing"][props.value]}`,
         ],
