@@ -1,16 +1,10 @@
 import { FlowProps } from "solid-js";
 import { Either, Split, ThemeDescription } from "../../../types";
-import { MugenTheme } from "../../MugenTheme";
 import { useMugenThemeContext } from "../../context";
+import { MugenTheme } from "../../MugenTheme";
 import { themeDisplayFlexHandler } from "./displayFlexHandler";
 
-type JustifyContentValues =
-  | "start"
-  | "end"
-  | "center"
-  | "between"
-  | "around"
-  | "evenly";
+type JustifyContentValues = "start" | "end" | "center" | "between" | "around" | "evenly";
 
 type AvailableJustifyContentProps = Either<
   {
@@ -47,11 +41,7 @@ export function themeJustifyContentHandler<T extends ThemeDescription>(
     if (!theme.classExists(className)) {
       cls.push({
         className,
-        properties: [
-          `justify-content: ${
-            (theme.description as any)["justifyContent"][value]
-          }`,
-        ],
+        properties: [`justify-content: ${(theme.description as any)["justifyContent"][value]}`],
       });
     }
   }
@@ -64,10 +54,8 @@ export function themeJustifyContentHandler<T extends ThemeDescription>(
   return result;
 }
 
-export const JustifyContent = <T extends ThemeDescription>(
-  props: FlowProps & JustifyContentProps
-) => {
-  const theme = useMugenThemeContext<T>();
+export const JustifyContent = <T extends ThemeDescription>(props: FlowProps & JustifyContentProps) => {
+  const theme = useMugenThemeContext();
   theme.add("flex", () => themeDisplayFlexHandler(theme));
   theme.add("justifyContent", () => themeJustifyContentHandler(theme, props));
   return props.children;

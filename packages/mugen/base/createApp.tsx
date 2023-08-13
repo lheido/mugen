@@ -1,20 +1,17 @@
 import { JSX } from "solid-js";
 import { render } from "solid-js/web";
-import {
-  registerTheme,
-  RegisterThemeOptions,
-  ThemeDescription,
-} from "../theme";
+import { registerTheme, RegisterThemeOptions } from "../theme";
+import { ThemeDescription } from "../v2";
 
-export type CreateAppOptions = {
+export type CreateAppOptions<T extends ThemeDescription> = {
   root: () => JSX.Element;
   theme?: {
-    description: ThemeDescription;
-    options?: RegisterThemeOptions<ThemeDescription>;
+    description: T;
+    options?: RegisterThemeOptions<T>;
   };
 };
 
-export function createApp(options: CreateAppOptions) {
+export function createApp<T extends ThemeDescription>(options: CreateAppOptions<T>) {
   if (options.theme) {
     registerTheme(options.theme.description, options.theme.options);
   }

@@ -1,8 +1,7 @@
 import { FlowProps } from "solid-js";
 import { Either, ThemeDescription } from "../../../types";
-import { MugenTheme } from "../../MugenTheme";
 import { useMugenThemeContext } from "../../context";
-import { escapeClassName } from "../../utils/escapeClassName";
+import { MugenTheme } from "../../MugenTheme";
 import { themeDisplayFlexHandler } from "./displayFlexHandler";
 
 export type GapProps<T extends ThemeDescription> = Either<
@@ -13,45 +12,36 @@ export type GapProps<T extends ThemeDescription> = Either<
   { value?: keyof T["spacing"] }
 >;
 
-export function themeGapHandler<T extends ThemeDescription>(
-  theme: MugenTheme<T>,
-  props: GapProps<T>
-) {
+export function themeGapHandler<T extends ThemeDescription>(theme: MugenTheme<T>, props: GapProps<T>) {
   const cls: { className: string; properties: string[] }[] = [];
   const result: string[] = [];
   if (props.value) {
-    const className = escapeClassName(`gap-${props.value as string}`);
+    const className = `gap-${props.value as string}`;
     result.push(className);
     if (!theme.classExists(className)) {
       cls.push({
         className,
-        properties: [
-          `gap: ${(theme.description as any)["spacing"][props.value]}`,
-        ],
+        properties: [`gap: ${(theme.description as any)["spacing"][props.value]}`],
       });
     }
   }
   if (props.x) {
-    const className = escapeClassName(`gap-x-${props.x as string}`);
+    const className = `gap-x-${props.x as string}`;
     result.push(className);
     if (!theme.classExists(className)) {
       cls.push({
         className,
-        properties: [
-          `column-gap: ${(theme.description as any)["spacing"][props.x]}`,
-        ],
+        properties: [`column-gap: ${(theme.description as any)["spacing"][props.x]}`],
       });
     }
   }
   if (props.y) {
-    const className = escapeClassName(`gap-y-${props.y as string}`);
+    const className = `gap-y-${props.y as string}`;
     result.push(className);
     if (!theme.classExists(className)) {
       cls.push({
         className,
-        properties: [
-          `row-gap: ${(theme.description as any)["spacing"][props.y]}`,
-        ],
+        properties: [`row-gap: ${(theme.description as any)["spacing"][props.y]}`],
       });
     }
   }
@@ -63,15 +53,13 @@ export function themeGapHandler<T extends ThemeDescription>(
   return result;
 }
 
-export const Gap = <T extends ThemeDescription>(
-  props: FlowProps & GapProps<T>
-) => {
+export const Gap = <T extends ThemeDescription>(props: FlowProps & GapProps<T>) => {
   const theme = useMugenThemeContext<T>();
   if (props.value !== undefined) {
-    theme.add("flex", () => themeDisplayFlexHandler(theme));
+    theme.add("flex", () => themeDisplayFlexHandler<T>(theme));
   } else {
     console.warn("TODO: implement grid handler");
   }
-  theme.add("gap", () => themeGapHandler(theme, props));
+  theme.add("gap", () => themeGapHandler<T>(theme, props));
   return props.children;
 };

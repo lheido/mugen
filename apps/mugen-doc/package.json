@@ -17,6 +17,7 @@
     "vite-plugin-solid": "^2.7.0"
   },
   "dependencies": {
+    "@solid-primitives/media": "^2.2.4",
     "@solidjs/router": "^0.8.2",
     "mugen": "workspace:*",
     "prismjs": "^1.29.0",

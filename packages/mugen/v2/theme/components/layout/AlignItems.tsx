@@ -1,7 +1,7 @@
 import { FlowProps } from "solid-js";
 import { Either, Split, ThemeDescription } from "../../../types";
-import { MugenTheme } from "../../MugenTheme";
 import { useMugenThemeContext } from "../../context";
+import { MugenTheme } from "../../MugenTheme";
 import { themeDisplayFlexHandler } from "./displayFlexHandler";
 
 type AlignItemsValues = "start" | "end" | "center" | "baseline" | "stretch";
@@ -15,10 +15,7 @@ type AvailableAlignItemsProps = Either<
 
 export type AlignItemsProps = Split<AvailableAlignItemsProps>;
 
-export function themeAlignItemsHandler<T extends ThemeDescription>(
-  theme: MugenTheme<T>,
-  props: AlignItemsProps
-) {
+export function themeAlignItemsHandler<T extends ThemeDescription>(theme: MugenTheme<T>, props: AlignItemsProps) {
   const cls: { className: string; properties: string[] }[] = [];
   const result: string[] = [];
   const value =
@@ -39,9 +36,7 @@ export function themeAlignItemsHandler<T extends ThemeDescription>(
     if (!theme.classExists(className)) {
       cls.push({
         className,
-        properties: [
-          `align-items: ${(theme.description as any)["alignItems"][value]}`,
-        ],
+        properties: [`align-items: ${(theme.description as any)["alignItems"][value]}`],
       });
     }
   }
@@ -54,10 +49,8 @@ export function themeAlignItemsHandler<T extends ThemeDescription>(
   return result;
 }
 
-export const AlignItems = <T extends ThemeDescription>(
-  props: FlowProps & AlignItemsProps
-) => {
-  const theme = useMugenThemeContext<T>();
+export const AlignItems = <T extends ThemeDescription>(props: FlowProps & AlignItemsProps) => {
+  const theme = useMugenThemeContext();
   theme.add("flex", () => themeDisplayFlexHandler(theme));
   theme.add("alignItems", () => themeAlignItemsHandler(theme, props));
   return props.children;

@@ -1,8 +1,7 @@
 import { FlowProps } from "solid-js";
 import { ThemeDescription } from "../../types";
-import { MugenTheme } from "../MugenTheme";
 import { useMugenThemeContext } from "../context";
-import { escapeClassName } from "../utils/escapeClassName";
+import { MugenTheme } from "../MugenTheme";
 
 export type SizeProps<T extends ThemeDescription> = {
   value?: keyof T["sizes"];
@@ -20,38 +19,32 @@ export function themeSizeHandler<T extends ThemeDescription>(
   const cls: { className: string; properties: string[] }[] = [];
   const result: string[] = [];
   if (props.value) {
-    const className = escapeClassName(`${prop[0]}-${props.value as string}`);
+    const className = `${prop[0]}-${props.value as string}`;
     result.push(className);
     if (!theme.classExists(className)) {
       cls.push({
         className,
-        properties: [
-          `${prop}: ${(theme.description as any)["sizes"][props.value]}`,
-        ],
+        properties: [`${prop}: ${(theme.description as any)["sizes"][props.value]}`],
       });
     }
   }
   if (props.min) {
-    const className = escapeClassName(`min-${prop[0]}-${props.min as string}`);
+    const className = `min-${prop[0]}-${props.min as string}`;
     result.push(className);
     if (!theme.classExists(className)) {
       cls.push({
         className,
-        properties: [
-          `min-${prop}: ${(theme.description as any)["sizes"][props.min]}`,
-        ],
+        properties: [`min-${prop}: ${(theme.description as any)["sizes"][props.min]}`],
       });
     }
   }
   if (props.max) {
-    const className = escapeClassName(`max-${prop[0]}-${props.max as string}`);
+    const className = `max-${prop[0]}-${props.max as string}`;
     result.push(className);
     if (!theme.classExists(className)) {
       cls.push({
         className,
-        properties: [
-          `max-${prop}: ${(theme.description as any)["sizes"][props.max]}`,
-        ],
+        properties: [`max-${prop}: ${(theme.description as any)["sizes"][props.max]}`],
       });
     }
   }
@@ -64,18 +57,14 @@ export function themeSizeHandler<T extends ThemeDescription>(
   return result;
 }
 
-export const Width = <T extends ThemeDescription>(
-  props: FlowProps & SizeProps<T>
-) => {
+export const Width = <T extends ThemeDescription>(props: FlowProps & SizeProps<T>) => {
   const theme = useMugenThemeContext<T>();
-  theme.add("width", () => themeSizeHandler(theme, props, "width"));
+  theme.add("width", () => themeSizeHandler<T>(theme, props, "width"));
   return props.children;
 };
 
-export const Height = <T extends ThemeDescription>(
-  props: FlowProps & SizeProps<T>
-) => {
+export const Height = <T extends ThemeDescription>(props: FlowProps & SizeProps<T>) => {
   const theme = useMugenThemeContext<T>();
-  theme.add("height", () => themeSizeHandler(theme, props, "height"));
+  theme.add("height", () => themeSizeHandler<T>(theme, props, "height"));
   return props.children;
 };

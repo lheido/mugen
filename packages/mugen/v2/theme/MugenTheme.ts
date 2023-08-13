@@ -1,4 +1,5 @@
-import { ThemeDescription } from "./types";
+import { ThemeDescription } from "../types";
+import { escapeClassName } from "./utils/escapeClassName";
 
 export class MugenTheme<T extends ThemeDescription> {
   private style = new CSSStyleSheet();
@@ -8,29 +9,23 @@ export class MugenTheme<T extends ThemeDescription> {
 
   constructor(public description: T) {
     document.adoptedStyleSheets.push(this.style);
-    Object.entries(this.description.breakpoints ?? {}).forEach(
-      ([name, minWidth]) => {
-        const mediaStyleSheets = new CSSStyleSheet({
-          media: `(min-width: ${minWidth})`,
-        });
-        this.mediaStyleSheets.set(name, mediaStyleSheets);
-        document.adoptedStyleSheets.push(mediaStyleSheets);
-      }
-    );
+    Object.entries(this.description.breakpoints ?? {}).forEach(([name, minWidth]) => {
+      const mediaStyleSheets = new CSSStyleSheet({
+        media: `(min-width: ${minWidth})`,
+      });
+      this.mediaStyleSheets.set(name, mediaStyleSheets);
+      document.adoptedStyleSheets.push(mediaStyleSheets);
+    });
   }
 
   classExists(className: string) {
     return this.classNameRefs.has(className);
   }
 
-  insertRule(
-    className: string,
-    properties: string[],
-    breakpoint?: keyof T["breakpoints"]
-  ) {
+  insertRule(className: string, properties: string[], breakpoint?: keyof T["breakpoints"]) {
     if (this.classNameRefs.has(className)) return;
     this.classNameRefs.set(className, true);
-    const rule = `.${className}{${properties.join(";")}}`;
+    const rule = `.${escapeClassName(className)}{${properties.join(";")}}`;
     if (breakpoint) {
       this.mediaStyleSheets.get(breakpoint as string)?.insertRule(rule);
     } else {

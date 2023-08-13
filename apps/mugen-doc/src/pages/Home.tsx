@@ -32,7 +32,7 @@ const Home: Component = () => {
             width: "full",
             height: "full",
             overflow: "hidden",
-            opacity: 25,
+            opacity: "25",
             filter: {
               blur: 5,
             },
@@ -51,17 +51,11 @@ const Home: Component = () => {
             },
           }}
         >
-          <Paragraph
-            theme={{ font: { size: "3xl" }, md: { font: { size: "6xl" } } }}
-          >
-            An <strong>UI toolkit</strong> that provides low level components to
-            build app faster and easier.
+          <Paragraph theme={{ font: { size: "3xl" }, md: { font: { size: "6xl" } } }}>
+            An <strong>UI toolkit</strong> that provides low level components to build app faster and easier.
           </Paragraph>
-          <Paragraph
-            theme={{ font: { size: "2xl" }, md: { font: { size: "5xl" } } }}
-          >
-            It provides a typed way to adopt <strong>design systems</strong>{" "}
-            easily!🎉
+          <Paragraph theme={{ font: { size: "2xl" }, md: { font: { size: "5xl" } } }}>
+            It provides a typed way to adopt <strong>design systems</strong> easily!🎉
           </Paragraph>
           <Box
             theme={{
@@ -100,13 +94,9 @@ const Home: Component = () => {
         }}
         id="get-started"
       >
-        <Column
-          gap="8"
-          theme={{ background: "accent", padding: "4", rounded: "lg" }}
-        >
+        <Column gap="8" theme={{ background: "accent", padding: "4", rounded: "lg" }}>
           <Paragraph theme={{ md: { font: { size: "2xl" } } }}>
-            No need to worry about CSS or semantic/A11y HTML as the toolkit
-            handles that for us.
+            No need to worry about CSS or semantic/A11y HTML as the toolkit handles that for us.
           </Paragraph>
           <Box
             theme={{
@@ -129,8 +119,7 @@ const Home: Component = () => {
                 font: { size: "lg" },
               }}
             >
-              CSS is generated dynamically at lightning speed using an
-              incredibly small engine.
+              CSS is generated dynamically at lightning speed using an incredibly small engine.
             </Paragraph>
             <Paragraph
               theme={{
@@ -140,8 +129,7 @@ const Home: Component = () => {
                 font: { size: "lg" },
               }}
             >
-              It suggests the appropriate semantics or accessibility standards.
-              (TODO)
+              It suggests the appropriate semantics or accessibility standards. (TODO)
             </Paragraph>
           </Box>
         </Column>

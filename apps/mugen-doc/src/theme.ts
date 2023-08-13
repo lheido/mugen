@@ -1,4 +1,4 @@
-import { themeDescriptionDefaults } from "mugen/theme";
+import { themeDescriptionDefaults } from "mugen/v2";
 
 export const theme = {
   ...themeDescriptionDefaults,
@@ -32,8 +32,7 @@ export const theme = {
   },
   shadow: {
     ...themeDescriptionDefaults.shadow,
-    "neon-primary":
-      "0 0 10px rgb(var(--mugen-rgb-color-primary)), 0 0 32px rgb(var(--mugen-rgb-color-primary) / 0.4)",
+    "neon-primary": "0 0 10px rgb(var(--mugen-rgb-color-primary)), 0 0 32px rgb(var(--mugen-rgb-color-primary) / 0.4)",
     "neon-teal": "0 0 10px rgb(0 255 125), 0 0 32px rgb(0 255 125 / 0.4)",
   },
 };

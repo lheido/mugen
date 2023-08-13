@@ -1,20 +1,23 @@
-import { ButtonProps } from "mugen/ui";
-import { splitProps } from "solid-js";
+import { BackgroundColor, ButtonProps, FontWeight } from "mugen/v2";
 import { Button } from "./Button";
 
 export const CAButton = (props: ButtonProps) => {
-  const [local, others] = splitProps(props, ["theme"]);
+  // const [local, others] = splitProps(props, ["theme"]);
   return (
-    <Button
-      theme={{
-        background: "primary",
-        font: { weight: "bold" },
-        hover: {
-          background: "primary-focus",
-        },
-        ...local.theme,
-      }}
-      {...(others as any)}
-    />
+    <BackgroundColor value="primary">
+      <FontWeight value="bold">
+        <Button
+          // theme={{
+          //   background: "primary",
+          //   font: { weight: "bold" },
+          //   hover: {
+          //     background: "primary-focus",
+          //   },
+          //   ...local.theme,
+          // }}
+          {...props}
+        />
+      </FontWeight>
+    </BackgroundColor>
   );
 };

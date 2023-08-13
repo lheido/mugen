@@ -160,8 +160,7 @@ export const themeDescriptionDefaults = {
   transitionProperties: {
     all: "all",
     none: "none",
-    colors:
-      "color, background-color, border-color, text-decoration-color, fill, stroke",
+    colors: "color, background-color, border-color, text-decoration-color, fill, stroke",
     opacity: "opacity",
     shadow: "box-shadow",
     transform: "transform",
@@ -209,17 +208,18 @@ export const themeDescriptionDefaults = {
     baseline: "baseline",
     stretch: "stretch",
   },
-  // flexWrap: {
-  //   nowrap: "nowrap",
-  //   wrap: "wrap",
-  //   "wrap-reverse": "wrap-reverse",
-  // },
-  // flexDirection: {
-  //   row: "row",
-  //   "row-reverse": "row-reverse",
-  //   column: "column",
-  //   "column-reverse": "column-reverse",
-  // },
+  // TODO: remove flexWrap/flexDirection
+  flexWrap: {
+    nowrap: "nowrap",
+    wrap: "wrap",
+    "wrap-reverse": "wrap-reverse",
+  },
+  flexDirection: {
+    row: "row",
+    "row-reverse": "row-reverse",
+    column: "column",
+    "column-reverse": "column-reverse",
+  },
   transformScale: {
     "0": "0",
     "50": "0.5",
@@ -270,12 +270,12 @@ export const themeDescriptionDefaults = {
     xl: "1280px",
   },
   opacity: {
-    0: "0",
-    25: "0.25",
-    50: "0.5",
-    75: "0.75",
-    80: "0.8",
-    90: "0.9",
-    100: "1",
+    "0": "0",
+    "25": "0.25",
+    "50": "0.5",
+    "75": "0.75",
+    "80": "0.8",
+    "90": "0.9",
+    "100": "1",
   },
 } as const;

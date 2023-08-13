@@ -1,18 +1,19 @@
 import { FlowProps } from "solid-js";
-import { ThemeDescription } from "../../types";
-import { MugenTheme } from "../MugenTheme";
+import { Either, ThemeDescription } from "../../types";
 import { useMugenThemeContext } from "../context";
-import { escapeClassName } from "../utils/escapeClassName";
+import { MugenTheme } from "../MugenTheme";
 
-export type SpacingProps<T extends ThemeDescription> = {
-  value?: keyof T["spacing"];
-  top?: keyof T["spacing"];
-  right?: keyof T["spacing"];
-  bottom?: keyof T["spacing"];
-  left?: keyof T["spacing"];
-  x?: keyof T["spacing"];
-  y?: keyof T["spacing"];
-};
+export type SpacingProps<T extends ThemeDescription, K = keyof T["spacing"] | "auto"> = Either<
+  {
+    top?: K;
+    right?: K;
+    bottom?: K;
+    left?: K;
+    x?: K;
+    y?: K;
+  },
+  { value?: K }
+>;
 
 export type SpacingType = "padding" | "margin";
 
@@ -23,93 +24,80 @@ export function themeSpacingHandler<T extends ThemeDescription>(
 ) {
   const cls: { className: string; properties: string[] }[] = [];
   const result: string[] = [];
+  const prefix = prop[0];
   if (props.value) {
-    const className = escapeClassName(`p-${props.value as string}`);
+    const className = `${prefix}-${props.value as string}`;
     result.push(className);
     if (!theme.classExists(className)) {
       cls.push({
         className,
         // ! TODO: fix type issue and remove the any...
-        properties: [
-          `${prop}: ${(theme.description as any)["spacing"][props.value]}`,
-        ],
+        properties: [`${prop}: ${(theme.description as any)["spacing"][props.value] ?? props.value}`],
       });
     }
   }
   if (props.top) {
-    const className = escapeClassName(`pt-${props.top as string}`);
+    const className = `${prefix}t-${props.top as string}`;
     result.push(className);
     if (!theme.classExists(className)) {
       cls.push({
         className,
-        properties: [
-          `${prop}-top: ${(theme.description as any)["spacing"][props.top]}`,
-        ],
+        properties: [`${prop}-top: ${(theme.description as any)["spacing"][props.top] ?? props.top}`],
       });
     }
   }
   if (props.right) {
-    const className = escapeClassName(`pr-${props.right as string}`);
+    const className = `${prefix}r-${props.right as string}`;
     result.push(className);
     if (!theme.classExists(className)) {
       cls.push({
         className,
-        properties: [
-          `${prop}-right: ${
-            (theme.description as any)["spacing"][props.right]
-          }`,
-        ],
+        properties: [`${prop}-right: ${(theme.description as any)["spacing"][props.right] ?? props.right}`],
       });
     }
   }
   if (props.bottom) {
-    const className = escapeClassName(`pb-${props.bottom as string}`);
+    const className = `${prefix}b-${props.bottom as string}`;
     result.push(className);
     if (!theme.classExists(className)) {
       cls.push({
         className,
-        properties: [
-          `${prop}-bottom: ${
-            (theme.description as any)["spacing"][props.bottom]
-          }`,
-        ],
+        properties: [`${prop}-bottom: ${(theme.description as any)["spacing"][props.bottom]}`],
       });
     }
   }
   if (props.left) {
-    const className = escapeClassName(`pl-${props.left as string}`);
+    const className = `${prefix}l-${props.left as string}`;
     result.push(className);
     if (!theme.classExists(className)) {
       cls.push({
         className,
-        properties: [
-          `${prop}-left: ${(theme.description as any)["spacing"][props.left]}`,
-        ],
+        properties: [`${prop}-left: ${(theme.description as any)["spacing"][props.left] ?? props.left}`],
       });
     }
   }
   if (props.x) {
-    const className = escapeClassName(`px-${props.x as string}`);
+    const className = `${prefix}x-${props.x as string}`;
     result.push(className);
     if (!theme.classExists(className)) {
       cls.push({
         className,
         properties: [
-          `${prop}-left: ${(theme.description as any)["spacing"][props.x]}`,
-          `${prop}-right: ${(theme.description as any)["spacing"][props.x]}`,
+          `${prop}-left: ${(theme.description as any)["spacing"][props.x] ?? props.x}`,
+          `${prop}-right: ${(theme.description as any)["spacing"][props.x] ?? props.x}`,
         ],
       });
     }
   }
   if (props.y) {
-    const className = escapeClassName(`py-${props.y as string}`);
+    const className = `${prefix}y-${props.y as string}`;
     result.push(className);
     if (!theme.classExists(className)) {
       cls.push({
         className,
         properties: [
-          `${prop}-top: ${(theme.description as any)["spacing"][props.y]}`,
-          `${prop}-bottom: ${(theme.description as any)["spacing"][props.y]}`,
+          `${prop}-top: ${(theme.description as any)["spacing"][props.y] ?? props.y}`,
+          `${prop}-bottom: ${(theme.description as any)["spacing"][props.y] ?? props.y}`,
         ],
       });
     }
@@ -122,18 +110,16 @@ export function themeSpacingHandler<T extends ThemeDescription>(
   return result;
 }
 
-export const Spacing = <T extends ThemeDescription>(
-  props: FlowProps & SpacingProps<T> & { type: SpacingType }
-) => {
+export const Spacing = <T extends ThemeDescription>(props: FlowProps & SpacingProps<T> & { type: SpacingType }) => {
   const theme = useMugenThemeContext<T>();
-  theme.add(props.type, () => themeSpacingHandler(theme, props, props.type));
+  theme.add(props.type, () => themeSpacingHandler<T>(theme, props, props.type));
   return props.children;
 };
 
-export const Padding = <T extends ThemeDescription>(
-  props: FlowProps & SpacingProps<T>
-) => <Spacing {...props} type="padding" />;
+export const Padding = <T extends ThemeDescription>(props: FlowProps & SpacingProps<T>) => (
+  <Spacing {...props} type="padding" />
+);
 
-export const Margin = <T extends ThemeDescription>(
-  props: FlowProps & SpacingProps<T>
-) => <Spacing {...props} type="margin" />;
+export const Margin = <T extends ThemeDescription>(props: FlowProps & SpacingProps<T>) => (
+  <Spacing {...props} type="margin" />
+);

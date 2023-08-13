@@ -1,17 +1,14 @@
 import { FlowProps } from "solid-js";
 import { Either, ThemeDescription } from "../../../types";
-import { MugenTheme } from "../../MugenTheme";
 import { useMugenThemeContext } from "../../context";
+import { MugenTheme } from "../../MugenTheme";
 import { themeDisplayFlexHandler } from "./displayFlexHandler";
 
 export type FlexWrapProps = {
   reverse?: boolean;
 } & Either<{ wrap?: boolean }, { nowrap?: boolean }>;
 
-export function themeFlexWrapHandler<T extends ThemeDescription>(
-  theme: MugenTheme<T>,
-  props: FlexWrapProps
-) {
+export function themeFlexWrapHandler<T extends ThemeDescription>(theme: MugenTheme<T>, props: FlexWrapProps) {
   const cls: { className: string; properties: string[] }[] = [];
   const result: string[] = [];
   if (props.wrap) {
@@ -53,10 +50,8 @@ export function themeFlexWrapHandler<T extends ThemeDescription>(
   return result;
 }
 
-export const FlexWrap = <T extends ThemeDescription>(
-  props: FlowProps & FlexWrapProps
-) => {
-  const theme = useMugenThemeContext<T>();
+export const FlexWrap = <T extends ThemeDescription>(props: FlowProps & FlexWrapProps) => {
+  const theme = useMugenThemeContext();
   theme.add("flex", () => themeDisplayFlexHandler(theme));
   theme.add("flexWrap", () => themeFlexWrapHandler(theme, props));
   return props.children;
