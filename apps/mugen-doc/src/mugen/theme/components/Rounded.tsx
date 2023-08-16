@@ -1,19 +1,23 @@
 import { FlowProps } from "solid-js";
-import { HandlerRuleData, ThemeDescription } from "../../types";
+import { Either, HandlerRuleData, ThemeDescription } from "../../types";
 import { useMugenThemeContext } from "../context";
 import { MugenTheme } from "../MugenTheme";
 
-export type RoundedProps<K = keyof ThemeDescription["rounded"]> = {
-  value?: K;
-  top?: K;
-  right?: K;
-  bottom?: K;
-  left?: K;
-  topLeft?: K;
-  topRight?: K;
-  bottomLeft?: K;
-  bottomRight?: K;
-};
+export type RoundedProps<K = keyof ThemeDescription["rounded"]> = Either<
+  {
+    value?: K;
+  },
+  {
+    top?: K;
+    right?: K;
+    bottom?: K;
+    left?: K;
+    topLeft?: K;
+    topRight?: K;
+    bottomLeft?: K;
+    bottomRight?: K;
+  }
+>;
 
 export function themeRoundedHandler(theme: MugenTheme, props: RoundedProps) {
   const cls: HandlerRuleData[] = [];

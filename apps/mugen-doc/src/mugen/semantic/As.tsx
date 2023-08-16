@@ -7,12 +7,12 @@ import { useMugenSemanticContext } from "./context";
 //   { value?: IntrinsicElements }
 // >;
 
-export type AsProps = { value?: IntrinsicElements };
+export type AsProps = { value: IntrinsicElements };
 
 export const As = (props: FlowProps & AsProps) => {
   const ctx = useMugenSemanticContext();
   if (ctx?.as === undefined) {
-    ctx.as = props.value;
+    ctx.as = () => props.value;
   }
   return props.children;
 };

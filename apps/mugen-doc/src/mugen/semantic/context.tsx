@@ -1,9 +1,9 @@
-import { FlowProps, createContext, useContext } from "solid-js";
+import { createContext, FlowProps, useContext } from "solid-js";
 import { ElementRoles, IntrinsicElements } from "../types";
 
 export type MugenSemanticData = {
   role?: ElementRoles;
-  as?: IntrinsicElements;
+  as?: () => IntrinsicElements;
 };
 
 export const MugenSemanticContext = createContext<MugenSemanticData>();
@@ -13,9 +13,5 @@ export function useMugenSemanticContext() {
 }
 
 export const MugenSemanticProvider = (props: FlowProps) => {
-  return (
-    <MugenSemanticContext.Provider value={{}}>
-      {props.children}
-    </MugenSemanticContext.Provider>
-  );
+  return <MugenSemanticContext.Provider value={{}}>{props.children}</MugenSemanticContext.Provider>;
 };
