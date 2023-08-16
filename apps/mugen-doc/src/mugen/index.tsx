@@ -1,6 +1,7 @@
 import { JSX } from "solid-js";
 import { render } from "solid-js/web";
 import { MugenSemanticProvider } from "./semantic";
+import { Hierarchy } from "./semantic/Hierachy";
 import { MugenThemeProvider } from "./theme";
 import { theme } from "./theme-description";
 
@@ -18,7 +19,9 @@ export function createApp(root: () => JSX.Element) {
   render(
     () => (
       <MugenThemeProvider description={theme}>
-        <MugenSemanticProvider>{root()}</MugenSemanticProvider>
+        <MugenSemanticProvider>
+          <Hierarchy>{root()}</Hierarchy>
+        </MugenSemanticProvider>
       </MugenThemeProvider>
     ),
     rootElt!

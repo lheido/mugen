@@ -1,7 +1,8 @@
 import { Component, FlowProps, For, Show } from "solid-js";
 
-import { Box, Button, Layout } from "@mugen/components";
+import { Box, Button, Layout, Title } from "@mugen/components";
 import { As } from "@mugen/semantic";
+import { Hierarchy } from "@mugen/semantic/Hierachy";
 import {
   Absolute,
   BackgroundColor,
@@ -82,21 +83,19 @@ const SideBar = () => {
 
 const SiteTitle = (props: FlowProps) => {
   return (
-    <As value="h1">
-      <Absolute top="14" left="1/2">
-        <Width value="max">
-          <Color value="page">
-            <Font size="base" weight="black">
-              <Translate x="-1/2">
-                <Scale value="400">
-                  <Box>{props.children}</Box>
-                </Scale>
-              </Translate>
-            </Font>
-          </Color>
-        </Width>
-      </Absolute>
-    </As>
+    <Absolute top="14" left="1/2">
+      <Width value="max">
+        <Color value="page">
+          <Font size="base" weight="black">
+            <Translate x="-1/2">
+              <Scale value="400">
+                <Title>{props.children}</Title>
+              </Scale>
+            </Translate>
+          </Font>
+        </Color>
+      </Width>
+    </Absolute>
   );
 };
 
@@ -143,7 +142,9 @@ const App: Component = () => {
         <As value="main">
           <Fill>
             <Box>
-              <Routes />
+              <Hierarchy>
+                <Routes />
+              </Hierarchy>
             </Box>
           </Fill>
         </As>
