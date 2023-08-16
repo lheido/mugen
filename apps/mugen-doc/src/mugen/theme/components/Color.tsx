@@ -1,14 +1,13 @@
-import { FlowProps } from "solid-js";
-import { Either, ThemeDescription } from "../../types";
+import { FlowProps, splitProps } from "solid-js";
+import { Either, HandlerRuleData, ThemeDescription, WithPseudoClasse } from "../../types";
 import { useMugenThemeContext } from "../context";
 import { MugenTheme } from "../MugenTheme";
+import { getKeyAndModifier } from "../utils/handler";
 
 export type GradientDirectionValues = "bottom" | "top" | "left" | "right";
 
 export type ColorProps<C = keyof ThemeDescription["colors"], O = keyof ThemeDescription["gradientOffset"]> = Either<
-  {
-    value?: C;
-  },
+  Partial<Record<WithPseudoClasse<"value">, C>>,
   {
     from?: C;
     to?: C;
@@ -20,20 +19,31 @@ export type ColorProps<C = keyof ThemeDescription["colors"], O = keyof ThemeDesc
 
 export type ColorType = "color" | "background-color";
 
-export function themeColorHandler(theme: MugenTheme, props: ColorProps, prop: ColorType, isAutoContentColor?: boolean) {
-  const cls: { className: string; properties: string[] }[] = [];
+export function themeColorHandler(
+  theme: MugenTheme,
+  props: ColorProps,
+  prop: ColorType,
+  useAutoContentColor?: boolean
+) {
+  const cls: HandlerRuleData[] = [];
   const result: Record<string, boolean> = {};
   const prefix = prop === "color" ? "text" : "bg";
-  if (props.value) {
-    const className = `${prefix}-${props.value}${isAutoContentColor ? "-content" : ""}`;
-    result[className] = true;
-    if (!theme.classExists(className)) {
-      cls.push({
-        className,
-        properties: [`${prop}: var(--mugen-color-${props.value}${isAutoContentColor ? "-content" : ""})`],
-      });
+  Object.entries(props).forEach(([key, value]) => {
+    const [k, pseudoClass] = getKeyAndModifier(key);
+    if (k === "value") {
+      const className = `${pseudoClass ? `${pseudoClass}:` : ""}${prefix}-${value}${
+        useAutoContentColor ? "-content" : ""
+      }`;
+      result[className] = true;
+      if (!theme.classExists(className)) {
+        cls.push({
+          className,
+          pseudoClass,
+          properties: [`${prop}: var(--mugen-color-${value}${useAutoContentColor ? "-content" : ""})`],
+        });
+      }
     }
-  }
+  });
   if (props.from) {
     const rootCls = `${prefix}-gradient`;
     result[rootCls] = true;
@@ -111,8 +121,8 @@ export function themeColorHandler(theme: MugenTheme, props: ColorProps, prop: Co
   }
 
   if (cls.length > 0) {
-    cls.forEach(({ className, properties }) => {
-      theme.insertRule(className, properties);
+    cls.forEach((data) => {
+      theme.insertRule(data);
     });
   }
 
@@ -131,10 +141,11 @@ export const BackgroundColor = (
       disableAutoColor?: boolean;
     }
 ) => {
+  const [flow, local] = splitProps(props, ["children"]);
   const theme = useMugenThemeContext();
-  theme.add("bgColor", () => themeColorHandler(theme, props, "background-color"));
+  theme.add("bgColor", () => themeColorHandler(theme, local as ColorProps, "background-color"));
   if (!props.disableAutoColor) {
-    theme.add("color", () => themeColorHandler(theme, props, "color", true));
+    theme.add("color", () => themeColorHandler(theme, local as ColorProps, "color", true));
   }
-  return props.children;
+  return flow.children;
 };

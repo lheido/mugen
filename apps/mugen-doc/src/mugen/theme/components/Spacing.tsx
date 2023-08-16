@@ -1,5 +1,5 @@
 import { FlowProps } from "solid-js";
-import { Either, ThemeDescription } from "../../types";
+import { Either, HandlerRuleData, ThemeDescription } from "../../types";
 import { useMugenThemeContext } from "../context";
 import { MugenTheme } from "../MugenTheme";
 import { getNegative, getValue } from "../utils/handler";
@@ -22,7 +22,7 @@ export type SpacingProps<
 export type SpacingType = "padding" | "margin";
 
 export function themeSpacingHandler(theme: MugenTheme, props: SpacingProps, prop: SpacingType) {
-  const cls: { className: string; properties: string[] }[] = [];
+  const cls: HandlerRuleData[] = [];
   const result: Record<string, boolean> = {};
   const prefix = prop[0];
 
@@ -50,8 +50,8 @@ export function themeSpacingHandler(theme: MugenTheme, props: SpacingProps, prop
   processProp("y", "y", [`${prop}-top`, `${prop}-bottom`]);
 
   if (cls.length > 0) {
-    cls.forEach(({ className, properties }) => {
-      theme.insertRule(className, properties);
+    cls.forEach((data) => {
+      theme.insertRule(data);
     });
   }
   return result;

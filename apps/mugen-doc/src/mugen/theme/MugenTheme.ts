@@ -1,4 +1,4 @@
-import { PseudoClasses, ThemeDescription } from "../types";
+import { HandlerRuleData, ThemeDescription } from "../types";
 import { getContrast50, hexToRgb } from "./colors";
 import { escapeClassName } from "./utils/escapeClassName";
 
@@ -41,10 +41,12 @@ export class MugenTheme {
     return this.classNameRefs.has(className);
   }
 
-  insertRule(className: string, properties: string[], pseudoClasse?: PseudoClasses) {
-    if (this.classNameRefs.has(className)) return;
-    this.classNameRefs.set(className, true);
-    const rule = `.${escapeClassName(className)}${pseudoClasse ? `:${pseudoClasse}` : ""}{${properties.join(";")}}`;
+  insertRule(data: HandlerRuleData) {
+    if (this.classNameRefs.has(data.className)) return;
+    this.classNameRefs.set(data.className, true);
+    const cls = escapeClassName(data.className);
+    const psdCls = data.pseudoClass ? `:${data.pseudoClass}` : "";
+    const rule = `.${cls}${psdCls}{${data.properties.join(";")}}`;
     this.style.insertRule(rule);
   }
 

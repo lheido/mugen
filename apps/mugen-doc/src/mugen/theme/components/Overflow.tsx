@@ -1,5 +1,5 @@
 import { FlowProps } from "solid-js";
-import { Either } from "../../types";
+import { Either, HandlerRuleData } from "../../types";
 import { useMugenThemeContext } from "../context";
 import { MugenTheme } from "../MugenTheme";
 
@@ -16,7 +16,7 @@ export type OverflowProps = Either<
 >;
 
 export function themeOverflowHandler(theme: MugenTheme, props: OverflowProps) {
-  const cls: { className: string; properties: string[] }[] = [];
+  const cls: HandlerRuleData[] = [];
   const result: Record<string, boolean> = {};
   if (props.value) {
     const className = `overflow-${props.value as string}`;
@@ -49,8 +49,8 @@ export function themeOverflowHandler(theme: MugenTheme, props: OverflowProps) {
     }
   }
   if (cls.length > 0) {
-    cls.forEach(({ className, properties }) => {
-      theme.insertRule(className, properties);
+    cls.forEach((data) => {
+      theme.insertRule(data);
     });
   }
   return result;

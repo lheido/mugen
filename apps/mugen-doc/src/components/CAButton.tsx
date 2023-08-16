@@ -5,19 +5,9 @@ import { Button } from "./Button";
 export const CAButton = (props: ButtonProps) => {
   // const [local, others] = splitProps(props, ["theme"]);
   return (
-    <BackgroundColor value="primary">
+    <BackgroundColor value="primary" value:hover="primary-focus">
       <Font weight="bold">
-        <Button
-          // theme={{
-          //   background: "primary",
-          //   font: { weight: "bold" },
-          //   hover: {
-          //     background: "primary-focus",
-          //   },
-          //   ...local.theme,
-          // }}
-          {...props}
-        />
+        <Button {...props} />
       </Font>
     </BackgroundColor>
   );

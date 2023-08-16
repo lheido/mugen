@@ -1,5 +1,5 @@
 import { FlowProps } from "solid-js";
-import { ThemeDescription } from "../../../types";
+import { HandlerRuleData, ThemeDescription } from "../../../types";
 import { useMugenThemeContext } from "../../context";
 import { MugenTheme } from "../../MugenTheme";
 import { getNegative } from "../../utils/handler";
@@ -9,7 +9,7 @@ export type RotateProps<K = keyof ThemeDescription["transformRotate"], V = K | `
 };
 
 export function themeRotateHandler(theme: MugenTheme, props: RotateProps) {
-  const cls: { className: string; properties: string[] }[] = [];
+  const cls: HandlerRuleData[] = [];
   const result: Record<string, boolean> = {};
   if (props.value) {
     const negative = getNegative(props.value);
@@ -23,8 +23,8 @@ export function themeRotateHandler(theme: MugenTheme, props: RotateProps) {
     }
   }
   if (cls.length > 0) {
-    cls.forEach(({ className, properties }) => {
-      theme.insertRule(className, properties);
+    cls.forEach((data) => {
+      theme.insertRule(data);
     });
   }
   return result;

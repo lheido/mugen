@@ -1,5 +1,5 @@
 import { FlowProps } from "solid-js";
-import { Either, ThemeDescription } from "../../../types";
+import { Either, HandlerRuleData, ThemeDescription } from "../../../types";
 import { useMugenThemeContext } from "../../context";
 import { MugenTheme } from "../../MugenTheme";
 import { FLEX_LAYOUT_KEY, themeDisplayFlexHandler } from "./displayFlexHandler";
@@ -15,7 +15,7 @@ export type GapProps = Either<
 >;
 
 export function themeGapHandler(theme: MugenTheme, props: GapProps) {
-  const cls: { className: string; properties: string[] }[] = [];
+  const cls: HandlerRuleData[] = [];
   const result: Record<string, boolean> = {};
   if (props.value) {
     const className = `gap-${props.value as string}`;
@@ -48,8 +48,8 @@ export function themeGapHandler(theme: MugenTheme, props: GapProps) {
     }
   }
   if (cls.length > 0) {
-    cls.forEach(({ className, properties }) => {
-      theme.insertRule(className, properties);
+    cls.forEach((data) => {
+      theme.insertRule(data);
     });
   }
   return result;

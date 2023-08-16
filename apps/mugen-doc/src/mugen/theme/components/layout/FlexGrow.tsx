@@ -1,4 +1,5 @@
 import { FlowProps } from "solid-js";
+import { HandlerRuleData } from "../../../types";
 import { useMugenThemeContext } from "../../context";
 import { MugenTheme } from "../../MugenTheme";
 
@@ -7,7 +8,7 @@ export type FlexGrowProps = {
 };
 
 export function themeFlexGrowHandler(theme: MugenTheme, props: FlexGrowProps) {
-  const cls: { className: string; properties: string[] }[] = [];
+  const cls: HandlerRuleData[] = [];
   const result: Record<string, boolean> = {};
   if (props.value) {
     const className = `flex-grow-${props.value}`;
@@ -21,8 +22,8 @@ export function themeFlexGrowHandler(theme: MugenTheme, props: FlexGrowProps) {
   }
 
   if (cls.length > 0) {
-    cls.forEach(({ className, properties }) => {
-      theme.insertRule(className, properties);
+    cls.forEach((data) => {
+      theme.insertRule(data);
     });
   }
   return result;

@@ -1,5 +1,5 @@
 import { FlowProps } from "solid-js";
-import { ThemeDescription } from "../../../types";
+import { HandlerRuleData, ThemeDescription } from "../../../types";
 import { useMugenThemeContext } from "../../context";
 import { MugenTheme } from "../../MugenTheme";
 
@@ -8,7 +8,7 @@ export type FontSizeProps = {
 };
 
 export function themeFontSizeHandler(theme: MugenTheme, props: FontSizeProps) {
-  const cls: { className: string; properties: string[] }[] = [];
+  const cls: HandlerRuleData[] = [];
   const result: Record<string, boolean> = {};
   if (props.value) {
     const className = `fz-${props.value as string}`;
@@ -26,8 +26,8 @@ export function themeFontSizeHandler(theme: MugenTheme, props: FontSizeProps) {
   }
 
   if (cls.length > 0) {
-    cls.forEach(({ className, properties }) => {
-      theme.insertRule(className, properties);
+    cls.forEach((data) => {
+      theme.insertRule(data);
     });
   }
   return result;

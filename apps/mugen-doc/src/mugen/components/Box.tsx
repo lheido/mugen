@@ -2,10 +2,9 @@ import { FlowProps } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import { useMugenSemanticContext } from "../semantic";
 import { useMugenThemeContext } from "../theme";
+import { GlobalAttributes } from "../types";
 
-export type BoxProps = {
-  id?: string;
-};
+export type BoxProps = GlobalAttributes;
 
 export const Box = (props: FlowProps & BoxProps) => {
   const theme = useMugenThemeContext();

@@ -1,24 +1,26 @@
 import { FlowProps, splitProps } from "solid-js";
-import { Either, PseudoClasses, ThemeDescription } from "../../../types";
+import { Either, HandlerRuleData, ThemeDescription, WithPseudoClasse } from "../../../types";
 import { useMugenThemeContext } from "../../context";
 import { MugenTheme } from "../../MugenTheme";
+import { getKeyAndModifier } from "../../utils/handler";
 
 export type ScaleProps<K = keyof ThemeDescription["transformScale"]> = Either<
-  Partial<Record<"value" | `value:${PseudoClasses}`, K>>,
-  Partial<Record<"x" | `x:${PseudoClasses}` | "y" | `y:${PseudoClasses}`, K>>
+  Partial<Record<WithPseudoClasse<"value">, K>>,
+  Partial<Record<WithPseudoClasse<"x"> | WithPseudoClasse<"y">, K>>
 >;
 
 export function themeScaleHandler(theme: MugenTheme, props: ScaleProps) {
-  const cls: { className: string; properties: string[]; pseudoClass?: PseudoClasses }[] = [];
+  const cls: HandlerRuleData[] = [];
   const result: Record<string, boolean> = {};
   Object.entries(props).forEach(([key, value]) => {
-    let [k, pseudoClass] = key.split(":") as [string, PseudoClasses | undefined];
-    const rootCls = "scale";
+    const [k, pseudoClass] = getKeyAndModifier(key);
+    const rootCls = `scale`;
     result[rootCls] = true;
     if (!theme.classExists(rootCls)) {
+      const properties = [`scale: var(--mugen-scale-x, 1) var(--mugen-scale-y, 1)`];
       cls.push({
         className: rootCls,
-        properties: [`scale: var(--mugen-scale-x, 1) var(--mugen-scale-y, 1)`],
+        properties,
       });
     }
     if (k === "value") {
@@ -59,8 +61,8 @@ export function themeScaleHandler(theme: MugenTheme, props: ScaleProps) {
     }
   });
   if (cls.length > 0) {
-    cls.forEach(({ className, properties, pseudoClass }) => {
-      theme.insertRule(className, properties, pseudoClass);
+    cls.forEach((data) => {
+      theme.insertRule(data);
     });
   }
   return result;

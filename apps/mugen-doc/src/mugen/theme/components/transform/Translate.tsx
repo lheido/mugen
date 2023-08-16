@@ -1,5 +1,5 @@
 import { FlowProps } from "solid-js";
-import { ThemeDescription } from "../../../types";
+import { HandlerRuleData, ThemeDescription } from "../../../types";
 import { useMugenThemeContext } from "../../context";
 import { MugenTheme } from "../../MugenTheme";
 import { getNegative, getValue } from "../../utils/handler";
@@ -10,7 +10,7 @@ export type TranslateProps<K = keyof ThemeDescription["spacing"], V = K | `-${K 
 };
 
 export function themeTranslateHandler(theme: MugenTheme, props: TranslateProps) {
-  const cls: { className: string; properties: string[] }[] = [];
+  const cls: HandlerRuleData[] = [];
   const result: Record<string, boolean> = {};
   if (props.x || props.y) {
     result["translate"] = true;
@@ -46,8 +46,8 @@ export function themeTranslateHandler(theme: MugenTheme, props: TranslateProps) 
     }
   }
   if (cls.length > 0) {
-    cls.forEach(({ className, properties }) => {
-      theme.insertRule(className, properties);
+    cls.forEach((data) => {
+      theme.insertRule(data);
     });
   }
   return result;

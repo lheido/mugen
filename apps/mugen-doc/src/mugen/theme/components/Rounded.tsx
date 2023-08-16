@@ -1,5 +1,5 @@
 import { FlowProps } from "solid-js";
-import { ThemeDescription } from "../../types";
+import { HandlerRuleData, ThemeDescription } from "../../types";
 import { useMugenThemeContext } from "../context";
 import { MugenTheme } from "../MugenTheme";
 
@@ -16,7 +16,7 @@ export type RoundedProps<K = keyof ThemeDescription["rounded"]> = {
 };
 
 export function themeRoundedHandler(theme: MugenTheme, props: RoundedProps) {
-  const cls: { className: string; properties: string[] }[] = [];
+  const cls: HandlerRuleData[] = [];
   const result: Record<string, boolean> = {};
   if (props.value) {
     const className = `rounded-${props.value as string}`;
@@ -121,8 +121,8 @@ export function themeRoundedHandler(theme: MugenTheme, props: RoundedProps) {
     }
   }
   if (cls.length > 0) {
-    cls.forEach(({ className, properties }) => {
-      theme.insertRule(className, properties);
+    cls.forEach((data) => {
+      theme.insertRule(data);
     });
   }
   return result;

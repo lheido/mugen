@@ -1,5 +1,5 @@
 import { FlowProps } from "solid-js";
-import { Either, Split } from "../../../types";
+import { Either, HandlerRuleData, Split } from "../../../types";
 import { useMugenThemeContext } from "../../context";
 import { MugenTheme } from "../../MugenTheme";
 import { FLEX_LAYOUT_KEY, themeDisplayFlexHandler } from "./displayFlexHandler";
@@ -16,7 +16,7 @@ export type AvailableAlignItemsProps = Either<
 export type AlignItemsProps = Split<AvailableAlignItemsProps>;
 
 export function themeAlignItemsHandler(theme: MugenTheme, props: AlignItemsProps) {
-  const cls: { className: string; properties: string[] }[] = [];
+  const cls: HandlerRuleData[] = [];
   const result: Record<string, boolean> = {};
   const value =
     props?.value || props?.start
@@ -42,8 +42,8 @@ export function themeAlignItemsHandler(theme: MugenTheme, props: AlignItemsProps
   }
 
   if (cls.length > 0) {
-    cls.forEach(({ className, properties }) => {
-      theme.insertRule(className, properties);
+    cls.forEach((data) => {
+      theme.insertRule(data);
     });
   }
   return result;

@@ -158,12 +158,13 @@ export const themeDescriptionDefaults = {
     inner: "inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)",
   },
   transitionProperties: {
-    all: "all",
-    none: "none",
     colors: "color, background-color, border-color, text-decoration-color, fill, stroke",
     opacity: "opacity",
     shadow: "box-shadow",
     transform: "transform",
+    translate: "translate",
+    scale: "scale",
+    rotate: "rotate",
   },
   transitionDuration: {
     "0": "0ms",

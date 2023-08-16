@@ -1,5 +1,5 @@
 import { FlowProps } from "solid-js";
-import { Either } from "../../../types";
+import { Either, HandlerRuleData } from "../../../types";
 import { useMugenThemeContext } from "../../context";
 import { MugenTheme } from "../../MugenTheme";
 import { FLEX_LAYOUT_KEY, themeDisplayFlexHandler } from "./displayFlexHandler";
@@ -9,7 +9,7 @@ export type FlexWrapProps = {
 } & Either<{ wrap?: boolean }, { nowrap?: boolean }>;
 
 export function themeFlexWrapHandler(theme: MugenTheme, props: FlexWrapProps) {
-  const cls: { className: string; properties: string[] }[] = [];
+  const cls: HandlerRuleData[] = [];
   const result: Record<string, boolean> = {};
   if (props.wrap) {
     const className = `flex-wrap`;
@@ -43,8 +43,8 @@ export function themeFlexWrapHandler(theme: MugenTheme, props: FlexWrapProps) {
   }
 
   if (cls.length > 0) {
-    cls.forEach(({ className, properties }) => {
-      theme.insertRule(className, properties);
+    cls.forEach((data) => {
+      theme.insertRule(data);
     });
   }
   return result;

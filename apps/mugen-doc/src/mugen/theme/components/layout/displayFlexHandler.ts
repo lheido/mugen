@@ -4,7 +4,7 @@ export const FLEX_LAYOUT_KEY = "displayFlex";
 
 export function themeDisplayFlexHandler(theme: MugenTheme) {
   if (!theme.classExists("flex")) {
-    theme.insertRule("flex", ["display: flex"]);
+    theme.insertRule({ className: "flex", properties: ["display: flex"] });
   }
   return { flex: true };
 }

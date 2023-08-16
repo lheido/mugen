@@ -1,5 +1,5 @@
 import { FlowProps } from "solid-js";
-import { Either, Split } from "../../../types";
+import { Either, HandlerRuleData, Split } from "../../../types";
 import { useMugenThemeContext } from "../../context";
 import { MugenTheme } from "../../MugenTheme";
 import { FLEX_LAYOUT_KEY, themeDisplayFlexHandler } from "./displayFlexHandler";
@@ -16,7 +16,7 @@ export type AvailableJustifyContentProps = Either<
 export type JustifyContentProps = Split<AvailableJustifyContentProps>;
 
 export function themeJustifyContentHandler(theme: MugenTheme, props: JustifyContentProps) {
-  const cls: { className: string; properties: string[] }[] = [];
+  const cls: HandlerRuleData[] = [];
   const result: Record<string, boolean> = {};
   const value =
     props?.value || props?.start
@@ -44,8 +44,8 @@ export function themeJustifyContentHandler(theme: MugenTheme, props: JustifyCont
   }
 
   if (cls.length > 0) {
-    cls.forEach(({ className, properties }) => {
-      theme.insertRule(className, properties);
+    cls.forEach((data) => {
+      theme.insertRule(data);
     });
   }
   return result;

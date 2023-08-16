@@ -1,5 +1,5 @@
 import { FlowProps } from "solid-js";
-import { ThemeDescription } from "../../types";
+import { HandlerRuleData, ThemeDescription } from "../../types";
 import { useMugenThemeContext } from "../context";
 import { MugenTheme } from "../MugenTheme";
 import { getNegative, getValue } from "../utils/handler";
@@ -15,7 +15,7 @@ export type PositionProps<K = keyof ThemeDescription["spacing"], V = K | `-${K e
 export type PositionType = "relative" | "absolute" | "fixed" | "static" | "sticky";
 
 export function themePositionHandler(theme: MugenTheme, props: PositionProps, prop: PositionType) {
-  const cls: { className: string; properties: string[] }[] = [];
+  const cls: HandlerRuleData[] = [];
   const result: Record<string, boolean> = {};
   result[prop] = true;
   if (!theme.classExists(prop)) {
@@ -56,8 +56,8 @@ export function themePositionHandler(theme: MugenTheme, props: PositionProps, pr
   }
 
   if (cls.length > 0) {
-    cls.forEach(({ className, properties }) => {
-      theme.insertRule(className, properties);
+    cls.forEach((data) => {
+      theme.insertRule(data);
     });
   }
   return result;

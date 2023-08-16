@@ -1,5 +1,5 @@
 import { FlowProps } from "solid-js";
-import { ThemeDescription } from "../../types";
+import { HandlerRuleData, ThemeDescription } from "../../types";
 import { useMugenThemeContext } from "../context";
 import { MugenTheme } from "../MugenTheme";
 
@@ -12,7 +12,7 @@ export type SizeProps = {
 export type SizeType = "width" | "height";
 
 export function themeSizeHandler(theme: MugenTheme, props: SizeProps, prop: SizeType) {
-  const cls: { className: string; properties: string[] }[] = [];
+  const cls: HandlerRuleData[] = [];
   const result: Record<string, boolean> = {};
   if (props.value) {
     const className = `${prop[0]}-${props.value as string}`;
@@ -46,8 +46,8 @@ export function themeSizeHandler(theme: MugenTheme, props: SizeProps, prop: Size
   }
 
   if (cls.length > 0) {
-    cls.forEach(({ className, properties }) => {
-      theme.insertRule(className, properties);
+    cls.forEach((data) => {
+      theme.insertRule(data);
     });
   }
   return result;

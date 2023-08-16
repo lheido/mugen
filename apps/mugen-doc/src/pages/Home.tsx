@@ -2,6 +2,7 @@ import { Box, Layout } from "@mugen/components";
 import {
   Absolute,
   BackgroundColor,
+  BorderTop,
   Filter,
   FlexDirection,
   FontSize,
@@ -41,7 +42,7 @@ const HomeV2 = () => {
                     <Opacity value="25">
                       <Overflow value="hidden">
                         <Filter blur="5">
-                          <Box>
+                          <Box aria-hidden="true" tabindex="-1">
                             <Code language="tsx">{appCode}</Code>
                           </Box>
                         </Filter>
@@ -82,33 +83,34 @@ const HomeV2 = () => {
         </Height>
       </Relative>
       <Relative>
-        <Padding top={isMd() ? "64" : "0"} x={isMd() ? "48" : "0"}>
-          <Height min="hscreen">
-            <Layout column gap="16" id="get-started">
-              <HighlightSection>
-                <FontSize value={isMd() ? "2xl" : "lg"}>
-                  <HighlightSectionInnerParagraph>
-                    No need to worry about CSS or semantic/A11y HTML as the toolkit handles that for us.
-                  </HighlightSectionInnerParagraph>
-                </FontSize>
-                <FlexDirection column={!isMd()}>
-                  <Gap value="8">
-                    <Box>
-                      <BackgroundColor value="page">
-                        <HighlightSectionInnerParagraph>
-                          CSS is generated dynamically at lightning speed using an incredibly small engine.
-                        </HighlightSectionInnerParagraph>
-                      </BackgroundColor>
-                      <BackgroundColor value="page">
-                        <HighlightSectionInnerParagraph>
-                          It takes care of HTML for us without performance cost. (TODO)
-                        </HighlightSectionInnerParagraph>
-                      </BackgroundColor>
-                    </Box>
-                  </Gap>
-                </FlexDirection>
-              </HighlightSection>
-              {/* <As value="section">
+        <BorderTop color="primary" width="16" style="solid">
+          <Padding top={isMd() ? "64" : "0"} x={isMd() ? "48" : "0"}>
+            <Height min="hscreen">
+              <Layout column gap="16" id="get-started">
+                <HighlightSection>
+                  <FontSize value={isMd() ? "2xl" : "lg"}>
+                    <HighlightSectionInnerParagraph>
+                      No need to worry about CSS or semantic/A11y HTML as the toolkit handles that for us.
+                    </HighlightSectionInnerParagraph>
+                  </FontSize>
+                  <FlexDirection column={!isMd()}>
+                    <Gap value="8">
+                      <Box>
+                        <BackgroundColor value="page">
+                          <HighlightSectionInnerParagraph>
+                            CSS is generated dynamically at lightning speed using an incredibly small engine.
+                          </HighlightSectionInnerParagraph>
+                        </BackgroundColor>
+                        <BackgroundColor value="page">
+                          <HighlightSectionInnerParagraph>
+                            It takes care of HTML for us without performance cost. (TODO)
+                          </HighlightSectionInnerParagraph>
+                        </BackgroundColor>
+                      </Box>
+                    </Gap>
+                  </FlexDirection>
+                </HighlightSection>
+                {/* <As value="section">
                 <Layout column gap="4">
                   <Box>Install the package</Box>
                   <Code language="bash">{"pnpm install mugen"}</Code>
@@ -120,10 +122,11 @@ const HomeV2 = () => {
                   <Code language="tsx">{basicUsage}</Code>
                 </Layout>
               </As> */}
-              <Box>Site under construction</Box>
-            </Layout>
-          </Height>
-        </Padding>
+                <Box>Site under construction</Box>
+              </Layout>
+            </Height>
+          </Padding>
+        </BorderTop>
       </Relative>
     </>
   );

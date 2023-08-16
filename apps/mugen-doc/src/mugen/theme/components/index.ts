@@ -1,3 +1,4 @@
+export * from "./Border";
 export * from "./Color";
 export * from "./Filter";
 export * from "./font";
@@ -9,3 +10,4 @@ export * from "./Rounded";
 export * from "./Size";
 export * from "./Spacing";
 export * from "./transform";
+export * from "./Transition";

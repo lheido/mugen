@@ -1,5 +1,5 @@
 import { FlowProps } from "solid-js";
-import { ThemeDescription } from "../../../types";
+import { HandlerRuleData, ThemeDescription } from "../../../types";
 import { useMugenThemeContext } from "../../context";
 import { MugenTheme } from "../../MugenTheme";
 
@@ -8,7 +8,7 @@ export type FontWeightProps = {
 };
 
 export function themeFontWeightHandler(theme: MugenTheme, props: FontWeightProps) {
-  const cls: { className: string; properties: string[] }[] = [];
+  const cls: HandlerRuleData[] = [];
   const result: Record<string, boolean> = {};
   if (props.value) {
     const className = `fw-${props.value as string}`;
@@ -22,8 +22,8 @@ export function themeFontWeightHandler(theme: MugenTheme, props: FontWeightProps
   }
 
   if (cls.length > 0) {
-    cls.forEach(({ className, properties }) => {
-      theme.insertRule(className, properties);
+    cls.forEach((data) => {
+      theme.insertRule(data);
     });
   }
   return result;
