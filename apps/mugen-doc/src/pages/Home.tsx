@@ -1,153 +1,160 @@
-import { Box, Column, FlexLayout, Paragraph } from "mugen/ui";
-import { Component } from "solid-js";
+import { Box, Layout } from "@mugen/components";
+import {
+  Absolute,
+  BackgroundColor,
+  Filter,
+  FlexDirection,
+  FontSize,
+  Gap,
+  Height,
+  Margin,
+  Opacity,
+  Overflow,
+  Padding,
+  Relative,
+  Rounded,
+  Width,
+} from "@mugen/theme";
+import { createMediaQuery } from "@solid-primitives/media";
+import { FlowProps } from "solid-js";
 import appCode from "../App.tsx?raw";
 import { Button } from "../components/Button";
 import { CAButton } from "../components/CAButton";
 import { Code } from "../components/Code";
-import { H1 } from "../components/H1";
-import basicUsage from "../examples/basic_usage.tsx?raw";
 
-const Home: Component = () => {
-  console.time("Home");
+function useMdBreakpoint() {
+  return createMediaQuery("(min-width: 768px)");
+}
+
+const HomeV2 = () => {
+  console.time("HomeV2");
+  const isMd = useMdBreakpoint();
   const result = (
     <>
-      <FlexLayout
-        justify="center"
-        items="center"
-        theme={{
-          height: { min: "hscreen" },
-          padding: { bottom: "16", top: "44" },
-          relative: true,
-          background: {
-            from: "page",
-            to: "pageTo",
-            direction: "bottom",
-          },
-        }}
-      >
-        <Box
-          aria-hidden="true"
-          theme={{
-            absolute: { top: "0", left: "0" },
-            width: "full",
-            height: "full",
-            overflow: "hidden",
-            opacity: "25",
-            filter: {
-              blur: 5,
-            },
-          }}
-        >
-          <Code language="tsx">{appCode}</Code>
-        </Box>
-        <Column
-          gap="16"
-          theme={{
-            padding: "10",
-            zIndex: 1,
-            md: {
-              width: { value: "2/3", max: "wscreen" },
-              margin: "auto",
-            },
-          }}
-        >
-          <Paragraph theme={{ font: { size: "3xl" }, md: { font: { size: "6xl" } } }}>
-            An <strong>UI toolkit</strong> that provides low level components to build app faster and easier.
-          </Paragraph>
-          <Paragraph theme={{ font: { size: "2xl" }, md: { font: { size: "5xl" } } }}>
-            It provides a typed way to adopt <strong>design systems</strong> easily!🎉
-          </Paragraph>
-          <Box
-            theme={{
-              flex: { gap: "4", justify: "center" },
-              md: { flex: { gap: "8" } },
-            }}
-          >
-            <CAButton href="#get-started">Get Started</CAButton>
-            <Button href="https://github.com/lheido/mugen" target="_blank">
-              Github
-            </Button>
-          </Box>
-        </Column>
-      </FlexLayout>
-      <Column
-        gap="16"
-        theme={{
-          height: { min: "hscreen" },
-          relative: true,
-          padding: { top: "0", left: "0", right: "0" },
-          background: {
-            to: "pageTo",
-            from: "page",
-            direction: "top",
-          },
-          border: {
-            top: {
-              color: "primary",
-              width: "16",
-            },
-            width: "0",
-          },
-          md: {
-            padding: { top: "64", left: "48", right: "48" },
-          },
-        }}
-        id="get-started"
-      >
-        <Column gap="8" theme={{ background: "accent", padding: "4", rounded: "lg" }}>
-          <Paragraph theme={{ md: { font: { size: "2xl" } } }}>
-            No need to worry about CSS or semantic/A11y HTML as the toolkit handles that for us.
-          </Paragraph>
-          <Box
-            theme={{
-              flex: {
-                gap: "8",
-                direction: "column",
-              },
-              md: {
-                flex: {
-                  direction: "row",
-                },
-              },
-            }}
-          >
-            <Paragraph
-              theme={{
-                padding: "4",
-                background: "page",
-                rounded: "lg",
-                font: { size: "lg" },
-              }}
-            >
-              CSS is generated dynamically at lightning speed using an incredibly small engine.
-            </Paragraph>
-            <Paragraph
-              theme={{
-                padding: "4",
-                background: "page",
-                rounded: "lg",
-                font: { size: "lg" },
-              }}
-            >
-              It suggests the appropriate semantics or accessibility standards. (TODO)
-            </Paragraph>
-          </Box>
-        </Column>
-
-        <Column as="section" gap="4">
-          <H1>Install the package</H1>
-          <Code language="bash">{"pnpm install mugen"}</Code>
-        </Column>
-        <Column as="section" gap="4">
-          <H1>Basic usage</H1>
-          <Code language="tsx">{basicUsage}</Code>
-        </Column>
-        <Paragraph>Site under construction</Paragraph>
-      </Column>
+      <Relative>
+        <Height min="hscreen">
+          <Padding bottom="16" top="44">
+            <Layout justify="center" items="center">
+              <Absolute top="0" left="0">
+                <Width value="full">
+                  <Height value="full">
+                    <Opacity value="25">
+                      <Overflow value="hidden">
+                        <Filter blur="5">
+                          <Box>
+                            <Code language="tsx">{appCode}</Code>
+                          </Box>
+                        </Filter>
+                      </Overflow>
+                    </Opacity>
+                  </Height>
+                </Width>
+              </Absolute>
+              <Relative zIndex="1">
+                <Width value={isMd() ? "2/3" : undefined} max="wscreen">
+                  <Margin value="auto">
+                    <Padding value="10">
+                      <Layout column gap="16">
+                        <FontSize value={isMd() ? "6xl" : "3xl"}>
+                          <Box>
+                            An <strong>UI toolkit</strong> that provides low level components to build app faster and
+                            easier.
+                          </Box>
+                        </FontSize>
+                        <FontSize value={isMd() ? "5xl" : "2xl"}>
+                          <Box>
+                            It provides a typed way to adopt <strong>design systems</strong> easily!🎉
+                          </Box>
+                        </FontSize>
+                        <Layout justify="center" gap={isMd() ? "8" : "4"}>
+                          <CAButton href="#get-started">Get Started</CAButton>
+                          <Button href="https://github.com/lheido/mugen" target="_blank">
+                            Github
+                          </Button>
+                        </Layout>
+                      </Layout>
+                    </Padding>
+                  </Margin>
+                </Width>
+              </Relative>
+            </Layout>
+          </Padding>
+        </Height>
+      </Relative>
+      <Relative>
+        <Padding top={isMd() ? "64" : "0"} x={isMd() ? "48" : "0"}>
+          <Height min="hscreen">
+            <Layout column gap="16" id="get-started">
+              <HighlightSection>
+                <FontSize value={isMd() ? "2xl" : "lg"}>
+                  <HighlightSectionInnerParagraph>
+                    No need to worry about CSS or semantic/A11y HTML as the toolkit handles that for us.
+                  </HighlightSectionInnerParagraph>
+                </FontSize>
+                <FlexDirection column={!isMd()}>
+                  <Gap value="8">
+                    <Box>
+                      <BackgroundColor value="page">
+                        <HighlightSectionInnerParagraph>
+                          CSS is generated dynamically at lightning speed using an incredibly small engine.
+                        </HighlightSectionInnerParagraph>
+                      </BackgroundColor>
+                      <BackgroundColor value="page">
+                        <HighlightSectionInnerParagraph>
+                          It takes care of HTML for us without performance cost. (TODO)
+                        </HighlightSectionInnerParagraph>
+                      </BackgroundColor>
+                    </Box>
+                  </Gap>
+                </FlexDirection>
+              </HighlightSection>
+              {/* <As value="section">
+                <Layout column gap="4">
+                  <Box>Install the package</Box>
+                  <Code language="bash">{"pnpm install mugen"}</Code>
+                </Layout>
+              </As>
+              <As value="section">
+                <Layout column gap="4">
+                  <Box>Basic usage</Box>
+                  <Code language="tsx">{basicUsage}</Code>
+                </Layout>
+              </As> */}
+              <Box>Site under construction</Box>
+            </Layout>
+          </Height>
+        </Padding>
+      </Relative>
     </>
   );
-  console.timeEnd("Home");
+  console.timeEnd("HomeV2");
   return result;
 };
 
-export default Home;
+export default HomeV2;
+
+const HighlightSection = (props: FlowProps) => {
+  return (
+    <BackgroundColor value="accent">
+      <Padding value="4">
+        <Rounded value="lg">
+          <Layout column gap="8">
+            {props.children}
+          </Layout>
+        </Rounded>
+      </Padding>
+    </BackgroundColor>
+  );
+};
+
+const HighlightSectionInnerParagraph = (props: FlowProps) => {
+  return (
+    <Padding value="4">
+      <Rounded value="lg">
+        <FontSize value="lg">
+          <Box>{props.children}</Box>
+        </FontSize>
+      </Rounded>
+    </Padding>
+  );
+};

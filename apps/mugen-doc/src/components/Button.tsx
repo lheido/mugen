@@ -1,11 +1,14 @@
-import { Button as BaseButton, ButtonProps, Padding, Rounded } from "mugen/v2";
+import { Button as BaseButton, ButtonProps } from "@mugen/components";
+import { Padding, Rounded, Scale } from "@mugen/theme";
+import { isMd } from "../utils/breakpoints";
 
 export const Button = (props: ButtonProps) => {
-  // const [local, others] = splitProps(props, ["theme"]);
   return (
     <Padding x="8" y="4">
       <Rounded value="xl">
-        <BaseButton {...props} />
+        <Scale value="100" value:active={isMd() ? "90" : "95"}>
+          <BaseButton {...props} />
+        </Scale>
       </Rounded>
     </Padding>
   );

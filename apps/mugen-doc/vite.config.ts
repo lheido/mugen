@@ -1,3 +1,4 @@
+import path from "path";
 import { defineConfig } from "vite";
 import solidPlugin from "vite-plugin-solid";
 // import devtools from 'solid-devtools/vite';
@@ -11,6 +12,11 @@ export default defineConfig(({ mode }) => ({
     // devtools(),
     solidPlugin(),
   ],
+  resolve: {
+    alias: {
+      "@mugen": path.resolve(__dirname, "./src/mugen"),
+    },
+  },
   server: {
     port: 3000,
   },

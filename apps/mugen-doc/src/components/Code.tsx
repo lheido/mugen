@@ -1,4 +1,6 @@
-import { Box } from "mugen/ui";
+import { Box } from "@mugen/components";
+import { As } from "@mugen/semantic";
+import { Margin, Overflow, Padding, Rounded } from "@mugen/theme";
 import Prism from "prismjs";
 import "prismjs/components/prism-bash";
 import "prismjs/components/prism-jsx";
@@ -17,17 +19,17 @@ export type CodeProps = ComponentProps<"code"> & {
 function CodeWrapper(props: { inline?: boolean; children: JSX.Element }) {
   return (
     <Show when={!props.inline} fallback={props.children}>
-      <Box
-        as="pre"
-        theme={{
-          padding: "4",
-          margin: "0",
-          rounded: "lg",
-          overflow: "auto",
-        }}
-      >
-        {props.children}
-      </Box>
+      <Overflow value="auto">
+        <Padding value="4">
+          <Margin value="0">
+            <Rounded value="lg">
+              <As value="pre">
+                <Box>{props.children}</Box>
+              </As>
+            </Rounded>
+          </Margin>
+        </Padding>
+      </Overflow>
     </Show>
   );
 }
@@ -40,14 +42,11 @@ export const Code = (props: CodeProps) => {
   });
   return (
     <CodeWrapper inline={local.inline}>
-      <Box
-        as="code"
-        ref={ref}
-        classList={{ [`language-${local.language}`]: true }}
-        {...others}
-      >
-        {props.children}
-      </Box>
+      <As value="code">
+        <Box ref={ref} classList={{ [`language-${local.language}`]: true }} {...others}>
+          {props.children}
+        </Box>
+      </As>
     </CodeWrapper>
   );
 };

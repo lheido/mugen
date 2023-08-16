@@ -1,0 +1,39 @@
+import { FlowProps } from "solid-js";
+import { useMugenThemeContext } from "../../context";
+import { MugenTheme } from "../../MugenTheme";
+
+export type FlexGrowProps = {
+  value: number;
+};
+
+export function themeFlexGrowHandler(theme: MugenTheme, props: FlexGrowProps) {
+  const cls: { className: string; properties: string[] }[] = [];
+  const result: Record<string, boolean> = {};
+  if (props.value) {
+    const className = `flex-grow-${props.value}`;
+    result[className] = true;
+    if (!theme.classExists(className)) {
+      cls.push({
+        className,
+        properties: [`flex-grow: ${props.value}`],
+      });
+    }
+  }
+
+  if (cls.length > 0) {
+    cls.forEach(({ className, properties }) => {
+      theme.insertRule(className, properties);
+    });
+  }
+  return result;
+}
+
+export const FlexGrow = (props: FlowProps & FlexGrowProps) => {
+  const theme = useMugenThemeContext();
+  theme.add("flexGrow", () => themeFlexGrowHandler(theme, props));
+  return props.children;
+};
+
+export const Fill = (props: FlowProps) => {
+  return <FlexGrow value={1} {...props} />;
+};

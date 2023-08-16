@@ -26,9 +26,6 @@ importers:
       '@solidjs/router':
         specifier: ^0.8.2
         version: 0.8.2(solid-js@1.7.6)
-      mugen:
-        specifier: workspace:*
-        version: link:../../packages/mugen
       prismjs:
         specifier: ^1.29.0
         version: 1.29.0
@@ -52,7 +49,41 @@ importers:
         specifier: ^2.7.0
         version: 2.7.0(solid-js@1.7.6)(vite@4.3.9)
 
-  packages/mugen:
+  apps/mugen-doc-old:
+    dependencies:
+      '@solid-primitives/media':
+        specifier: ^2.2.4
+        version: 2.2.4(solid-js@1.7.6)
+      '@solidjs/router':
+        specifier: ^0.8.2
+        version: 0.8.2(solid-js@1.7.6)
+      mugen:
+        specifier: workspace:*
+        version: link:../../packages/mugen-old
+      prismjs:
+        specifier: ^1.29.0
+        version: 1.29.0
+      solid-js:
+        specifier: ^1.7.6
+        version: 1.7.6
+    devDependencies:
+      '@types/prismjs':
+        specifier: ^1.26.0
+        version: 1.26.0
+      solid-devtools:
+        specifier: ^0.27.3
+        version: 0.27.3(solid-js@1.7.6)(vite@4.3.9)
+      typescript:
+        specifier: ^5.1.3
+        version: 5.1.3
+      vite:
+        specifier: ^4.3.9
+        version: 4.3.9(@types/node@20.4.0)
+      vite-plugin-solid:
+        specifier: ^2.7.0
+        version: 2.7.0(solid-js@1.7.6)(vite@4.3.9)
+
+  packages/mugen-old:
     dependencies:
       solid-js:
         specifier: ^1.7.6
@@ -690,14 +721,14 @@ packages:
       solid-js: ^1.7.0
     dependencies:
       '@solid-primitives/event-bus': 1.0.7(solid-js@1.7.6)
-      '@solid-primitives/event-listener': 2.2.13(solid-js@1.7.6)
+      '@solid-primitives/event-listener': 2.2.14(solid-js@1.7.6)
       '@solid-primitives/media': 2.2.4(solid-js@1.7.6)
       '@solid-primitives/refs': 1.0.4(solid-js@1.7.6)
-      '@solid-primitives/rootless': 1.4.1(solid-js@1.7.6)
+      '@solid-primitives/rootless': 1.4.2(solid-js@1.7.6)
       '@solid-primitives/scheduled': 1.3.2(solid-js@1.7.6)
       '@solid-primitives/static-store': 0.0.2(solid-js@1.7.6)
       '@solid-primitives/styles': 0.0.108(solid-js@1.7.6)
-      '@solid-primitives/utils': 6.2.0(solid-js@1.7.6)
+      '@solid-primitives/utils': 6.2.1(solid-js@1.7.6)
       solid-js: 1.7.6
     dev: true
 
@@ -753,7 +784,7 @@ packages:
     peerDependencies:
       solid-js: ^1.6.12
     dependencies:
-      '@solid-primitives/utils': 6.2.0(solid-js@1.7.6)
+      '@solid-primitives/utils': 6.2.1(solid-js@1.7.6)
       solid-js: 1.7.6
     dev: true
 
@@ -792,7 +823,7 @@ packages:
     peerDependencies:
       solid-js: ^1.6.12
     dependencies:
-      '@solid-primitives/utils': 6.2.0(solid-js@1.7.6)
+      '@solid-primitives/utils': 6.2.1(solid-js@1.7.6)
       solid-js: 1.7.6
     dev: true
 
@@ -864,8 +895,8 @@ packages:
     peerDependencies:
       solid-js: ^1.6.12
     dependencies:
-      '@solid-primitives/rootless': 1.4.1(solid-js@1.7.6)
-      '@solid-primitives/utils': 6.2.0(solid-js@1.7.6)
+      '@solid-primitives/rootless': 1.4.2(solid-js@1.7.6)
+      '@solid-primitives/utils': 6.2.1(solid-js@1.7.6)
       solid-js: 1.7.6
     dev: true
 

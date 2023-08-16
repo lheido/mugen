@@ -1,126 +1,154 @@
-import type { Component } from "solid-js";
+import { Component, FlowProps, For, Show } from "solid-js";
 
+import { Box, Button, Layout } from "@mugen/components";
+import { As } from "@mugen/semantic";
+import {
+  Absolute,
+  BackgroundColor,
+  Color,
+  Fill,
+  Font,
+  Height,
+  Overflow,
+  Padding,
+  Relative,
+  Scale,
+  Sticky,
+  Translate,
+  Width,
+} from "@mugen/theme";
 import { useRoutes } from "@solidjs/router";
-import { Box, Column, FlexItem, Heading, List, Text } from "mugen/ui";
+import { Dynamic } from "solid-js/web";
 import { routes } from "./app.routing";
+import { isMd } from "./utils/breakpoints";
 
-const categories = [
-  "General",
-  "Layout",
-  "Typography",
-  "Navigation",
-  "Feedback",
-  "Overlay",
-  "Others",
+type NavItemData = {
+  value: string;
+};
+
+const categories: NavItemData[] = [
+  { value: "General" },
+  { value: "Layout" },
+  { value: "Typography" },
+  { value: "Navigation" },
+  { value: "Feedback" },
+  { value: "Overlay" },
+  { value: "Others" },
 ];
+
+const NavItem = (props: { data: NavItemData }) => {
+  return (
+    <As value="a">
+      <Padding x="20" y="4">
+        <Font weight="medium">
+          <Box>{props.data.value}</Box>
+        </Font>
+      </Padding>
+    </As>
+  );
+};
+
+const MainNavigation = () => {
+  return (
+    <Overflow x={isMd() ? "auto" : "scroll"}>
+      <Width max="wscreen">
+        <Sticky top={isMd() ? "64" : undefined}>
+          <As value="nav">
+            <Layout column={isMd()}>
+              <For each={categories}>{(data) => <NavItem data={data} />}</For>
+            </Layout>
+          </As>
+        </Sticky>
+      </Width>
+    </Overflow>
+  );
+};
+
+const SideBar = () => {
+  return (
+    <Relative>
+      <Padding top="32">
+        <BackgroundColor value="primary">
+          <Height min="hscreen">
+            <Box>
+              <MainNavigation />
+            </Box>
+          </Height>
+        </BackgroundColor>
+      </Padding>
+    </Relative>
+  );
+};
+
+const SiteTitle = (props: FlowProps) => {
+  return (
+    <As value="h1">
+      <Absolute top="14" left="1/2">
+        <Width value="max">
+          <Color value="page">
+            <Font size="base" weight="black">
+              <Translate x="-1/2">
+                <Scale value="400">
+                  <Box>{props.children}</Box>
+                </Scale>
+              </Translate>
+            </Font>
+          </Color>
+        </Width>
+      </Absolute>
+    </As>
+  );
+};
+
+const MdSiteTitle = (props: FlowProps) => {
+  return (
+    <Color from="page" to="primary" fromOffset="50" toOffset="50" direction="right">
+      <Scale value="600">
+        <SiteTitle {...props} />
+      </Scale>
+    </Color>
+  );
+};
+
+const Header = () => {
+  return (
+    <Relative>
+      <As value="header">
+        <Box>
+          <Sticky top="0" zIndex="3">
+            <Box>
+              <Button href="/">
+                <Dynamic component={isMd() ? MdSiteTitle : SiteTitle}>Mugen</Dynamic>
+              </Button>
+              <Show when={!isMd()}>
+                <MainNavigation />
+              </Show>
+            </Box>
+          </Sticky>
+        </Box>
+      </As>
+    </Relative>
+  );
+};
 
 const App: Component = () => {
   const Routes = useRoutes(routes);
   return (
-    <Box
-      theme={{
-        flex: { direction: "column" },
-        md: {
-          flex: { direction: "row" },
-        },
-      }}
-    >
-      <Column
-        as="aside"
-        theme={{
-          padding: { top: "32" },
-          background: "primary",
-          fixed: { top: "0", left: "0" },
-          zIndex: 2,
-          md: {
-            relative: true,
-            height: { min: "hscreen" },
-          },
-        }}
-      >
-        <List
-          each={categories}
-          theme={{
-            flex: {
-              direction: "row",
-            },
-            overflow: { x: "scroll" },
-            width: { max: "wscreen" },
-            md: {
-              sticky: { top: "64" },
-              width: "auto",
-              overflow: "auto",
-              flex: {
-                direction: "column",
-              },
-            },
-          }}
-        >
-          {(category) => (
-            <Text
-              theme={{
-                padding: { x: "20", y: "4" },
-                font: { weight: "medium" },
-              }}
-            >
-              {category}
-            </Text>
-          )}
-        </List>
-        {/* <Row
-          gap="1"
-          theme={{
-            fixed: { bottom: "0" },
-            padding: "4",
-          }}
-        >
-          <Image src="https://badgen.net/github/license/lheido/mugen" />
-          <Image src="https://badgen.net/github/release/lheido/mugen" />
-          <Image src="https://badgen.net/github/stars/lheido/mugen?label=★" />
-        </Row> */}
-      </Column>
-      <Box as="header" theme={{ relative: true }}>
-        <Box theme={{ sticky: { top: "0" }, zIndex: 3 }}>
-          <Box href="/">
-            <Heading
-              as="h1"
-              theme={{
-                font: {
-                  size: "base",
-                  weight: "black",
-                },
-                absolute: { top: "14", left: "1/2" },
-                width: "max",
-                color: "page",
-                transform: {
-                  translate: {
-                    x: "-1/2",
-                  },
-                  scale: "400",
-                },
-                md: {
-                  color: {
-                    direction: "right",
-                    from: "page",
-                    to: "primary",
-                    fromOffset: "50",
-                    toOffset: "50",
-                  },
-                  transform: {
-                    scale: "600",
-                  },
-                },
-              }}
-            >
-              Mugen
-            </Heading>
-          </Box>
-        </Box>
-      </Box>
-      <FlexItem as="main" grow={1} theme={{ relative: true }}>
-        <Routes />
-      </FlexItem>
-    </Box>
+    <Layout column={!isMd()}>
+      <Show when={isMd()}>
+        <SideBar />
+      </Show>
+      <Header />
+      <Relative>
+        <As value="main">
+          <Fill>
+            <Box>
+              <Routes />
+            </Box>
+          </Fill>
+        </As>
+      </Relative>
+    </Layout>
   );
 };
 
