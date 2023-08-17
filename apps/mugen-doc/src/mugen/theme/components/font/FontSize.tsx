@@ -1,4 +1,4 @@
-import { FlowProps } from "solid-js";
+import { FlowProps, splitProps } from "solid-js";
 import { HandlerRuleData, ThemeDescription } from "../../../types";
 import { useMugenThemeContext } from "../../context";
 import { MugenTheme } from "../../MugenTheme";
@@ -33,8 +33,11 @@ export function themeFontSizeHandler(theme: MugenTheme, props: FontSizeProps) {
   return result;
 }
 
+export const FONT_SIZE_KEY = "fontSize";
+
 export const FontSize = (props: FlowProps & FontSizeProps) => {
+  const [flow, local] = splitProps(props, ["children"]);
   const theme = useMugenThemeContext();
-  theme.add("fontSize", () => themeFontSizeHandler(theme, props));
-  return props.children;
+  theme.add(FONT_SIZE_KEY, () => themeFontSizeHandler(theme, local));
+  return flow.children;
 };

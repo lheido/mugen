@@ -1,4 +1,4 @@
-import { FlowProps } from "solid-js";
+import { FlowProps, splitProps } from "solid-js";
 import { Either, HandlerRuleData, ThemeDescription } from "../../types";
 import { useMugenThemeContext } from "../context";
 import { MugenTheme } from "../MugenTheme";
@@ -85,7 +85,8 @@ export function themeTransitionHandler(theme: MugenTheme, props: TransitionProps
 export const TRANSITION_KEY = "transition";
 
 export const Transition = (props: FlowProps & TransitionProps) => {
+  const [flow, local] = splitProps(props, ["children"]);
   const theme = useMugenThemeContext();
-  theme.add(TRANSITION_KEY, () => themeTransitionHandler(theme, props));
-  return props.children;
+  theme.add(TRANSITION_KEY, () => themeTransitionHandler(theme, local as TransitionProps));
+  return flow.children;
 };

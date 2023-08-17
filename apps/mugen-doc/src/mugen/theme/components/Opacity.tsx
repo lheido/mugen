@@ -1,4 +1,4 @@
-import { FlowProps } from "solid-js";
+import { FlowProps, splitProps } from "solid-js";
 import { HandlerRuleData, ThemeDescription, WithPseudoClasse } from "../../types";
 import { useMugenThemeContext } from "../context";
 import { MugenTheme } from "../MugenTheme";
@@ -33,7 +33,8 @@ export function themeOpacityHandler(theme: MugenTheme, props: OpacityProps) {
 }
 
 export const Opacity = (props: FlowProps & OpacityProps) => {
+  const [flow, local] = splitProps(props, ["children"]);
   const theme = useMugenThemeContext();
-  theme.add("opacity", () => themeOpacityHandler(theme, props));
-  return props.children;
+  theme.add("opacity", () => themeOpacityHandler(theme, local));
+  return flow.children;
 };

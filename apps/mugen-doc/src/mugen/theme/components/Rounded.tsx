@@ -1,4 +1,4 @@
-import { FlowProps } from "solid-js";
+import { FlowProps, splitProps } from "solid-js";
 import { Either, HandlerRuleData, ThemeDescription } from "../../types";
 import { useMugenThemeContext } from "../context";
 import { MugenTheme } from "../MugenTheme";
@@ -133,7 +133,8 @@ export function themeRoundedHandler(theme: MugenTheme, props: RoundedProps) {
 }
 
 export const Rounded = (props: FlowProps & RoundedProps) => {
+  const [flow, local] = splitProps(props, ["children"]);
   const theme = useMugenThemeContext();
-  theme.add("rounded", () => themeRoundedHandler(theme, props));
-  return props.children;
+  theme.add("rounded", () => themeRoundedHandler(theme, local as RoundedProps));
+  return flow.children;
 };

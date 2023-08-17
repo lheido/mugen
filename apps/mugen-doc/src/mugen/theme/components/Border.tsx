@@ -1,4 +1,4 @@
-import { FlowProps } from "solid-js";
+import { FlowProps, splitProps } from "solid-js";
 import { HandlerRuleData, ThemeDescription, WithPseudoClasse } from "../../types";
 import { useMugenThemeContext } from "../context";
 import { MugenTheme } from "../MugenTheme";
@@ -77,31 +77,36 @@ export const BORDER_BOTTOM_KEY = "borderBottom";
 export const BORDER_LEFT_KEY = "borderLeft";
 
 export const Border = (props: FlowProps & BorderProps) => {
+  const [flow, local] = splitProps(props, ["children"]);
   const theme = useMugenThemeContext();
-  theme.add(BORDER_KEY, () => themeBorderHandler(theme, props));
-  return props.children;
+  theme.add(BORDER_KEY, () => themeBorderHandler(theme, local));
+  return flow.children;
 };
 
 export const BorderTop = (props: FlowProps & BorderProps) => {
+  const [flow, local] = splitProps(props, ["children"]);
   const theme = useMugenThemeContext();
-  theme.add(BORDER_TOP_KEY, () => themeBorderHandler(theme, props, "top"));
-  return props.children;
+  theme.add(BORDER_TOP_KEY, () => themeBorderHandler(theme, local, "top"));
+  return flow.children;
 };
 
 export const BorderRight = (props: FlowProps & BorderProps) => {
+  const [flow, local] = splitProps(props, ["children"]);
   const theme = useMugenThemeContext();
-  theme.add(BORDER_RIGHT_KEY, () => themeBorderHandler(theme, props, "right"));
-  return props.children;
+  theme.add(BORDER_RIGHT_KEY, () => themeBorderHandler(theme, local, "right"));
+  return flow.children;
 };
 
 export const BorderBottom = (props: FlowProps & BorderProps) => {
+  const [flow, local] = splitProps(props, ["children"]);
   const theme = useMugenThemeContext();
-  theme.add(BORDER_BOTTOM_KEY, () => themeBorderHandler(theme, props, "bottom"));
-  return props.children;
+  theme.add(BORDER_BOTTOM_KEY, () => themeBorderHandler(theme, local, "bottom"));
+  return flow.children;
 };
 
 export const BorderLeft = (props: FlowProps & BorderProps) => {
+  const [flow, local] = splitProps(props, ["children"]);
   const theme = useMugenThemeContext();
-  theme.add(BORDER_LEFT_KEY, () => themeBorderHandler(theme, props, "left"));
-  return props.children;
+  theme.add(BORDER_LEFT_KEY, () => themeBorderHandler(theme, local, "left"));
+  return flow.children;
 };

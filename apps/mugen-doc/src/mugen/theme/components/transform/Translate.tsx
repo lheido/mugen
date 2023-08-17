@@ -1,4 +1,4 @@
-import { FlowProps } from "solid-js";
+import { FlowProps, splitProps } from "solid-js";
 import { HandlerRuleData, ThemeDescription } from "../../../types";
 import { useMugenThemeContext } from "../../context";
 import { MugenTheme } from "../../MugenTheme";
@@ -56,7 +56,8 @@ export function themeTranslateHandler(theme: MugenTheme, props: TranslateProps) 
 export const TRANSLATE_KEY = "translate";
 
 export const Translate = (props: FlowProps & TranslateProps) => {
+  const [flow, local] = splitProps(props, ["children"]);
   const theme = useMugenThemeContext();
-  theme.add(TRANSLATE_KEY, () => themeTranslateHandler(theme, props));
-  return props.children;
+  theme.add(TRANSLATE_KEY, () => themeTranslateHandler(theme, local));
+  return flow.children;
 };

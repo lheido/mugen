@@ -1,4 +1,4 @@
-import { FlowProps } from "solid-js";
+import { FlowProps, splitProps } from "solid-js";
 import { HandlerRuleData, ThemeDescription } from "../../../types";
 import { useMugenThemeContext } from "../../context";
 import { MugenTheme } from "../../MugenTheme";
@@ -29,8 +29,11 @@ export function themeFontWeightHandler(theme: MugenTheme, props: FontWeightProps
   return result;
 }
 
+export const FONT_WEIGHT_KEY = "fontWeight";
+
 export const FontWeight = (props: FlowProps & FontWeightProps) => {
+  const [flow, local] = splitProps(props, ["children"]);
   const theme = useMugenThemeContext();
-  theme.add("fontWeight", () => themeFontWeightHandler(theme, props));
-  return props.children;
+  theme.add(FONT_WEIGHT_KEY, () => themeFontWeightHandler(theme, local));
+  return flow.children;
 };

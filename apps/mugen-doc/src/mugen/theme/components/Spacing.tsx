@@ -1,4 +1,4 @@
-import { FlowProps } from "solid-js";
+import { FlowProps, splitProps } from "solid-js";
 import { Either, HandlerRuleData, ThemeDescription } from "../../types";
 import { useMugenThemeContext } from "../context";
 import { MugenTheme } from "../MugenTheme";
@@ -58,9 +58,10 @@ export function themeSpacingHandler(theme: MugenTheme, props: SpacingProps, prop
 }
 
 export const Spacing = (props: FlowProps & SpacingProps & { type: SpacingType }) => {
+  const [flow, type, local] = splitProps(props, ["children"], ["type"]);
   const theme = useMugenThemeContext();
-  theme.add(props.type, () => themeSpacingHandler(theme, props, props.type));
-  return props.children;
+  theme.add(type.type, () => themeSpacingHandler(theme, local as SpacingProps, type.type));
+  return flow.children;
 };
 
 export const Padding = (props: FlowProps & SpacingProps) => <Spacing {...props} type="padding" />;

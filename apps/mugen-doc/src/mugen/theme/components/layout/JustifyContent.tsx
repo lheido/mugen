@@ -1,4 +1,4 @@
-import { FlowProps } from "solid-js";
+import { FlowProps, splitProps } from "solid-js";
 import { Either, HandlerRuleData, Split } from "../../../types";
 import { useMugenThemeContext } from "../../context";
 import { MugenTheme } from "../../MugenTheme";
@@ -54,8 +54,9 @@ export function themeJustifyContentHandler(theme: MugenTheme, props: JustifyCont
 export const JUSTIFY_CONTENT_KEY = "justifyContent";
 
 export const JustifyContent = (props: FlowProps & JustifyContentProps) => {
+  const [flow, local] = splitProps(props, ["children"]);
   const theme = useMugenThemeContext();
   theme.add(FLEX_LAYOUT_KEY, () => themeDisplayFlexHandler(theme));
-  theme.add(JUSTIFY_CONTENT_KEY, () => themeJustifyContentHandler(theme, props));
-  return props.children;
+  theme.add(JUSTIFY_CONTENT_KEY, () => themeJustifyContentHandler(theme, local as JustifyContentProps));
+  return flow.children;
 };

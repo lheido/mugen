@@ -1,4 +1,4 @@
-import { FlowProps } from "solid-js";
+import { FlowProps, splitProps } from "solid-js";
 import { Either, HandlerRuleData } from "../../../types";
 import { useMugenThemeContext } from "../../context";
 import { MugenTheme } from "../../MugenTheme";
@@ -53,8 +53,9 @@ export function themeFlexWrapHandler(theme: MugenTheme, props: FlexWrapProps) {
 export const FLEX_WRAP_KEY = "flexWrap";
 
 export const FlexWrap = (props: FlowProps & FlexWrapProps) => {
+  const [flow, local] = splitProps(props, ["children"]);
   const theme = useMugenThemeContext();
   theme.add(FLEX_LAYOUT_KEY, () => themeDisplayFlexHandler(theme));
-  theme.add(FLEX_WRAP_KEY, () => themeFlexWrapHandler(theme, props));
-  return props.children;
+  theme.add(FLEX_WRAP_KEY, () => themeFlexWrapHandler(theme, local as FlexWrapProps));
+  return flow.children;
 };

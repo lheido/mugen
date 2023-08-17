@@ -1,4 +1,4 @@
-import { FlowProps } from "solid-js";
+import { FlowProps, splitProps } from "solid-js";
 import { IntrinsicElements } from "../types";
 import { useMugenSemanticContext } from "./context";
 
@@ -10,9 +10,10 @@ import { useMugenSemanticContext } from "./context";
 export type AsProps = { value: IntrinsicElements };
 
 export const As = (props: FlowProps & AsProps) => {
+  const [flow, local] = splitProps(props, ["children"]);
   const ctx = useMugenSemanticContext();
   if (ctx?.as === undefined) {
-    ctx.as = () => props.value;
+    ctx.as = () => local.value;
   }
-  return props.children;
+  return flow.children;
 };

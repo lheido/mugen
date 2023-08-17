@@ -1,4 +1,4 @@
-import { FlowProps } from "solid-js";
+import { FlowProps, splitProps } from "solid-js";
 import { HandlerRuleData, ThemeDescription } from "../../types";
 import { useMugenThemeContext } from "../context";
 import { MugenTheme } from "../MugenTheme";
@@ -54,13 +54,15 @@ export function themeSizeHandler(theme: MugenTheme, props: SizeProps, prop: Size
 }
 
 export const Width = (props: FlowProps & SizeProps) => {
+  const [flow, local] = splitProps(props, ["children"]);
   const theme = useMugenThemeContext();
-  theme.add("width", () => themeSizeHandler(theme, props, "width"));
-  return props.children;
+  theme.add("width", () => themeSizeHandler(theme, local, "width"));
+  return flow.children;
 };
 
 export const Height = (props: FlowProps & SizeProps) => {
+  const [flow, local] = splitProps(props, ["children"]);
   const theme = useMugenThemeContext();
-  theme.add("height", () => themeSizeHandler(theme, props, "height"));
-  return props.children;
+  theme.add("height", () => themeSizeHandler(theme, local, "height"));
+  return flow.children;
 };

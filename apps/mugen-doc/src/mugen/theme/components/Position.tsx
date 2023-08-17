@@ -1,4 +1,4 @@
-import { FlowProps } from "solid-js";
+import { FlowProps, splitProps } from "solid-js";
 import { HandlerRuleData, ThemeDescription } from "../../types";
 import { useMugenThemeContext } from "../context";
 import { MugenTheme } from "../MugenTheme";
@@ -64,9 +64,10 @@ export function themePositionHandler(theme: MugenTheme, props: PositionProps, pr
 }
 
 export const Position = (props: FlowProps & PositionProps & { type: PositionType }) => {
+  const [flow, type, local] = splitProps(props, ["children"], ["type"]);
   const theme = useMugenThemeContext();
-  theme.add(props.type, () => themePositionHandler(theme, props, props.type));
-  return props.children;
+  theme.add(props.type, () => themePositionHandler(theme, local, type.type));
+  return flow.children;
 };
 
 export const Relative = (props: FlowProps & PositionProps) => <Position {...props} type="relative" />;

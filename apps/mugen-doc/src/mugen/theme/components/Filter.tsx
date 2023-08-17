@@ -1,4 +1,4 @@
-import { FlowProps } from "solid-js";
+import { FlowProps, splitProps } from "solid-js";
 import { HandlerRuleData } from "../../types";
 import { useMugenThemeContext } from "../context";
 import { MugenTheme } from "../MugenTheme";
@@ -29,7 +29,8 @@ export function themeFilterHandler(theme: MugenTheme, props: FilterProps) {
 }
 
 export const Filter = (props: FlowProps & FilterProps) => {
+  const [flow, local] = splitProps(props, ["children"]);
   const theme = useMugenThemeContext();
-  theme.add("filter", () => themeFilterHandler(theme, props));
-  return props.children;
+  theme.add("filter", () => themeFilterHandler(theme, local));
+  return flow.children;
 };

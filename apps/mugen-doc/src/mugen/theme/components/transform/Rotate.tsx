@@ -1,4 +1,4 @@
-import { FlowProps } from "solid-js";
+import { FlowProps, splitProps } from "solid-js";
 import { HandlerRuleData, ThemeDescription } from "../../../types";
 import { useMugenThemeContext } from "../../context";
 import { MugenTheme } from "../../MugenTheme";
@@ -33,7 +33,8 @@ export function themeRotateHandler(theme: MugenTheme, props: RotateProps) {
 export const ROTATE_KEY = "rotate";
 
 export const Rotate = (props: FlowProps & RotateProps) => {
+  const [flow, local] = splitProps(props, ["children"]);
   const theme = useMugenThemeContext();
-  theme.add(ROTATE_KEY, () => themeRotateHandler(theme, props));
-  return props.children;
+  theme.add(ROTATE_KEY, () => themeRotateHandler(theme, local));
+  return flow.children;
 };

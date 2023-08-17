@@ -83,9 +83,9 @@ const SideBar = () => {
 
 const SiteTitle = (props: FlowProps) => {
   return (
-    <Absolute top="14" left="1/2">
-      <Width value="max">
-        <Color value="page">
+    <Color value="page">
+      <Absolute top="14" left="1/2">
+        <Width value="max">
           <Font size="base" weight="black">
             <Translate x="-1/2">
               <Scale value="400">
@@ -93,9 +93,9 @@ const SiteTitle = (props: FlowProps) => {
               </Scale>
             </Translate>
           </Font>
-        </Color>
-      </Width>
-    </Absolute>
+        </Width>
+      </Absolute>
+    </Color>
   );
 };
 

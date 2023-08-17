@@ -1,4 +1,4 @@
-import { FlowProps } from "solid-js";
+import { FlowProps, splitProps } from "solid-js";
 import { HandlerRuleData } from "../../../types";
 import { useMugenThemeContext } from "../../context";
 import { MugenTheme } from "../../MugenTheme";
@@ -30,9 +30,10 @@ export function themeFlexGrowHandler(theme: MugenTheme, props: FlexGrowProps) {
 }
 
 export const FlexGrow = (props: FlowProps & FlexGrowProps) => {
+  const [flow, local] = splitProps(props, ["children"]);
   const theme = useMugenThemeContext();
-  theme.add("flexGrow", () => themeFlexGrowHandler(theme, props));
-  return props.children;
+  theme.add("flexGrow", () => themeFlexGrowHandler(theme, local));
+  return flow.children;
 };
 
 export const Fill = (props: FlowProps) => {

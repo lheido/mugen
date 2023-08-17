@@ -1,4 +1,4 @@
-import { FlowProps } from "solid-js";
+import { FlowProps, splitProps } from "solid-js";
 import { Either, HandlerRuleData } from "../../types";
 import { useMugenThemeContext } from "../context";
 import { MugenTheme } from "../MugenTheme";
@@ -57,7 +57,8 @@ export function themeOverflowHandler(theme: MugenTheme, props: OverflowProps) {
 }
 
 export const Overflow = (props: FlowProps & OverflowProps) => {
+  const [flow, local] = splitProps(props, ["children"]);
   const theme = useMugenThemeContext();
-  theme.add("overflow", () => themeOverflowHandler(theme, props));
-  return props.children;
+  theme.add("overflow", () => themeOverflowHandler(theme, local as OverflowProps));
+  return flow.children;
 };

@@ -8,6 +8,5 @@ export function useHierarchy() {
 
 export const Hierarchy = (props: FlowProps) => {
   const hierarchy = useHierarchy();
-  console.log(hierarchy + 1);
   return <hierarchyContext.Provider value={hierarchy + 1}>{props.children}</hierarchyContext.Provider>;
 };

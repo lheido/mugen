@@ -1,4 +1,4 @@
-import { FlowProps } from "solid-js";
+import { FlowProps, splitProps } from "solid-js";
 import { Either, HandlerRuleData, ThemeDescription } from "../../../types";
 import { useMugenThemeContext } from "../../context";
 import { MugenTheme } from "../../MugenTheme";
@@ -58,12 +58,13 @@ export function themeGapHandler(theme: MugenTheme, props: GapProps) {
 export const GAP_KEY = "gap";
 
 export const Gap = (props: FlowProps & GapProps) => {
+  const [flow, local] = splitProps(props, ["children"]);
   const theme = useMugenThemeContext();
   if (props.value !== undefined) {
     theme.add(FLEX_LAYOUT_KEY, () => themeDisplayFlexHandler(theme));
   } else {
     console.warn("TODO: implement grid handler");
   }
-  theme.add(GAP_KEY, () => themeGapHandler(theme, props));
-  return props.children;
+  theme.add(GAP_KEY, () => themeGapHandler(theme, local as GapProps));
+  return flow.children;
 };

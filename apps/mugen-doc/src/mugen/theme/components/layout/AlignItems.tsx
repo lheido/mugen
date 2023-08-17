@@ -1,4 +1,4 @@
-import { FlowProps } from "solid-js";
+import { FlowProps, splitProps } from "solid-js";
 import { Either, HandlerRuleData, Split } from "../../../types";
 import { useMugenThemeContext } from "../../context";
 import { MugenTheme } from "../../MugenTheme";
@@ -52,8 +52,9 @@ export function themeAlignItemsHandler(theme: MugenTheme, props: AlignItemsProps
 export const ALIGN_ITEMS_KEY = "alignItems";
 
 export const AlignItems = (props: FlowProps & AlignItemsProps) => {
+  const [flow, local] = splitProps(props, ["children"]);
   const theme = useMugenThemeContext();
   theme.add(FLEX_LAYOUT_KEY, () => themeDisplayFlexHandler(theme));
-  theme.add(ALIGN_ITEMS_KEY, () => themeAlignItemsHandler(theme, props));
-  return props.children;
+  theme.add(ALIGN_ITEMS_KEY, () => themeAlignItemsHandler(theme, local as AlignItemsProps));
+  return flow.children;
 };

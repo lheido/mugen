@@ -1,4 +1,4 @@
-import { Box, Layout } from "@mugen/components";
+import { Box, Layout, Text } from "@mugen/components";
 import {
   Absolute,
   BackgroundColor,
@@ -27,7 +27,7 @@ function useMdBreakpoint() {
   return createMediaQuery("(min-width: 768px)");
 }
 
-const HomeV2 = () => {
+const Home = () => {
   console.time("HomeV2");
   const isMd = useMdBreakpoint();
   const result = (
@@ -57,20 +57,22 @@ const HomeV2 = () => {
                     <Padding value="10">
                       <Layout column gap="16">
                         <FontSize value={isMd() ? "6xl" : "3xl"}>
-                          <Box>
+                          <Text>
                             An <strong>UI toolkit</strong> that provides low level components to build app faster and
                             easier.
-                          </Box>
+                          </Text>
                         </FontSize>
                         <FontSize value={isMd() ? "5xl" : "2xl"}>
-                          <Box>
+                          <Text>
                             It provides a typed way to adopt <strong>design systems</strong> easily!🎉
-                          </Box>
+                          </Text>
                         </FontSize>
                         <Layout justify="center" gap={isMd() ? "8" : "4"}>
-                          <CAButton href="#get-started">Get Started</CAButton>
+                          <CAButton href="#get-started">
+                            <Text>Get Started</Text>
+                          </CAButton>
                           <Button href="https://github.com/lheido/mugen" target="_blank">
-                            Github
+                            <Text>Github</Text>
                           </Button>
                         </Layout>
                       </Layout>
@@ -122,7 +124,7 @@ const HomeV2 = () => {
                   <Code language="tsx">{basicUsage}</Code>
                 </Layout>
               </As> */}
-                <Box>Site under construction</Box>
+                <Text>Site under construction</Text>
               </Layout>
             </Height>
           </Padding>
@@ -134,7 +136,7 @@ const HomeV2 = () => {
   return result;
 };
 
-export default HomeV2;
+export default Home;
 
 const HighlightSection = (props: FlowProps) => {
   return (
@@ -155,7 +157,7 @@ const HighlightSectionInnerParagraph = (props: FlowProps) => {
     <Padding value="4">
       <Rounded value="lg">
         <FontSize value="lg">
-          <Box>{props.children}</Box>
+          <Text>{props.children}</Text>
         </FontSize>
       </Rounded>
     </Padding>

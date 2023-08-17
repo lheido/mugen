@@ -130,9 +130,10 @@ export function themeColorHandler(
 }
 
 export const Color = (props: ColorProps & FlowProps) => {
+  const [flow, local] = splitProps(props, ["children"]);
   const theme = useMugenThemeContext();
-  theme.add("color", () => themeColorHandler(theme, props, "color"));
-  return props.children;
+  theme.add("color", () => themeColorHandler(theme, local as ColorProps, "color"));
+  return flow.children;
 };
 
 export const BackgroundColor = (

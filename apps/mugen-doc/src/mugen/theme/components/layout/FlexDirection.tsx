@@ -1,4 +1,4 @@
-import { FlowProps } from "solid-js";
+import { FlowProps, splitProps } from "solid-js";
 import { HandlerRuleData } from "../../../types";
 import { useMugenThemeContext } from "../../context";
 import { MugenTheme } from "../../MugenTheme";
@@ -54,10 +54,11 @@ export function themeFlexDirectionHandler(theme: MugenTheme, props: FlexDirectio
 export const FLEX_DIRECTION_KEY = "flexDirection";
 
 export const FlexDirection = (props: FlowProps & FlexDirectionProps) => {
+  const [flow, local] = splitProps(props, ["children"]);
   const theme = useMugenThemeContext();
   theme.add(FLEX_LAYOUT_KEY, () => themeDisplayFlexHandler(theme));
-  theme.add(FLEX_DIRECTION_KEY, () => themeFlexDirectionHandler(theme, props));
-  return props.children;
+  theme.add(FLEX_DIRECTION_KEY, () => themeFlexDirectionHandler(theme, local));
+  return flow.children;
 };
 
 export const Row = (props: FlowProps & Omit<FlexDirectionProps, "column">) => {
