@@ -30,15 +30,23 @@ const USE_SPAN = [
   "option",
 ];
 
+function determineTag(path: IntrinsicElements[]): IntrinsicElements {
+  // TODO: find a better way to determine the tag.
+  // For now, we just determine the tag according to the presence of an inline element in the path.
+  return path.reverse().reduce((tag, current) => {
+    if (tag === "span" && !USE_SPAN.includes(current)) {
+      return "p";
+    }
+    return tag;
+  }, "span" as IntrinsicElements);
+}
+
 export const Text = (props: FlowProps & { as?: IntrinsicElements }) => {
   const [flow, local] = splitProps(props, ["children"]);
   const parent = useParent();
   const as = () => {
     if (local.as) return local.as;
-    if (parent) {
-      return parent.path.some((tag) => USE_SPAN.includes(tag)) ? "span" : "p";
-    }
-    return "span";
+    return determineTag(parent?.path ?? []);
   };
   return (
     <As value={as()}>

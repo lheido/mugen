@@ -2,7 +2,7 @@ import { createContext, FlowProps, useContext } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import { useMugenSemanticContext } from "../semantic";
 import { useMugenThemeContext } from "../theme";
-import { GlobalAttributes } from "../types";
+import { GlobalAttributes, IntrinsicElements } from "../types";
 
 export type BoxProps = GlobalAttributes;
 
@@ -10,7 +10,7 @@ export type NodeContext = {
   id?: string;
   as?: string;
   parent?: NodeContext;
-  path: string[];
+  path: IntrinsicElements[];
 };
 
 const nodeContext = createContext<NodeContext>(undefined);
