@@ -1,21 +1,23 @@
-import { Box, Layout, Text } from "@mugen/components";
 import {
   Absolute,
   BackgroundColor,
   BorderTop,
+  Box,
   Filter,
   FlexDirection,
   FontSize,
   Gap,
   Height,
+  Layout,
   Margin,
   Opacity,
   Overflow,
   Padding,
   Relative,
   Rounded,
+  Text,
   Width,
-} from "@mugen/theme";
+} from "@mugen/core";
 import { createMediaQuery } from "@solid-primitives/media";
 import { FlowProps } from "solid-js";
 import appCode from "../App.tsx?raw";

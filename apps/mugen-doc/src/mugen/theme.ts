@@ -1,4 +1,4 @@
-import { themeDescriptionDefaults } from "./theme/default";
+import { themeDescriptionDefaults } from "./core/theme/default";
 
 export const theme = {
   ...themeDescriptionDefaults,

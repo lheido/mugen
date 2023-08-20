@@ -1,5 +1,4 @@
-import { ButtonProps } from "@mugen/components";
-import { BackgroundColor, Font } from "@mugen/theme";
+import { BackgroundColor, ButtonProps, Font } from "@mugen/core";
 import { Button } from "./Button";
 
 export const CAButton = (props: ButtonProps) => {

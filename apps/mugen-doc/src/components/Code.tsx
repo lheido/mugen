@@ -1,6 +1,4 @@
-import { Box } from "@mugen/components";
-import { As } from "@mugen/semantic";
-import { Margin, Overflow, Padding, Rounded } from "@mugen/theme";
+import { As, Box, Margin, Overflow, Padding, Rounded } from "@mugen/core";
 import Prism from "prismjs";
 import "prismjs/components/prism-bash";
 import "prismjs/components/prism-jsx";

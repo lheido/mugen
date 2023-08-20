@@ -1,23 +1,26 @@
 import { Component, FlowProps, For, Show } from "solid-js";
 
-import { Box, Button, Layout, Title } from "@mugen/components";
-import { As } from "@mugen/semantic";
-import { Hierarchy } from "@mugen/semantic/Hierachy";
 import {
   Absolute,
+  As,
   BackgroundColor,
+  Box,
+  Button,
   Color,
   Fill,
   Font,
   Height,
+  Hierarchy,
+  Layout,
   Overflow,
   Padding,
   Relative,
   Scale,
   Sticky,
+  Title,
   Translate,
   Width,
-} from "@mugen/theme";
+} from "@mugen/core";
 import { useRoutes } from "@solidjs/router";
 import { Dynamic } from "solid-js/web";
 import { routes } from "./app.routing";

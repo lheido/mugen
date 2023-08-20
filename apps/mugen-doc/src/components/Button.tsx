@@ -1,5 +1,4 @@
-import { Button as BaseButton, ButtonProps } from "@mugen/components";
-import { Border, Padding, Rounded, Scale, Transition } from "@mugen/theme";
+import { Border, Button as BaseButton, ButtonProps, Padding, Rounded, Scale, Transition } from "@mugen/core";
 import { isMd } from "../utils/breakpoints";
 
 export const Button = (props: ButtonProps) => {

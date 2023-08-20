@@ -1,5 +1,5 @@
 import { JSX } from "solid-js";
-import { theme } from "./theme-description";
+import { theme } from "../theme";
 
 export type ThemeDescription = typeof theme;
 

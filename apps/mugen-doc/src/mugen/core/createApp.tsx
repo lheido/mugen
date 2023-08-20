@@ -1,11 +1,8 @@
 import { JSX } from "solid-js";
 import { render } from "solid-js/web";
-import { MugenSemanticProvider } from "./semantic";
-import { Hierarchy } from "./semantic/Hierachy";
+import { theme } from "../theme";
+import { Hierarchy, MugenSemanticProvider } from "./semantic";
 import { MugenThemeProvider } from "./theme";
-import { theme } from "./theme-description";
-
-export * from "./types";
 
 export function createApp(root: () => JSX.Element) {
   const rootElt = document.getElementById("root");
