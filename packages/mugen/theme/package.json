@@ -1,0 +1,26 @@
+{
+  "name": "@mugen/theme",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@vanilla-extract/vite-plugin": "^4.0.10",
+    "jsdom": "^24.1.0",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.11",
+    "vite-plugin-solid": "^2.8.2",
+    "vitest": "^1.6.0"
+  },
+  "dependencies": {
+    "@mugen/core": "workspace:^",
+    "@vanilla-extract/css": "^1.15.2",
+    "@vanilla-extract/css-utils": "^0.1.4",
+    "solid-js": "^1.8.11"
+  }
+}
