@@ -1,7 +1,6 @@
 import {
   createGlobalTheme,
   createVar,
-  fallbackVar,
   style,
   styleVariants,
 } from "@vanilla-extract/css";
@@ -17,13 +16,16 @@ import { ColorNames, FullSurfaceColors, SurfaceColors } from "./surface.types";
 
 function createSurfaceVars(name: ColorNames, color: HexColor) {
   const light = rgbToHsl(hexToRgb(color));
-  light.l += lightModifier;
+  light.l = Math.min(light.l + lightModifier, 100);
+  const lightHex = rgbToHex(hslToRgb(light));
   const dark = rgbToHsl(hexToRgb(color));
-  dark.l -= darkModifier;
+  dark.l = Math.max(dark.l - darkModifier, 0);
+  const darkHex = rgbToHex(hslToRgb(dark));
+  // TODO: calculate the content color according to the darkest and lightest color.
   return {
     [name]: color,
-    [`${name}Light`]: rgbToHex(hslToRgb(light)),
-    [`${name}Dark`]: rgbToHex(hslToRgb(dark)),
+    [`${name}Light`]: lightHex,
+    [`${name}Dark`]: darkHex,
     [`${name}Content`]: "#000000",
   } as FullSurfaceColors;
 }
@@ -41,11 +43,12 @@ const colorVar = createVar();
 export const surface = style({
   "@layer": {
     [mugen]: {
-      backgroundColor: fallbackVar(
-        backgroundColorVar,
-        surfaces[defaultSurface]
-      ),
-      color: fallbackVar(colorVar, surfaces[`${defaultSurface}Content`]),
+      vars: {
+        [backgroundColorVar]: surfaces[defaultSurface],
+        [colorVar]: surfaces[`${defaultSurface}Content`],
+      },
+      backgroundColor: backgroundColorVar,
+      color: colorVar,
     },
   },
 });
