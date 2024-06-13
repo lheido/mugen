@@ -22,27 +22,22 @@ import {
 } from "../color";
 import { ColorNames, FullSurfaceColors, SurfaceColors } from "./surface.types";
 
-function getBestContentColor(base: RgbColor, light: RgbColor, dark: RgbColor) {
+function getBestContentColor(baseColor: RgbColor) {
   const baseContentColors = [hexToRgb("#000000"), hexToRgb("#ffffff")]; // black, white
-  const bases = [base, light, dark];
   let startColorRatio = 0;
   let startColor!: RgbColor;
-  let selectedBaseColor!: RgbColor;
 
   for (let color of baseContentColors) {
-    for (let base of bases) {
-      let tmp = getContrastRatio(color, base);
-      if (tmp > startColorRatio) {
-        startColorRatio = tmp;
-        startColor = color;
-        selectedBaseColor = base;
-      }
+    let tmp = getContrastRatio(color, baseColor);
+    if (tmp > startColorRatio) {
+      startColorRatio = tmp;
+      startColor = color;
     }
   }
   if (startColorRatio > 7) {
     const startLuminance = rgbToHsl(startColor).l;
     return _getBestContentColor(
-      selectedBaseColor,
+      baseColor,
       startColor,
       startColor,
       startLuminance
@@ -88,12 +83,13 @@ function createSurfaceVars(name: ColorNames, color: HexColor) {
   dark.l = Math.max(dark.l - darkModifier, 0);
   const darkRgb = hslToRgb(dark);
   const darkHex = rgbToHex(darkRgb);
-  const content = rgbToHex(getBestContentColor(baseRgb, ligthRgb, darkRgb));
   return {
     [name]: color,
+    [`${name}Content`]: rgbToHex(getBestContentColor(baseRgb)),
     [`${name}Light`]: lightHex,
+    [`${name}LightContent`]: rgbToHex(getBestContentColor(ligthRgb)),
     [`${name}Dark`]: darkHex,
-    [`${name}Content`]: content,
+    [`${name}DarkContent`]: rgbToHex(getBestContentColor(darkRgb)),
   } as FullSurfaceColors;
 }
 
@@ -124,7 +120,6 @@ export const surfaceVariants = styleVariants(
   Object.keys(surfaces)
     .filter((name) => !name.includes("Content"))
     .reduce((acc, name) => {
-      const prefix = name.replace(/(Light|Dark)$/, "");
       return {
         ...acc,
         [name]: {
@@ -133,7 +128,7 @@ export const surfaceVariants = styleVariants(
               vars: {
                 [backgroundColorVar]: surfaces[name as ColorNames],
                 [colorVar]:
-                  surfaces[`${prefix}Content` as keyof FullSurfaceColors],
+                  surfaces[`${name}Content` as keyof FullSurfaceColors],
               },
             },
           },

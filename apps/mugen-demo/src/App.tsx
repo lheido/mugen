@@ -14,10 +14,22 @@ const App: Component = () => {
         <Box as="p" surface="primaryDark" style={{ padding: "1rem" }}>
           Edit <code>src/App.tsx</code> and save to reload.
         </Box>
+        <Box as="p" surface="secondaryLight" style={{ padding: "1rem" }}>
+          Edit <code>src/App.tsx</code> and save to reload.
+        </Box>
         <Box as="p" surface="secondary" style={{ padding: "1rem" }}>
           Edit <code>src/App.tsx</code> and save to reload.
         </Box>
+        <Box as="p" surface="secondaryDark" style={{ padding: "1rem" }}>
+          Edit <code>src/App.tsx</code> and save to reload.
+        </Box>
         <Box as="p" surface="baseLight" style={{ padding: "1rem" }}>
+          Edit <code>src/App.tsx</code> and save to reload.
+        </Box>
+        <Box as="p" surface="base" style={{ padding: "1rem" }}>
+          Edit <code>src/App.tsx</code> and save to reload.
+        </Box>
+        <Box as="p" surface="baseDark" style={{ padding: "1rem" }}>
           Edit <code>src/App.tsx</code> and save to reload.
         </Box>
         <a

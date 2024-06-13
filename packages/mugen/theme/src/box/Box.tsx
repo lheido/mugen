@@ -4,15 +4,16 @@ import {
   Polymorphic,
   PolymorphicComponent,
   PolymorphicComponentProps,
+  RoundedValues,
+  SpacingValues,
+  Style,
 } from "@mugen/core";
 import { FlowProps, createEffect, on, splitProps } from "solid-js";
 import { JSX } from "solid-js/jsx-runtime";
-import { createStore, produce } from "solid-js/store";
-import { Surface, SurfaceProps } from "../surface";
-import { BoxContextState, getContextProvider, useBox } from "./Box.context";
-
-export type SpacingValues = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
-export type RoundedValues = "none" | "sm" | true | "lg" | "full";
+import { produce } from "solid-js/store";
+import { LayoutProps, layoutProps, processLayoutProps } from "../layout";
+import { SurfaceProps } from "../surface";
+import { useBox } from "./Box.context";
 
 export type PositionValues =
   | true
@@ -40,20 +41,6 @@ export type PositionProps = Partial<
     >
   >
 >;
-
-export type LayoutProps = {
-  jc?:
-    | "center"
-    | "space-between"
-    | "space-around"
-    | "space-evenly"
-    | "flex-start"
-    | "flex-end";
-  ai?: "center" | "stretch" | "flex-start" | "flex-end" | "baseline";
-  gap?: SpacingValues | `${SpacingValues}`;
-  column?: boolean;
-  reverse?: boolean;
-};
 
 export type SpacingProps = {
   m?: SpacingValues | `${SpacingValues}`;
@@ -99,46 +86,6 @@ export type BoxProps = LayoutProps &
   PositionProps &
   SizeProps &
   SurfaceProps;
-
-function Layout(props: FlowProps<LayoutProps>) {
-  const layoutProps: (keyof LayoutProps)[] = [
-    "jc",
-    "ai",
-    "gap",
-    "column",
-    "reverse",
-  ];
-  const [local, _] = splitProps(props, layoutProps);
-  createEffect(
-    on(
-      () => [local.jc, local.ai, local.gap, local.column, local.reverse],
-      () => {
-        const context = useBox();
-        const setState = context && context[1];
-        if (setState) {
-          setState(
-            produce((draft) => {
-              if (local.jc) draft.style["--_layout-justify-content"] = local.jc;
-              if (local.ai) draft.style["--_layout-align-items"] = local.ai;
-              if (local.gap)
-                draft.style["--_layout-gap"] = `var(--spacing-${local.gap})`;
-              if (local.reverse) {
-                draft.style["--_layout-direction"] = local.column
-                  ? "column-reverse"
-                  : "row-reverse";
-              } else {
-                draft.classList.column = !!local.column;
-              }
-              draft.classList.layout = true;
-              draft.consumedProps.push(...layoutProps);
-            })
-          );
-        }
-      }
-    )
-  );
-  return props.children;
-}
 
 function Position(props: FlowProps<PositionProps>) {
   const positionProps: (keyof PositionProps)[] = [
@@ -256,45 +203,56 @@ function Rounded(props: FlowProps<RoundedProps>) {
 export function Box<R = any, T extends PolymorphicComponent<R> = "div">(
   props: PolymorphicComponentProps<R, T> & BoxProps & JSX.HTMLAttributes<T>
 ): JSX.Element {
-  const [local, others] = splitProps(props, ["as", "classList", "style"]);
-  const store = createStore<BoxContextState<R, T>>({
-    classList: {},
-    style: {},
-    as: local.as,
-    consumedProps: [],
-  });
-  const Provider = getContextProvider<R, T>();
+  const [local, _layoutProps, others] = splitProps(
+    props,
+    ["as", "classList", "style"],
+    layoutProps
+  );
+  // const store = createStore<BoxContextState<R, T>>({
+  //   classList: {},
+  //   style: {},
+  //   as: local.as,
+  //   consumedProps: [],
+  // });
+  // const Provider = getContextProvider<R, T>();
 
-  const mergeClassList = () => ({ ...local.classList, ...store[0].classList });
-  const mergeStyles = () => ({
-    ...store[0].style,
-    ...(local.style as JSX.CSSProperties),
-  });
-  const othersProps = () => {
-    store[0].consumedProps.forEach((prop) => {
-      delete (others as any)[prop];
+  // const mergeClassList = () => ({ ...local.classList, ...store[0].classList });
+  // const mergeStyles = () => ({
+  //   ...store[0].style,
+  //   ...(local.style as JSX.CSSProperties),
+  // });
+  // const othersProps = () => {
+  //   store[0].consumedProps.forEach((prop) => {
+  //     delete (others as any)[prop];
+  //   });
+  //   return others;
+  // };
+
+  const mergedProps = () => {
+    const [layoutStyle, layoutClassList] = processLayoutProps(_layoutProps);
+    return mergedProps(others, {
+      style: { ...((local.style as Style) ?? {}), ...layoutStyle },
     });
-    return others;
   };
 
   return (
-    <Provider value={store}>
-      <Layout {...props}>
-        <Surface {...props}>
-          <Position {...props}>
-            <Rounded {...props}>
-              <Polymorphic
-                as={local.as}
-                classList={mergeClassList()}
-                style={mergeStyles()}
-                {...othersProps()}
-              >
-                {props.children}
-              </Polymorphic>
-            </Rounded>
-          </Position>
-        </Surface>
-      </Layout>
-    </Provider>
+    // <Provider value={store}>
+    //   <Layout {...props}>
+    //     <Surface {...props}>
+    //       <Position {...props}>
+    //         <Rounded {...props}>
+    <Polymorphic
+      as={local.as}
+      classList={mergeClassList()}
+      style={mergeStyles()}
+      {...othersProps()}
+    >
+      {props.children}
+    </Polymorphic>
+    //         </Rounded>
+    //       </Position>
+    //     </Surface>
+    //   </Layout>
+    // </Provider>
   );
 }

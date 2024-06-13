@@ -5,7 +5,9 @@ export type FullSurfaceColors = {
   [K in keyof typeof colors as `${K}${
     | ""
     | "Light"
+    | "LightContent"
     | "Dark"
+    | "DarkContent"
     | "Content"}`]: HexColor;
 };
 
