@@ -1,4 +1,4 @@
-import { HexColor, HslColor, RgbColor } from "./color.types";
+import { Color, HexColor, HslColor, RgbColor } from "./color.types";
 
 export function hexToRgb(hex: HexColor): RgbColor {
   const r = parseInt(hex.substring(1, 3), 16);
@@ -104,4 +104,40 @@ export function rgbToLuminance(color: RgbColor): number {
   const linearG = rgbCmpToLinear(color.g);
   const linearB = rgbCmpToLinear(color.b);
   return 0.2126 * linearR + 0.7152 * linearG + 0.0722 * linearB;
+}
+
+export function toRgb(color: Color): RgbColor {
+  if (typeof color === "string") {
+    return hexToRgb(color);
+  } else if ("h" in color) {
+    return hslToRgb(color);
+  }
+  return color;
+}
+
+export function toHsl(color: Color): HslColor {
+  if (typeof color === "string") {
+    return rgbToHsl(hexToRgb(color));
+  } else if ("r" in color) {
+    return rgbToHsl(color);
+  }
+  return color;
+}
+
+export function toHex(color: Color): HexColor {
+  if (typeof color === "string") {
+    return color;
+  } else if ("r" in color) {
+    return rgbToHex(color);
+  }
+  return rgbToHex(hslToRgb(color));
+}
+
+export function toCSSVarValue(color: Color): string {
+  if (typeof color === "string") {
+    return color;
+  } else if ("r" in color) {
+    return `${color.r}, ${color.g}, ${color.b}`;
+  }
+  return `${color.h}, ${color.s}%, ${color.l}%`;
 }

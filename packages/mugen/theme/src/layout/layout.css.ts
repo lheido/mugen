@@ -1,77 +1,158 @@
 import {
-  createGlobalTheme,
-  createVar,
+  assignVars,
+  createThemeContract,
   style,
   styleVariants,
 } from "@vanilla-extract/css";
 import { mugen } from "../../layers.css";
-import { spacingValues } from "../../spacing.css";
+import { spacings } from "../../theme.css";
 
-export const spacings = createGlobalTheme(":root", {
-  ...spacingValues,
+export type LayoutFlex = {
+  justifyContent?:
+    | "center"
+    | "space-between"
+    | "space-around"
+    | "space-evenly"
+    | "flex-start"
+    | "flex-end";
+  alignItems?: "center" | "stretch" | "flex-start" | "flex-end" | "baseline";
+  flexDirection?: "row" | "column" | "row-reverse" | "column-reverse";
+  flexWrap?: "wrap" | "nowrap";
+};
+
+export const layout = createThemeContract({
+  padding: {
+    top: "",
+    bottom: "",
+    left: "",
+    right: "",
+  },
+  gap: "",
+  justifyContent: "",
+  alignItems: "",
+  flexDirection: "",
+  flexWrap: "",
 });
 
-const paddingVar = createVar();
-const gapVar = createVar();
+const layoutValues: Partial<Record<keyof typeof layout, string[]>> = {
+  justifyContent: [
+    "center",
+    "space-between",
+    "space-around",
+    "space-evenly",
+    "flex-start",
+    "flex-end",
+  ],
+  alignItems: ["center", "stretch", "flex-start", "flex-end", "baseline"],
+  flexDirection: ["row", "column", "row-reverse", "column-reverse"],
+  flexWrap: ["wrap", "nowrap"],
+};
 
-export const padding = style({
+export const layoutClass = style({
   "@layer": {
     [mugen]: {
-      [paddingVar]: spacings[0],
+      vars: assignVars(layout, {
+        padding: {
+          top: "0",
+          bottom: "0",
+          left: "0",
+          right: "0",
+        },
+        gap: "",
+        justifyContent: "",
+        alignItems: "",
+        flexDirection: "",
+        flexWrap: "",
+      }),
+      display: "flex",
+      gap: layout.gap,
+      justifyContent: layout.justifyContent,
+      alignItems: layout.alignItems,
+      flexDirection: layout.flexDirection,
+      flexWrap: layout.flexWrap,
+      paddingTop: layout.padding.top,
+      paddingBottom: layout.padding.bottom,
+      paddingLeft: layout.padding.left,
+      paddingRight: layout.padding.right,
     },
   },
 });
 
-styleVariants(padding, {
-  0: {
-    [paddingVar]: spacings[0],
-  },
-  1: {
-    [paddingVar]: spacings[1],
-  },
-  2: {
-    [paddingVar]: spacings[2],
-  },
-  3: {
-    [paddingVar]: spacings[3],
-  },
-  4: {
-    [paddingVar]: spacings[4],
-  },
-  5: {
-    [paddingVar]: spacings[5],
-  },
-  6: {
-    [paddingVar]: spacings[6],
-  },
-  7: {
-    [paddingVar]: spacings[7],
-  },
-  8: {
-    [paddingVar]: spacings[8],
-  },
-  9: {
-    [paddingVar]: spacings[9],
-  },
-  10: {
-    [paddingVar]: spacings[10],
-  },
-  11: {
-    [paddingVar]: spacings[11],
-  },
-  12: {
-    [paddingVar]: spacings[12],
-  },
-  13: {
-    [paddingVar]: spacings[13],
-  },
-  14: {
-    [paddingVar]: spacings[14],
-  },
-  15: {
-    [paddingVar]: spacings[15],
-  },
-  16: {
-    [paddingVar]: spacings[16],
-  },
+export const layoutVariants = styleVariants({
+  ...Object.entries(layoutValues).reduce((acc, [key, values]) => {
+    return {
+      ...acc,
+      ...values.reduce((acc, value) => {
+        const k = key as keyof typeof layout;
+        return {
+          ...acc,
+          [`${key}-${value}`]: {
+            "@layer": {
+              [mugen]: {
+                vars: {
+                  [layout[k] as string]: value,
+                },
+              },
+            },
+          },
+        };
+      }, {} as any),
+    };
+  }, {} as any),
+  ...Object.keys(spacings).reduce((acc, name) => {
+    const value = spacings[name as unknown as keyof typeof spacings];
+    return {
+      ...acc,
+      [`gap-${name}`]: {
+        "@layer": {
+          [mugen]: {
+            vars: {
+              [layout.gap]: value,
+            },
+          },
+        },
+      },
+      [`spacing-${name}`]: {
+        "@layer": {
+          [mugen]: {
+            vars: assignVars(layout.padding, {
+              top: value,
+              bottom: value,
+              left: value,
+              right: value,
+            }),
+          },
+        },
+      },
+      ...Object.keys(layout.padding)
+        .map((key) => ({
+          [`spacing-${key}-${name}`]: {
+            "@layer": {
+              [mugen]: {
+                vars: {
+                  [layout.padding[
+                    key as unknown as keyof typeof layout.padding
+                  ]]: value,
+                },
+              },
+            },
+          },
+        }))
+        .reduce((acc, v) => ({ ...acc, ...v }), {}),
+      ...Object.entries({
+        x: { [layout.padding.left]: value, [layout.padding.right]: value },
+        y: { [layout.padding.top]: value, [layout.padding.bottom]: value },
+      })
+        .map(([key, vars]) => ({
+          [`spacing-${key}-${name}`]: {
+            "@layer": {
+              [mugen]: {
+                vars: vars as any,
+              },
+            },
+          },
+        }))
+        .reduce((acc, v) => ({ ...acc, ...v }), {}),
+    };
+  }, {} as any),
 });
