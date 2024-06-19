@@ -1,3 +1,4 @@
+import { JSX } from "solid-js/jsx-runtime";
 import { surfaceVariants } from "../src/surface/surface.css";
 import { darkTheme, spacings } from "../theme.css";
 import {
@@ -6,15 +7,28 @@ import {
   layoutClass,
   layoutVariants,
 } from "./layout/layout.css";
+import {
+  positionClass,
+  positionContract,
+  positionVariants,
+} from "./position/position.css";
 /**
  * Modifier is a utility class that provides a way to modify the style of a component.
  * Inspired by Android Kotlin's Modifier design pattern.
  */
 
+const positionVars = Object.entries(positionContract).reduce(
+  (acc, [key, varFn]) => {
+    return { ...acc, [key]: varFn.replace("var(", "").replace(")", "") };
+  },
+  {} as Record<keyof typeof positionContract, string>
+);
+
 /**
  * StyleModifier is a class that provides a way to modify the style of a component.
  */
 class StyleModifier {
+  private styles: JSX.CSSProperties = {};
   private classes: string[] = [];
 
   surface(color: keyof typeof surfaceVariants) {
@@ -74,6 +88,38 @@ class StyleModifier {
     return this.addClasse(layoutClass).addClasse(layoutVariants.fill);
   }
 
+  relative(opts?: Partial<Record<keyof typeof positionVars, string | number>>) {
+    Object.entries(opts ?? {}).forEach(([key, value]) => {
+      this.styles[positionVars[key as keyof typeof positionVars] as any] =
+        value;
+    });
+    return this.addClasse(positionClass).addClasse(positionVariants.relative);
+  }
+
+  absolute(opts: Partial<Record<keyof typeof positionVars, string | number>>) {
+    Object.entries(opts).forEach(([key, value]) => {
+      this.styles[positionVars[key as keyof typeof positionVars] as any] =
+        value;
+    });
+    return this.addClasse(positionClass).addClasse(positionVariants.absolute);
+  }
+
+  fixed(opts: Partial<Record<keyof typeof positionVars, string | number>>) {
+    Object.entries(opts).forEach(([key, value]) => {
+      this.styles[positionVars[key as keyof typeof positionVars] as any] =
+        value;
+    });
+    return this.addClasse(positionClass).addClasse(positionVariants.fixed);
+  }
+
+  sticky(opts: Partial<Record<keyof typeof positionVars, string | number>>) {
+    Object.entries(opts).forEach(([key, value]) => {
+      this.styles[positionVars[key as keyof typeof positionVars] as any] =
+        value;
+    });
+    return this.addClasse(positionClass).addClasse(positionVariants.sticky);
+  }
+
   addClasse(...classNames: string[]) {
     for (const cls of classNames) {
       if (!this.classes.includes(cls)) {
@@ -81,6 +127,10 @@ class StyleModifier {
       }
     }
     return this;
+  }
+
+  getStyle() {
+    return this.styles;
   }
 
   toString() {

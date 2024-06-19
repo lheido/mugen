@@ -9,6 +9,7 @@ const App: Component = () => {
   return (
     <Box
       modifier={Modifier.surface("primary")
+        .relative()
         .spacing({ top: 10, bottom: 6 })
         .spacing({ x: 4 })
         .gap(16)
@@ -18,7 +19,9 @@ const App: Component = () => {
       <Text modifier={Modifier.surface("warning").fill().spacing(2)}>
         Lorem ipsum
       </Text>
-      <Text>dolore sit amet</Text>
+      <Text modifier={Modifier.surface("secondary").spacing(2)}>
+        dolore sit amet
+      </Text>
     </Box>
   );
 };
