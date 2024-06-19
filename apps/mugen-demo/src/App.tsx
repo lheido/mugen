@@ -1,4 +1,4 @@
-import { Modifier, darkTheme } from "@mugen/theme";
+import { Box, Modifier, Text, darkTheme } from "@mugen/theme";
 import { onMount, type Component } from "solid-js";
 
 const App: Component = () => {
@@ -7,17 +7,19 @@ const App: Component = () => {
   });
 
   return (
-    <div
-      class={Modifier.surface("base")
-        .spacing({ top: 10 })
-        .spacing({ x: 10 })
+    <Box
+      modifier={Modifier.surface("primary")
+        .spacing({ top: 10, bottom: 6 })
+        .spacing({ x: 4 })
         .gap(16)
         .justify("space-between")
-        .toString()}
+        .align("center")}
     >
-      <span>Lorem ipsum</span>
-      <span>dolore sit amet</span>
-    </div>
+      <Text modifier={Modifier.surface("warning").fill().spacing(2)}>
+        Lorem ipsum
+      </Text>
+      <Text>dolore sit amet</Text>
+    </Box>
   );
 };
 

@@ -25,7 +25,7 @@ export const colors: Colors = {
 };
 
 export const darkColors: Colors = {
-  base: "#424242",
+  base: "#232323",
   primary: "#4289F0",
   secondary: "#34A853",
   error: "#EA4335",

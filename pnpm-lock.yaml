@@ -10,6 +10,9 @@ importers:
 
   apps/mugen-demo:
     dependencies:
+      '@mugen/core':
+        specifier: workspace:^
+        version: link:../../packages/mugen/core
       '@mugen/theme':
         specifier: workspace:^
         version: link:../../packages/mugen/theme

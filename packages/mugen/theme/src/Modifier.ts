@@ -70,6 +70,10 @@ class StyleModifier {
     );
   }
 
+  fill() {
+    return this.addClasse(layoutClass).addClasse(layoutVariants.fill);
+  }
+
   addClasse(...classNames: string[]) {
     for (const cls of classNames) {
       if (!this.classes.includes(cls)) {

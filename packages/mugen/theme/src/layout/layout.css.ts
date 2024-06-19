@@ -66,6 +66,8 @@ export const layoutClass = style({
       }),
       display: "flex",
       gap: layout.gap,
+      minWidth: 0,
+      minHeight: 0,
       justifyContent: layout.justifyContent,
       alignItems: layout.alignItems,
       flexDirection: layout.flexDirection,
@@ -79,6 +81,13 @@ export const layoutClass = style({
 });
 
 export const layoutVariants = styleVariants({
+  fill: {
+    "@layer": {
+      [mugen]: {
+        flexGrow: 1,
+      },
+    },
+  },
   ...Object.entries(layoutValues).reduce((acc, [key, values]) => {
     return {
       ...acc,

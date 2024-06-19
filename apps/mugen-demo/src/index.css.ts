@@ -1,4 +1,4 @@
-import { base } from "@mugen/theme/theme.css";
+import { base, surfaces } from "@mugen/theme/theme.css";
 import { globalStyle } from "@vanilla-extract/css";
 
 globalStyle("body", {
@@ -10,6 +10,8 @@ globalStyle("body", {
         sans-serif`,
       WebkitFontSmoothing: "antialiased",
       MozOsxFontSmoothing: "grayscale",
+      backgroundColor: `hsl(${surfaces.base})`,
+      color: `hsl(${surfaces["base-content"]})`,
     },
   },
 });
