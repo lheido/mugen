@@ -6,6 +6,8 @@ const App: Component = () => {
     document.body.classList.add(darkTheme);
   });
 
+  const textModifier = Modifier.fill().spacing({ x: 4, y: 2 }).rounded("lg");
+
   return (
     <Box
       modifier={Modifier.surface("primary")
@@ -16,10 +18,10 @@ const App: Component = () => {
         .justify("space-between")
         .align("center")}
     >
-      <Text modifier={Modifier.surface("warning").fill().spacing(2)}>
+      <Text modifier={textModifier.clone().surface("warning")}>
         Lorem ipsum
       </Text>
-      <Text modifier={Modifier.surface("secondary").spacing(2)}>
+      <Text modifier={textModifier.clone().surface("secondary")}>
         dolore sit amet
       </Text>
     </Box>

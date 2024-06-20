@@ -12,6 +12,7 @@ import {
   positionContract,
   positionVariants,
 } from "./position/position.css";
+import { roundedVariants } from "./rounded/rounded.css";
 /**
  * Modifier is a utility class that provides a way to modify the style of a component.
  * Inspired by Android Kotlin's Modifier design pattern.
@@ -120,6 +121,10 @@ class StyleModifier {
     return this.addClasse(positionClass).addClasse(positionVariants.sticky);
   }
 
+  rounded(value: keyof typeof roundedVariants) {
+    return this.addClasse(roundedVariants[value]);
+  }
+
   addClasse(...classNames: string[]) {
     for (const cls of classNames) {
       if (!this.classes.includes(cls)) {
@@ -127,6 +132,13 @@ class StyleModifier {
       }
     }
     return this;
+  }
+
+  clone() {
+    const instance = new StyleModifier();
+    instance.styles = { ...this.styles };
+    instance.classes = [...this.classes];
+    return instance;
   }
 
   getStyle() {
