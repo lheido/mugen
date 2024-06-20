@@ -6,7 +6,7 @@ const App: Component = () => {
     document.body.classList.add(darkTheme);
   });
 
-  const textModifier = Modifier.fill().spacing({ x: 4, y: 2 }).rounded("lg");
+  const textModifier = Modifier.fill().spacing({ x: 6, y: 2 }).rounded("lg");
 
   return (
     <Box
@@ -14,7 +14,7 @@ const App: Component = () => {
         .relative()
         .spacing({ top: 10, bottom: 6 })
         .spacing({ x: 4 })
-        .gap(16)
+        .gap(4)
         .justify("space-between")
         .align("center")}
     >

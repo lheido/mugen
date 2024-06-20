@@ -30,14 +30,14 @@ const positionVars = Object.entries(positionContract).reduce(
  */
 class StyleModifier {
   private styles: JSX.CSSProperties = {};
-  private classes: string[] = [];
+  private classes: Record<string, string> = {};
 
   surface(color: keyof typeof surfaceVariants) {
-    return this.addClasse(surfaceVariants[color]);
+    return this.addClasse("surface", surfaceVariants[color]);
   }
 
   dark() {
-    return this.addClasse(darkTheme);
+    return this.addClasse("surface-dark", darkTheme);
   }
 
   spacing(
@@ -46,47 +46,57 @@ class StyleModifier {
       | Partial<Record<keyof typeof layout.padding, keyof typeof spacings>>
       | Partial<Record<"x" | "y", keyof typeof spacings>>
   ) {
-    return this.addClasse(layoutClass).addClasse(
-      ...(typeof value === "object"
-        ? Object.entries(value).map(
-            ([key, val]) => layoutVariants[`spacing-${key}-${val}`]
-          )
-        : [layoutVariants[`spacing-${value}`]])
-    );
+    this.addClasse("layout", layoutClass);
+    (typeof value === "object"
+      ? Object.entries(value).map(([key, val]) => [
+          `s-${key}`,
+          layoutVariants[`spacing-${key}-${val}`],
+        ])
+      : [["s", layoutVariants[`spacing-${value}`]]]
+    ).forEach(([key, className]) => this.addClasse(key, className));
+    return this;
   }
 
   justify(value: LayoutFlex["justifyContent"]) {
-    return this.addClasse(layoutClass).addClasse(
+    return this.addClasse("layout", layoutClass).addClasse(
+      "ljc",
       layoutVariants[`justifyContent-${value}`]
     );
   }
 
   align(value: LayoutFlex["alignItems"]) {
-    return this.addClasse(layoutClass).addClasse(
+    return this.addClasse("layout", layoutClass).addClasse(
+      "lai",
       layoutVariants[`alignItems-${value}`]
     );
   }
 
   direction(value: LayoutFlex["flexDirection"]) {
-    return this.addClasse(layoutClass).addClasse(
+    return this.addClasse("layout", layoutClass).addClasse(
+      "lfd",
       layoutVariants[`flexDirection-${value}`]
     );
   }
 
   wrap(value: LayoutFlex["flexWrap"]) {
-    return this.addClasse(layoutClass).addClasse(
+    return this.addClasse("layout", layoutClass).addClasse(
+      "lfw",
       layoutVariants[`flexWrap-${value}`]
     );
   }
 
   gap(value: keyof typeof spacings) {
-    return this.addClasse(layoutClass).addClasse(
+    return this.addClasse("layout", layoutClass).addClasse(
+      "lfg",
       layoutVariants[`gap-${value}`]
     );
   }
 
   fill() {
-    return this.addClasse(layoutClass).addClasse(layoutVariants.fill);
+    return this.addClasse("layout", layoutClass).addClasse(
+      "lfill",
+      layoutVariants.fill
+    );
   }
 
   relative(opts?: Partial<Record<keyof typeof positionVars, string | number>>) {
@@ -94,7 +104,10 @@ class StyleModifier {
       this.styles[positionVars[key as keyof typeof positionVars] as any] =
         value;
     });
-    return this.addClasse(positionClass).addClasse(positionVariants.relative);
+    return this.addClasse("position", positionClass).addClasse(
+      "pos-r",
+      positionVariants.relative
+    );
   }
 
   absolute(opts: Partial<Record<keyof typeof positionVars, string | number>>) {
@@ -102,7 +115,10 @@ class StyleModifier {
       this.styles[positionVars[key as keyof typeof positionVars] as any] =
         value;
     });
-    return this.addClasse(positionClass).addClasse(positionVariants.absolute);
+    return this.addClasse("position", positionClass).addClasse(
+      "pos-a",
+      positionVariants.absolute
+    );
   }
 
   fixed(opts: Partial<Record<keyof typeof positionVars, string | number>>) {
@@ -110,7 +126,10 @@ class StyleModifier {
       this.styles[positionVars[key as keyof typeof positionVars] as any] =
         value;
     });
-    return this.addClasse(positionClass).addClasse(positionVariants.fixed);
+    return this.addClasse("position", positionClass).addClasse(
+      "pos-f",
+      positionVariants.fixed
+    );
   }
 
   sticky(opts: Partial<Record<keyof typeof positionVars, string | number>>) {
@@ -118,26 +137,26 @@ class StyleModifier {
       this.styles[positionVars[key as keyof typeof positionVars] as any] =
         value;
     });
-    return this.addClasse(positionClass).addClasse(positionVariants.sticky);
+    // return this.addClasse(positionClass).addClasse(positionVariants.sticky);
+    return this.addClasse("position", positionClass).addClasse(
+      "pos-s",
+      positionVariants.sticky
+    );
   }
 
   rounded(value: keyof typeof roundedVariants) {
-    return this.addClasse(roundedVariants[value]);
+    return this.addClasse("rounded", roundedVariants[value]);
   }
 
-  addClasse(...classNames: string[]) {
-    for (const cls of classNames) {
-      if (!this.classes.includes(cls)) {
-        this.classes.push(cls);
-      }
-    }
+  addClasse(key: string, classNames: string) {
+    this.classes[key] = classNames;
     return this;
   }
 
   clone() {
     const instance = new StyleModifier();
     instance.styles = { ...this.styles };
-    instance.classes = [...this.classes];
+    instance.classes = { ...this.classes };
     return instance;
   }
 
@@ -146,7 +165,7 @@ class StyleModifier {
   }
 
   toString() {
-    return this.classes.join(" ");
+    return Object.values(this.classes).join(" ");
   }
 }
 
