@@ -16,8 +16,9 @@ const App: Component = () => {
         .relative()
         .spacing({ top: 10, bottom: 6 })
         .spacing({ x: 4 })
-        .direction(breakpoints.sm ? "row" : "column")
-        .gap(breakpoints.md ? 16 : 4)
+        .direction("column", () => breakpoints.md === false)
+        .gap(4)
+        .gap(16, () => breakpoints.lg)
         .justify("space-between")
         .align("center")}
     >

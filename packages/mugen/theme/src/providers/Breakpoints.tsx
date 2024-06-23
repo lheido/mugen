@@ -29,8 +29,7 @@ export function Breakpoints(props: FlowProps) {
 
   createEffect(
     on(
-      // For now, we only care about the width. See matchBreakpoint for more details.
-      () => window.width,
+      () => [window.width, window.height],
       () => {
         setState(
           produce((draft) => {

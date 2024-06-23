@@ -17,7 +17,7 @@ export function Box<R = any, T extends PolymorphicComponent<R> = "div">(
   const [local, others] = splitProps(props, ["modifier"]);
   return (
     <Polymorphic
-      class={local.modifier?.toString()}
+      classList={local.modifier?.getClassList()}
       style={local.modifier?.getStyle()}
       {...others}
     />

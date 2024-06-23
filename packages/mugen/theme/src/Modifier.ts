@@ -1,3 +1,4 @@
+import { Accessor } from "solid-js";
 import { JSX } from "solid-js/jsx-runtime";
 import { surfaceVariants } from "../src/surface/surface.css";
 import { ColorKeys, darkTheme, spacings } from "../theme.css";
@@ -35,133 +36,141 @@ export type SpacingKeysAsInt = SringKeysAsInt<keyof typeof spacings>;
  */
 class StyleModifier {
   private styles: JSX.CSSProperties = {};
-  private classes: Record<string, string> = {};
+  private classList: Record<string, (() => boolean) | true> = {};
 
-  surface(color: ColorKeys) {
-    return this.addClasse("surface", surfaceVariants[color]);
+  surface(color: ColorKeys, when?: Accessor<boolean>) {
+    return this.addClasse(surfaceVariants[color], when);
   }
 
-  dark() {
-    return this.addClasse("surface-dark", darkTheme);
+  dark(when?: Accessor<boolean>) {
+    return this.addClasse(darkTheme, when);
   }
 
   spacing(
     value:
       | SpacingKeysAsInt
       | Partial<Record<keyof typeof layout.padding, SpacingKeysAsInt>>
-      | Partial<Record<"x" | "y", SpacingKeysAsInt>>
+      | Partial<Record<"x" | "y", SpacingKeysAsInt>>,
+    when?: Accessor<boolean>
   ) {
-    this.addClasse("layout", layoutClass);
+    this.addClasse(layoutClass);
     (typeof value === "object"
-      ? Object.entries(value).map(([key, val]) => [
-          `s-${key}`,
-          layoutVariants[`spacing-${key}-${val}`],
-        ])
-      : [["s", layoutVariants[`spacing-${value}`]]]
-    ).forEach(([key, className]) => this.addClasse(key, className));
+      ? Object.entries(value).map(
+          ([key, val]) => layoutVariants[`spacing-${key}-${val}`]
+        )
+      : [layoutVariants[`spacing-${value}`]]
+    ).forEach((className) => this.addClasse(className, when));
     return this;
   }
 
-  justify(value: LayoutFlex["justifyContent"]) {
-    return this.addClasse("layout", layoutClass).addClasse(
-      "ljc",
-      layoutVariants[`justifyContent-${value}`]
+  justify(value: LayoutFlex["justifyContent"], when?: Accessor<boolean>) {
+    return this.addClasse(layoutClass).addClasse(
+      layoutVariants[`justifyContent-${value}`],
+      when
     );
   }
 
-  align(value: LayoutFlex["alignItems"]) {
-    return this.addClasse("layout", layoutClass).addClasse(
-      "lai",
-      layoutVariants[`alignItems-${value}`]
+  align(value: LayoutFlex["alignItems"], when?: Accessor<boolean>) {
+    return this.addClasse(layoutClass).addClasse(
+      layoutVariants[`alignItems-${value}`],
+      when
     );
   }
 
-  direction(value: LayoutFlex["flexDirection"]) {
-    return this.addClasse("layout", layoutClass).addClasse(
-      "lfd",
-      layoutVariants[`flexDirection-${value}`]
+  direction(value: LayoutFlex["flexDirection"], when?: Accessor<boolean>) {
+    return this.addClasse(layoutClass).addClasse(
+      layoutVariants[`flexDirection-${value}`],
+      when
     );
   }
 
-  wrap(value: LayoutFlex["flexWrap"]) {
-    return this.addClasse("layout", layoutClass).addClasse(
-      "lfw",
-      layoutVariants[`flexWrap-${value}`]
+  wrap(value: LayoutFlex["flexWrap"], when?: Accessor<boolean>) {
+    return this.addClasse(layoutClass).addClasse(
+      layoutVariants[`flexWrap-${value}`],
+      when
     );
   }
 
-  gap(value: SpacingKeysAsInt) {
-    return this.addClasse("layout", layoutClass).addClasse(
-      "lfg",
-      layoutVariants[`gap-${value}`]
+  gap(value: SpacingKeysAsInt, when?: Accessor<boolean>) {
+    return this.addClasse(layoutClass).addClasse(
+      layoutVariants[`gap-${value}`],
+      when
     );
   }
 
-  fill() {
-    return this.addClasse("layout", layoutClass).addClasse(
-      "lfill",
-      layoutVariants.fill
-    );
+  fill(when?: Accessor<boolean>) {
+    return this.addClasse(layoutClass).addClasse(layoutVariants.fill, when);
   }
 
-  relative(opts?: Partial<Record<keyof typeof positionVars, string | number>>) {
+  relative(
+    opts?: Partial<Record<keyof typeof positionVars, string | number>>,
+    when?: Accessor<boolean>
+  ) {
     Object.entries(opts ?? {}).forEach(([key, value]) => {
       this.styles[positionVars[key as keyof typeof positionVars] as any] =
         value;
     });
-    return this.addClasse("position", positionClass).addClasse(
-      "pos-r",
-      positionVariants.relative
+    return this.addClasse(positionClass).addClasse(
+      positionVariants.relative,
+      when
     );
   }
 
-  absolute(opts: Partial<Record<keyof typeof positionVars, string | number>>) {
+  absolute(
+    opts: Partial<Record<keyof typeof positionVars, string | number>>,
+    when?: Accessor<boolean>
+  ) {
     Object.entries(opts).forEach(([key, value]) => {
       this.styles[positionVars[key as keyof typeof positionVars] as any] =
         value;
     });
-    return this.addClasse("position", positionClass).addClasse(
-      "pos-a",
-      positionVariants.absolute
+    return this.addClasse(positionClass).addClasse(
+      positionVariants.absolute,
+      when
     );
   }
 
-  fixed(opts: Partial<Record<keyof typeof positionVars, string | number>>) {
+  fixed(
+    opts: Partial<Record<keyof typeof positionVars, string | number>>,
+    when?: Accessor<boolean>
+  ) {
     Object.entries(opts).forEach(([key, value]) => {
       this.styles[positionVars[key as keyof typeof positionVars] as any] =
         value;
     });
-    return this.addClasse("position", positionClass).addClasse(
-      "pos-f",
-      positionVariants.fixed
+    return this.addClasse(positionClass).addClasse(
+      positionVariants.fixed,
+      when
     );
   }
 
-  sticky(opts: Partial<Record<keyof typeof positionVars, string | number>>) {
+  sticky(
+    opts: Partial<Record<keyof typeof positionVars, string | number>>,
+    when?: Accessor<boolean>
+  ) {
     Object.entries(opts).forEach(([key, value]) => {
       this.styles[positionVars[key as keyof typeof positionVars] as any] =
         value;
     });
-    // return this.addClasse(positionClass).addClasse(positionVariants.sticky);
-    return this.addClasse("position", positionClass).addClasse(
-      "pos-s",
-      positionVariants.sticky
+    return this.addClasse(positionClass).addClasse(
+      positionVariants.sticky,
+      when
     );
   }
 
-  rounded(value: keyof typeof roundedVariants) {
-    return this.addClasse("rounded", roundedVariants[value]);
+  rounded(value: keyof typeof roundedVariants, when?: Accessor<boolean>) {
+    return this.addClasse(roundedVariants[value], when);
   }
 
-  addClasse(key: string, classNames: string) {
-    this.classes[key] = classNames;
+  addClasse(cls: string, when?: Accessor<boolean>) {
+    this.classList[cls] = when ?? true;
     return this;
   }
 
   clone() {
     const instance = new StyleModifier();
     instance.styles = { ...this.styles };
-    instance.classes = { ...this.classes };
+    instance.classList = { ...this.classList };
     return instance;
   }
 
@@ -169,8 +178,10 @@ class StyleModifier {
     return this.styles;
   }
 
-  toString() {
-    return Object.values(this.classes).join(" ");
+  getClassList() {
+    return Object.entries(this.classList).reduce((acc, [key, value]) => {
+      return { ...acc, [key]: typeof value === "function" ? value() : value };
+    }, {});
   }
 }
 
