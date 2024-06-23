@@ -1,8 +1,9 @@
 import { styleVariants } from "@vanilla-extract/css";
-import { colors, mugen, surfaces } from "../../theme.css";
+import { mugen, surfaces } from "../../theme.css";
+import data from "../../theme.json";
 
 export const surfaceVariants = styleVariants(
-  Object.keys(colors).reduce((acc, name) => {
+  Object.keys(data.colors).reduce((acc, name) => {
     return {
       ...acc,
       [name]: {
@@ -16,5 +17,5 @@ export const surfaceVariants = styleVariants(
         },
       },
     };
-  }, {} as Record<keyof typeof colors, any>)
+  }, {} as Record<keyof typeof data.colors, any>)
 );

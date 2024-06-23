@@ -4,6 +4,24 @@ import { render } from "solid-js/web";
 import App from "./App";
 import "./index.css";
 
+import { MugenCore } from "@mugen/core";
+import { MugenTheme } from "@mugen/theme";
+import { initPerfume } from "perfume.js";
+initPerfume({
+  resourceTiming: false,
+  analyticsTracker: (options) => {
+    const {
+      attribution,
+      metricName,
+      data,
+      navigatorInformation,
+      rating,
+      navigationType,
+    } = options;
+    console.log(metricName, data);
+  },
+});
+
 const root = document.getElementById("root");
 
 if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
@@ -12,4 +30,13 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
   );
 }
 
-render(() => <App />, root!);
+render(
+  () => (
+    <MugenCore>
+      <MugenTheme>
+        <App />
+      </MugenTheme>
+    </MugenCore>
+  ),
+  root!
+);

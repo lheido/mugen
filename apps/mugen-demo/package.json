@@ -20,6 +20,7 @@
     "@mugen/core": "workspace:^",
     "@mugen/theme": "workspace:^",
     "@vanilla-extract/css": "^1.15.2",
+    "perfume.js": "^9.4.0",
     "solid-js": "^1.8.11"
   }
 }

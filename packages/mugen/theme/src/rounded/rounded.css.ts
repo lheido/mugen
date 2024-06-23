@@ -1,13 +1,13 @@
 import { styleVariants } from "@vanilla-extract/css";
-import { roundedValues } from "../../theme.css";
+import data from "../../theme.json";
 
 export const roundedVariants = styleVariants(
-  Object.keys(roundedValues).reduce((acc, name) => {
+  Object.keys(data.rounded).reduce((acc, name) => {
     return {
       ...acc,
       [name]: {
-        borderRadius: roundedValues[name as keyof typeof roundedValues],
+        borderRadius: data.rounded[name as keyof typeof data.rounded],
       },
     };
   }, {})
-) as Record<keyof typeof roundedValues, string>;
+) as Record<keyof typeof data.rounded, string>;

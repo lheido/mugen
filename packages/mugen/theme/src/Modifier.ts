@@ -1,6 +1,6 @@
 import { JSX } from "solid-js/jsx-runtime";
 import { surfaceVariants } from "../src/surface/surface.css";
-import { darkTheme, spacings } from "../theme.css";
+import { ColorKeys, darkTheme, spacings } from "../theme.css";
 import {
   LayoutFlex,
   layout,
@@ -25,6 +25,11 @@ const positionVars = Object.entries(positionContract).reduce(
   {} as Record<keyof typeof positionContract, string>
 );
 
+export type SringKeysAsInt<T extends string> =
+  T extends `${infer N extends number}` ? N : never;
+
+export type SpacingKeysAsInt = SringKeysAsInt<keyof typeof spacings>;
+
 /**
  * StyleModifier is a class that provides a way to modify the style of a component.
  */
@@ -32,7 +37,7 @@ class StyleModifier {
   private styles: JSX.CSSProperties = {};
   private classes: Record<string, string> = {};
 
-  surface(color: keyof typeof surfaceVariants) {
+  surface(color: ColorKeys) {
     return this.addClasse("surface", surfaceVariants[color]);
   }
 
@@ -42,9 +47,9 @@ class StyleModifier {
 
   spacing(
     value:
-      | keyof typeof spacings
-      | Partial<Record<keyof typeof layout.padding, keyof typeof spacings>>
-      | Partial<Record<"x" | "y", keyof typeof spacings>>
+      | SpacingKeysAsInt
+      | Partial<Record<keyof typeof layout.padding, SpacingKeysAsInt>>
+      | Partial<Record<"x" | "y", SpacingKeysAsInt>>
   ) {
     this.addClasse("layout", layoutClass);
     (typeof value === "object"
@@ -85,7 +90,7 @@ class StyleModifier {
     );
   }
 
-  gap(value: keyof typeof spacings) {
+  gap(value: SpacingKeysAsInt) {
     return this.addClasse("layout", layoutClass).addClasse(
       "lfg",
       layoutVariants[`gap-${value}`]
