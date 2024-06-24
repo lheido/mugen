@@ -26,10 +26,10 @@ const positionVars = Object.entries(positionContract).reduce(
   {} as Record<keyof typeof positionContract, string>
 );
 
-export type SringKeysAsInt<T extends string> =
+export type StringKeysAsInt<T extends string> =
   T extends `${infer N extends number}` ? N : never;
 
-export type SpacingKeysAsInt = SringKeysAsInt<keyof typeof spacings>;
+export type SpacingKeysAsInt = StringKeysAsInt<keyof typeof spacings>;
 
 /**
  * StyleModifier is a class that provides a way to modify the style of a component.
