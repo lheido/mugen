@@ -163,7 +163,9 @@ class StyleModifier {
   }
 
   addClasse(cls: string, when?: Accessor<boolean>) {
-    this.classList[cls] = when ?? true;
+    if (!this.classList.hasOwnProperty(cls)) {
+      this.classList[cls] = when ?? true;
+    }
     return this;
   }
 
