@@ -2,21 +2,17 @@ import {
   createGlobalTheme,
   createTheme,
   createThemeContract,
+  styleVariants,
 } from "@vanilla-extract/css";
-import "./reset.css";
-import {
-  HexColor,
-  getBestContentColor,
-  toCSSVarValue,
-  toHsl,
-} from "./src/color";
-import { FullSurfaceColors } from "./src/surface/surface.types";
-import data from "./theme.json";
+import data from "../../theme.json";
+import { HexColor, getBestContentColor, toCSSVarValue, toHsl } from "../color";
+import { mugen } from "./layers.css";
 
-export * from "./layers.css";
-export const { breakpoints } = data;
+export type FullSurfaceColors<T> = {
+  [K in keyof T & string as `${K}${"" | "-content"}`]: string;
+};
 
-export type ColorKeys = keyof typeof data.colors;
+export type SurfaceColors = keyof typeof data.colors;
 
 export const surfaces = createThemeContract(
   Object.keys(data.colors).reduce((acc, name) => {
@@ -28,16 +24,25 @@ export const surfaces = createThemeContract(
   }, {} as FullSurfaceColors<typeof data.colors>)
 );
 
-export const spacings = createThemeContract(
-  Object.keys(data.spacings).reduce((acc, name) => {
+export const surfaceVariants = styleVariants(
+  Object.keys(data.colors).reduce((acc, name) => {
     return {
       ...acc,
-      [name]: "",
+      [name]: {
+        "@layer": {
+          [mugen]: {
+            backgroundColor: `hsl(${surfaces[name as keyof typeof surfaces]})`,
+            color: `hsl(${
+              surfaces[`${name}-content` as keyof typeof surfaces]
+            })`,
+          },
+        },
+      },
     };
-  }, {} as Record<keyof typeof data.spacings, string>)
+  }, {} as Record<keyof typeof data.colors, any>)
 );
 
-export const defaultTheme = createGlobalTheme(
+export const defaultSurface = createGlobalTheme(
   ":root",
   surfaces,
   Object.keys(data.colors).reduce((acc, name) => {
@@ -50,18 +55,6 @@ export const defaultTheme = createGlobalTheme(
       [`${name}-content`]: contentColor,
     };
   }, {} as FullSurfaceColors<typeof data.colors>)
-);
-
-export const defaultSpacing = createGlobalTheme(
-  ":root",
-  spacings,
-  Object.keys(spacings).reduce((acc, name) => {
-    const value = data.spacings[name as keyof typeof data.spacings];
-    return {
-      ...acc,
-      [name]: value,
-    };
-  }, {} as Record<keyof typeof spacings, any>)
 );
 
 export const darkTheme = createTheme(

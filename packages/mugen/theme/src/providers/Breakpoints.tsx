@@ -7,15 +7,15 @@ import {
   useContext,
 } from "solid-js";
 import { createStore, produce } from "solid-js/store";
-import { breakpoints } from "../../theme.css";
-import { matchBreakpoint } from "../utils/mediaQueries";
+import { Breakpoints as BreakpointsType } from "../framework/types";
+import { breakpoints, matchBreakpoint } from "../utils/mediaQueries";
 
-export type BreakpointsState = Record<keyof typeof breakpoints, boolean>;
+export type BreakpointsState = Record<keyof BreakpointsType, boolean>;
 
-const breakpointsContext = createContext<BreakpointsState>();
+const BreakpointsContext = createContext<BreakpointsState>();
 
 export function useBreakpoints() {
-  return useContext(breakpointsContext) as BreakpointsState;
+  return useContext(BreakpointsContext) as BreakpointsState;
 }
 
 export function Breakpoints(props: FlowProps) {
@@ -45,8 +45,8 @@ export function Breakpoints(props: FlowProps) {
   );
 
   return (
-    <breakpointsContext.Provider value={state}>
+    <BreakpointsContext.Provider value={state}>
       {props.children}
-    </breakpointsContext.Provider>
+    </BreakpointsContext.Provider>
   );
 }

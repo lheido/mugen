@@ -1,5 +1,7 @@
-import { base, surfaces } from "@mugen/theme";
+import { base, surfaces } from "@mugen/theme/theme.css";
 import { globalStyle } from "@vanilla-extract/css";
+
+export { darkTheme } from "@mugen/theme/theme.css";
 
 globalStyle("body", {
   "@layer": {
