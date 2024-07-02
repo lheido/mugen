@@ -4,10 +4,10 @@ import {
   PolymorphicComponentProps,
 } from "@mugen/core";
 import { splitProps } from "solid-js";
-import { Modifier } from "./Modifier";
+import { ElementModifier } from "./modifier";
 
 export type BoxProps = {
-  modifier?: typeof Modifier;
+  modifier?: ElementModifier;
 };
 
 export function Box<R = any, T extends PolymorphicComponent<R> = "div">(
@@ -17,8 +17,8 @@ export function Box<R = any, T extends PolymorphicComponent<R> = "div">(
   const [local, others] = splitProps(props, ["modifier"]);
   return (
     <Polymorphic
-      classList={local.modifier?.getClassList()}
-      style={local.modifier?.getStyle()}
+      classList={local.modifier?.buildClassList()}
+      style={local.modifier?.buildStyle()}
       {...others}
     />
   );

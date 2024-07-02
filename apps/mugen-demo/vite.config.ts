@@ -10,7 +10,9 @@ export default defineConfig({
     For more info see https://github.com/thetarnav/solid-devtools/tree/main/packages/extension#readme
     */
     // devtools(),
-    vanillaExtractPlugin(),
+    vanillaExtractPlugin({
+      identifiers: "short",
+    }),
     solidPlugin(),
   ],
   server: {

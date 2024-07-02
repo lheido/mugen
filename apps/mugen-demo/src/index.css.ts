@@ -1,4 +1,4 @@
-import { base, surfaces } from "@mugen/theme/theme.css";
+import { base, surfaces } from "@mugen/theme";
 import { globalStyle } from "@vanilla-extract/css";
 
 globalStyle("body", {

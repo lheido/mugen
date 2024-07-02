@@ -1,4 +1,6 @@
-import { breakpoints } from "../../theme.css";
+import data from "../../theme.json";
+
+export const breakpoints = data.breakpoints;
 
 export type BreakpointKeys = keyof typeof breakpoints;
 
