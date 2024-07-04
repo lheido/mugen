@@ -1,4 +1,5 @@
 import {
+  assignVars,
   createThemeContract,
   style,
   styleVariants,
@@ -60,7 +61,13 @@ export const layoutCls = style({
             [layoutContract[name as keyof Breakpoints].gap]: "0",
           };
         }, {} as Record<keyof Breakpoints, string>),
-        [internalLayoutContract.gap]: layoutContract.gap,
+        ...assignVars(internalLayoutContract, {
+          justifyContent: layoutContract.justifyContent,
+          alignItems: layoutContract.alignItems,
+          flexDirection: layoutContract.flexDirection,
+          flexWrap: layoutContract.flexWrap,
+          gap: layoutContract.gap,
+        }),
       },
       display: "flex",
       minWidth: "0",
