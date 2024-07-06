@@ -1,84 +1,30 @@
-import { Box, Modifier, darkTheme } from "@mugen/theme";
-import { For, onMount, type Component } from "solid-js";
+import { For, type Component } from "solid-js";
 
 const App: Component = () => {
   const items = Array.from({ length: 5000 }, (_, i) => i + 1);
 
-  onMount(() => {
-    document.body.classList.add(darkTheme);
-  });
-
-  const textModifier = Modifier.spacing({
-    left: 6,
-    right: 6,
-    top: 2,
-    bottom: 2,
-  }).rounded("lg");
-
-  const ulModifier = Modifier.spacing(4).direction("column");
-  const itemModifier = Modifier.rounded("lg").spacing(4).gap(4).align("center");
-  const countModifier = Modifier.surface("primary").rounded("full").spacing(2);
-  const itemLabelModifier = Modifier.fill();
-
-  function Item(props: { item: any }) {
+  function Item(props: { item: number }) {
     return (
-      // <li
-      //   classList={itemModifier.buildClassList()}
-      //   style={itemModifier.buildStyle()}
-      // >
-      //   <div
-      //     classList={countModifier.buildClassList()}
-      //     style={countModifier.buildStyle()}
-      //   />
-      //   <div
-      //     classList={itemLabelModifier.buildClassList()}
-      //     style={itemLabelModifier.buildStyle()}
-      //   >
-      //     {props.item}
-      //   </div>
-      // </li>
-      <Box as="li" modifier={itemModifier}>
-        <Box modifier={countModifier}>
-          <Box>{props.item}</Box>
-        </Box>
-        <Box modifier={itemLabelModifier}>item</Box>
-      </Box>
+      <li class="rounded-lg bg-surface-1 text-surface-1-content p-4 flex gap-4 items-center">
+        <div class="bg-primary rounded-full p-4 aspect-square" />
+        <div class="text-lg flex-1 bg-gray-100 rounded px-4 py-2">
+          {props.item}
+        </div>
+      </li>
     );
   }
 
-  const fooo = Modifier.spacing(4);
-
   return (
     <>
-      {/* <div classList={fooo.buildClassList()} style={fooo.buildStyle()}>
-        Lorem ipsum
-      </div>
-      <ul
-        classList={ulModifier.buildClassList()}
-        style={ulModifier.buildStyle()}
-      >
-        <For each={items}>{(item) => <Item item={item} />}</For>
-      </ul> */}
-      <Box
-        modifier={Modifier.surface("primary")
-          .rounded({ bottomLeft: "xl", bottomRight: "xl" })
-          .relative()
-          .spacing({ left: 4, right: 4, top: 10, bottom: 4, md: { top: 16 } })
-          .gap(4)
-          .gap({ md: 10, lg: 16 })
-          .justify("space-between")
-          .align("center")}
-      >
-        <Box modifier={textModifier.clone().fill().surface("warning")}>
-          Lorem ipsum
-        </Box>
-        <Box modifier={textModifier.clone().surface("secondary")}>
+      <div class="bg-primary sticky top-0 text-primary-content rounded-b-xl px-4 pt-10 pb-4 md:pt-16 gap-4 md:gap-10 lg:gap-16 flex content-between items-center">
+        <div class="bg-primary-variant rounded-lg px-4 py-2">Lorem ipsum</div>
+        <div class="border border-primary-border rounded-lg px-4 py-2">
           dolore sit amet
-        </Box>
-      </Box>
-      <Box as="ul" modifier={ulModifier}>
+        </div>
+      </div>
+      <ul class="p-4 flex flex-col gap-3">
         <For each={items}>{(item) => <Item item={item} />}</For>
-      </Box>
+      </ul>
     </>
   );
 };

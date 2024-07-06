@@ -57,3 +57,15 @@ function _getBestContentColor(
     startLuminance
   );
 }
+
+export function darken(color: Color, amount: number) {
+  const hsl = toHsl(color);
+  hsl.l = Math.min(Math.max(hsl.l - amount, 0), 100);
+  return toRgb(hsl);
+}
+
+export function lighten(color: Color, amount: number) {
+  const hsl = toHsl(color);
+  hsl.l = Math.min(Math.max(hsl.l + amount, 0), 100);
+  return toRgb(hsl);
+}

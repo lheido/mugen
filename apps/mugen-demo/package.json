@@ -11,7 +11,10 @@
   "license": "MIT",
   "devDependencies": {
     "@vanilla-extract/vite-plugin": "^4.0.13",
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8.4.39",
     "solid-devtools": "^0.29.3",
+    "tailwindcss": "^3.4.4",
     "typescript": "^5.5.3",
     "vite": "^5.3.3",
     "vite-plugin-solid": "^2.10.2"

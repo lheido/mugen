@@ -1,4 +1,11 @@
-import { Color, HexColor, HslColor, RgbColor } from "./color.types";
+import {
+  Color,
+  HexColor,
+  HslColor,
+  isHexColor,
+  isRgbColor,
+  RgbColor,
+} from "./color.types";
 
 export function hexToRgb(hex: HexColor): RgbColor {
   const r = parseInt(hex.substring(1, 3), 16);
@@ -134,10 +141,10 @@ export function toHex(color: Color): HexColor {
 }
 
 export function toCSSVarValue(color: Color): string {
-  if (typeof color === "string") {
+  if (isHexColor(color)) {
     return color;
-  } else if ("r" in color) {
-    return `${color.r}, ${color.g}, ${color.b}`;
+  } else if (isRgbColor(color)) {
+    return `${color.r} ${color.g} ${color.b}`;
   }
-  return `${color.h}, ${color.s}%, ${color.l}%`;
+  return `${color.h} ${color.s}% ${color.l}%`;
 }
