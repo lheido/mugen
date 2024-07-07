@@ -1,6 +1,4 @@
 ---
-import { darkTheme } from "./index.css";
-
 interface Props {
   title: string;
 }
@@ -18,7 +16,7 @@ const { title } = Astro.props;
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
   </head>
-  <body class={darkTheme}>
+  <body>
     <slot />
   </body>
 </html>
