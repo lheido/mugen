@@ -44,7 +44,7 @@ export function Box<T extends ValidComponent = "div">(props: BoxProps<T>) {
             if (semanticNode.type !== expected) {
               console.warn(
                 `Box inside a "${semanticNode.parent?.type}" must be a "${expected}" instead of "${semanticNode.type}"`,
-                ref
+                ref,
               );
             }
             break;
