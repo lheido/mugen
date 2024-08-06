@@ -17,16 +17,16 @@ export type BoxDirective = (elt: HTMLElement, node: SemanticNode) => void;
 
 export type BoxProps<T extends ValidComponent> = Omit<
   DynamicProps<T, ComponentProps<T>>,
-  "component"
+  "component" | "ref"
 > & {
   as?: T | keyof JSX.HTMLElementTags | undefined;
   use?: BoxDirective[] | BoxDirective | undefined;
-  ref?: ((el: HTMLElement) => void) | undefined;
+  onRef?: ((el: Element) => void) | undefined;
 };
 
 export function Box<T extends ValidComponent = "div">(props: BoxProps<T>) {
   let ref!: HTMLElement;
-  const [local, others] = splitProps(props, ["as", "use", "ref"]);
+  const [local, others] = splitProps(props, ["as", "use", "onRef"]);
   const as = () => {
     if (!local.as) {
       if (props.onClick !== undefined) return "button";
@@ -44,7 +44,7 @@ export function Box<T extends ValidComponent = "div">(props: BoxProps<T>) {
             if (semanticNode.type !== expected) {
               console.warn(
                 `Box inside a "${semanticNode.parent?.type}" must be a "${expected}" instead of "${semanticNode.type}"`,
-                ref,
+                ref
               );
             }
             break;
@@ -65,7 +65,7 @@ export function Box<T extends ValidComponent = "div">(props: BoxProps<T>) {
         directive(el, semanticNode);
       }
     }
-    if (local.ref) local.ref(el);
+    local.onRef?.(el);
   };
   return (
     <SemanticNode node={semanticNode}>

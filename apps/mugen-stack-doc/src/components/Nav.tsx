@@ -11,6 +11,7 @@ export default function Nav() {
   const items = [
     { title: "Home", href: "/" },
     { title: "About", href: "/about" },
+    { title: "Kitae", href: "/kitae" },
   ];
   return (
     <Box as="nav" class="bg-primary text-primary-content">
