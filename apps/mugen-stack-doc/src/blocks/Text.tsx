@@ -5,7 +5,7 @@ import {
   useText,
 } from "@kitae/core";
 import { Box, createPopover, Popover } from "@mugen/core";
-import { createFloatingUI, flip, offset, shift } from "@mugen/core/floating-ui";
+import { createFloatingUI, flip, shift } from "@mugen/core/floating-ui";
 import { createEffect, on } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import { BlockAdd } from "./ui/BlockAdd";
@@ -52,7 +52,7 @@ function Toolbar() {
     () => popover.state.ref!,
     {
       placement: "top",
-      middleware: [offset(8), flip(), shift()],
+      middleware: [flip(), shift()],
     }
   );
   createEffect(
@@ -69,7 +69,19 @@ function Toolbar() {
   return (
     <Popover store={popover}>
       {(props, setRef) => (
-        <Box {...props} onRef={setRef} class="m-0 relative">
+        <Box
+          {...props}
+          onRef={setRef}
+          class="m-0"
+          style={{
+            top: `${position()?.y}px`,
+            left: `${position()?.x}px`,
+            width: `${node?.ref?.clientWidth ?? 0}px`,
+            translate: `-50% ${
+              100 * (position()?.placement === "top" ? -1 : 1)
+            }%`,
+          }}
+        >
           Toolbar
           <Box onClick={() => console.log("action!")}>Action</Box>
         </Box>
