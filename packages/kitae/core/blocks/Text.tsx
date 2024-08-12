@@ -1,13 +1,7 @@
-import {
-  createContext,
-  getOwner,
-  JSX,
-  runWithOwner,
-  untrack,
-  useContext,
-} from "solid-js";
+import { createContext, JSX, untrack, useContext } from "solid-js";
 import { createStore, produce } from "solid-js/store";
 import { DynamicProps } from "solid-js/web";
+import { useCommand } from "../editor/Commands";
 import { useEditorConfig } from "../editor/Config";
 import { useNode } from "../tree";
 import {
@@ -17,7 +11,7 @@ import {
   observeSelection,
 } from "../utils";
 
-type EditableTextState = {
+export type EditableTextState = {
   mouseDown: boolean;
   mouseUp: boolean;
   keyDown: boolean;
@@ -44,17 +38,22 @@ export function useText() {
   return useContext(HeadlessTextContext);
 }
 
+export type TextBlockData = {
+  tag: "p" | "span";
+  text: string;
+};
+
 export function createDefaultTextBlock() {
   return {
     data: {
       tag: "p",
       text: "",
-    },
+    } satisfies TextBlockData,
   };
 }
 
 export function TextBlock(props: HeadlessTextProps) {
-  const node = useNode<{ text: string; tag: "p" | "span" }>();
+  const node = useNode<TextBlockData>();
   return props.children(
     {
       get component() {
@@ -72,10 +71,14 @@ export function TextBlock(props: HeadlessTextProps) {
 
 export function EditableTextBlock(props: HeadlessTextProps) {
   const config = useEditorConfig();
-  const owner = getOwner();
   const node = useNode();
 
   const selection = observeSelection(() => node.ref);
+
+  const runCmd = useCommand(
+    () => state.patterns?.slashCommand ?? "insertNewBlock"
+  );
+  const removeBlock = useCommand("removeBlock");
 
   const [state, setState] = createStore<EditableTextState>({
     mouseDown: false,
@@ -104,6 +107,7 @@ export function EditableTextBlock(props: HeadlessTextProps) {
       parseText((e.currentTarget as HTMLElement).textContent ?? "")
     );
   };
+
   const onKeyDown = (e: KeyboardEvent) => {
     setState(
       produce((draft) => {
@@ -121,23 +125,11 @@ export function EditableTextBlock(props: HeadlessTextProps) {
         (reverseBehavior && modifier && !e[modifier])
       ) {
         e.preventDefault();
-        runWithOwner(owner, () => {
-          const command = state.patterns?.slashCommand ?? "insertNewBlock";
-          if (import.meta.env.DEV) {
-            if (!config?.commands?.[command]) {
-              console.warn(
-                `KitaeEditor Warning : Command ${command} not found`
-              );
-            }
-          }
-          config?.commands?.[command]?.execute(state);
-        });
+        runCmd(state);
       }
     } else if (e.key === "Backspace" && node.state.data?.text === "") {
       e.preventDefault();
-      runWithOwner(owner, () => {
-        config?.commands?.removeBlock?.execute(state);
-      });
+      removeBlock(state);
     }
   };
   const onKeyUp = () => {

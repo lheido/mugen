@@ -1,14 +1,19 @@
 import {
   EditableTextBlock as HeadlessEditableTextBlock,
   TextBlock as HeadlessTextBlock,
+  useCommand,
   useNode,
   useText,
 } from "@kitae/core";
+import { canWrapWith, isWrapWith } from "@kitae/core/utils";
 import { Box, createPopover, Popover } from "@mugen/core";
 import { createFloatingUI, flip, shift } from "@mugen/core/floating-ui";
-import { createEffect, on } from "solid-js";
+import { createEffect, createMemo, on } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import { BlockAdd } from "./ui/BlockAdd";
+
+const BOLD_TAG = "b";
+const ITALIC_TAG = "i";
 
 export function TextBlock() {
   return (
@@ -33,7 +38,7 @@ export function EditableTextBlock() {
             <Dynamic
               {...props}
               ref={setRef}
-              class="flex-1 px-2 py-2 outline-none"
+              class="flex-1 px-2 py-2 outline-none selection:bg-primary selection:text-primary-content"
             />
             <Toolbar />
           </>
@@ -47,6 +52,7 @@ function Toolbar() {
   const text = useText();
   const popover = createPopover();
   const node = useNode();
+  const surroundSelection = useCommand("surroundSelection");
   const position = createFloatingUI(
     () => node?.ref!,
     () => popover.state.ref!,
@@ -57,22 +63,48 @@ function Toolbar() {
   );
   createEffect(
     on(
-      () => [text?.selection, text?.mouseUp] as const,
-      ([selection, mouseUp]) => {
-        const shouldShow = selection && !selection.isCollapsed && mouseUp;
-        const shouldHide = !selection && popover.state.opened;
+      () => [text?.selection, text?.mouseUp, text?.keyUp] as const,
+      ([selection, mouseUp, keyUp]) => {
+        const shouldShow =
+          selection && !selection.isCollapsed && (mouseUp || keyUp);
+        const shouldHide =
+          (!selection || selection?.isCollapsed) && popover.state.opened;
         if (shouldShow) popover.show();
         else if (shouldHide) popover.hide();
       }
     )
   );
+
+  const isSelectionBold = createMemo(() => {
+    return !!text?.selection && !!node.data?.text
+      ? isWrapWith(text?.selection, BOLD_TAG)
+      : false;
+  });
+  const canWrapWithBold = createMemo(
+    () => !!text?.selection && canWrapWith(text?.selection, BOLD_TAG)
+  );
+  const canUnwrapBold = createMemo(
+    () => !!text?.selection && isWrapWith(text?.selection, BOLD_TAG)
+  );
+  const isSelectionItalic = createMemo(() => {
+    return !!text?.selection && !!node.data?.text
+      ? isWrapWith(text?.selection, ITALIC_TAG)
+      : false;
+  });
+  const canWrapWithItalic = createMemo(
+    () => !!text?.selection && canWrapWith(text?.selection, ITALIC_TAG)
+  );
+  const canUnwrapItalic = createMemo(
+    () => !!text?.selection && isWrapWith(text?.selection, ITALIC_TAG)
+  );
+
   return (
     <Popover store={popover}>
       {(props, setRef) => (
         <Box
           {...props}
           onRef={setRef}
-          class="m-0"
+          class="m-0 max-w-full p-1 rounded-lg bg-surface-variant text-surface-variant-content shadow-lg"
           style={{
             top: `${position()?.y}px`,
             left: `${position()?.x}px`,
@@ -82,8 +114,30 @@ function Toolbar() {
             }%`,
           }}
         >
-          Toolbar
-          <Box onClick={() => console.log("action!")}>Action</Box>
+          <Box class="flex gap-1">
+            <Box
+              class="p-2 place-content-center leading-none aspect-square rounded-md cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              classList={{
+                "bg-surface text-surface-content": !isSelectionBold(),
+                "bg-primary text-primary-content": !!isSelectionBold(),
+              }}
+              disabled={!canWrapWithBold() && !canUnwrapBold()}
+              onClick={() => surroundSelection(BOLD_TAG)}
+            >
+              B
+            </Box>
+            <Box
+              class="p-2 place-content-center leading-none aspect-square rounded-md cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              classList={{
+                "bg-surface text-surface-content": !isSelectionItalic(),
+                "bg-primary text-primary-content": !!isSelectionItalic(),
+              }}
+              disabled={!canWrapWithItalic() && !canUnwrapItalic()}
+              onClick={() => surroundSelection(ITALIC_TAG)}
+            >
+              I
+            </Box>
+          </Box>
         </Box>
       )}
     </Popover>

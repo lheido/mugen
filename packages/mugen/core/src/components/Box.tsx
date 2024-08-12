@@ -12,6 +12,7 @@ import {
   SEMANTIC_REQUIRED_CHILD_TAG,
   SemanticNode,
 } from "../semantic";
+import { Either } from "../types";
 
 export type BoxDirective = (elt: HTMLElement, node: SemanticNode) => void;
 
@@ -22,7 +23,13 @@ export type BoxProps<T extends ValidComponent> = Omit<
   as?: T | keyof JSX.HTMLElementTags | undefined;
   use?: BoxDirective[] | BoxDirective | undefined;
   onRef?: ((el: Element) => void) | undefined;
-};
+} & Either<
+    { onClick: ComponentProps<T>["onClick"]; disabled?: boolean },
+    {
+      onClick?: never;
+      disabled?: never;
+    }
+  >;
 
 export function Box<T extends ValidComponent = "div">(props: BoxProps<T>) {
   let ref!: HTMLElement;

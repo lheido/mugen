@@ -1,66 +1,108 @@
 export function getSelection() {
+  if (typeof window === "undefined") return null;
   return window.getSelection();
 }
 
 export function createRange() {
-  return document.createRange();
+  return document!.createRange();
 }
 
-export function wrapSelection(node: Node, keepSelection = true): boolean {
-  const selection = getSelection();
+export function isWrapWith(selection: Selection, tagName: string): boolean {
   if (!selection || selection.rangeCount === 0) return false;
   const range = selection.getRangeAt(0);
   if (range.collapsed) return false;
-  try {
-    range.surroundContents(node);
-  } catch (error) {
-    const fragment = range.extractContents();
-    node.appendChild(fragment);
-    range.insertNode(node);
+  const tag = tagName.toUpperCase();
+  // TODO: fix nested tags issue (e.g. <b><i>text</i></b>)
+  if (range.commonAncestorContainer.nodeType !== Node.TEXT_NODE) {
+    const ancestorTag = (range.commonAncestorContainer as Element).tagName;
+    if (ancestorTag === tag) {
+      return true;
+    }
+  } else if (range.commonAncestorContainer.parentElement?.tagName === tag) {
+    return true;
   }
-  if (keepSelection) {
-    selection.removeAllRanges();
-    selection.addRange(range);
+  return false;
+}
+
+export function canWrapWith(selection: Selection, tagName: string): boolean {
+  if (!selection || selection.rangeCount === 0) return false;
+  const range = selection.getRangeAt(0);
+  if (range.collapsed) return false;
+  const tag = tagName.toUpperCase();
+  if (range.commonAncestorContainer.nodeType !== Node.TEXT_NODE) {
+    if ((range.commonAncestorContainer as Element).tagName === tag) {
+      return false;
+    }
+  } else {
+    if (
+      range.commonAncestorContainer.parentElement?.tagName === tag ||
+      range.commonAncestorContainer.parentNode?.nodeName === tag
+    ) {
+      return false;
+    }
+  }
+  const fragment = range.cloneContents();
+  const childNodes = Array.from(fragment.childNodes);
+  if (
+    childNodes.length > 1 &&
+    !Array.from(fragment.childNodes).every(
+      (node) => node.nodeType === Node.TEXT_NODE
+    )
+  ) {
+    return false;
   }
   return true;
 }
 
-export function isSelectionWrappedBy(node: string) {
-  const selection = getSelection();
+export function wrapWith(selection: Selection, tagName: string): boolean {
   if (!selection || selection.rangeCount === 0) return false;
   const range = selection.getRangeAt(0);
   if (range.collapsed) return false;
+  if (!canWrapWith(selection, tagName)) return false;
+  const wrapper = document.createElement(tagName);
+  range.surroundContents(wrapper);
+  range.selectNode(wrapper.firstChild!);
+  selection.removeAllRanges();
+  selection.addRange(range);
+  return true;
+}
 
-  let startNode: Node | null = range.startContainer;
-  while (startNode && startNode !== range.commonAncestorContainer) {
-    if (
-      startNode.nodeType === Node.ELEMENT_NODE &&
-      (startNode as Element).tagName === "B"
-    ) {
+function _unwrap(element: Element) {
+  const parent = element.parentNode;
+  while (element.firstChild) {
+    parent?.insertBefore(element.firstChild, element);
+  }
+  parent?.removeChild(element);
+}
+
+export function unwrap(selection: Selection, tagName: string): boolean {
+  if (!selection || selection.rangeCount === 0) return false;
+  const range = selection.getRangeAt(0);
+  if (range.collapsed) return false;
+  if (!isWrapWith(selection, tagName)) return false;
+  const commonAncestor = range.commonAncestorContainer;
+  const tag = tagName.toUpperCase();
+  if (commonAncestor.nodeType !== Node.ELEMENT_NODE) {
+    if (commonAncestor.parentElement?.tagName === tag) {
+      _unwrap(commonAncestor.parentElement);
+      // TODO: find a way to restore the right selection
       return true;
     }
-    startNode = startNode.parentNode;
-  }
-
-  let endNode: Node | null = range.endContainer;
-  while (endNode && endNode !== range.commonAncestorContainer) {
-    if (
-      endNode.nodeType === Node.ELEMENT_NODE &&
-      (endNode as Element).tagName === "B"
-    ) {
-      return true;
-    }
-    endNode = endNode.parentNode;
-  }
-
-  if (
-    range.commonAncestorContainer.nodeType === Node.ELEMENT_NODE &&
-    (range.commonAncestorContainer as Element).tagName === "B"
-  ) {
+    return false;
+  } else if ((commonAncestor as Element).tagName === tag) {
+    _unwrap(commonAncestor as Element);
+    // TODO: find a way to restore the right selection
     return true;
   }
+  const elts = (commonAncestor as Element).querySelectorAll(tagName);
 
-  return false;
+  elts.forEach((elt) => {
+    if (range.intersectsNode(elt)) {
+      _unwrap(elt);
+    }
+  });
+  // TODO: find a way to restore the right selection
+  return true;
 }
 
 export function isCaretAtEnd(element: HTMLElement): boolean {
