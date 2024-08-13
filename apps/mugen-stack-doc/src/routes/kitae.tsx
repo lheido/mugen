@@ -31,6 +31,10 @@ export default function Kitae() {
           type: "text",
           data: { text: "Another text block", tag: "p" },
         },
+        {
+          type: "text",
+          data: { text: "", tag: "p" },
+        },
       ],
     },
   ] satisfies NodeData[];
