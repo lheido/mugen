@@ -35,10 +35,13 @@ export function EditableTextBlock() {
       <HeadlessEditableTextBlock>
         {(props, setRef) => (
           <>
-            <Dynamic
+            <Dynamic<any>
               {...props}
               ref={setRef}
-              class="flex-1 px-2 py-2 outline-none selection:bg-primary selection:text-primary-content"
+              class="flex-1 px-2 py-2 outline-none selection:bg-primary selection:text-primary-content empty:before:content-[attr(aria-placeholder)] empty:before:color-surface-variant-content empty:before:italic empty:before:opacity-50"
+              aria-placeholder={
+                "Type something... or use / to execute a command"
+              }
             />
             <Toolbar />
           </>
@@ -75,6 +78,7 @@ function Toolbar() {
     )
   );
 
+  // TODO: refactor to avoid similar code
   const isSelectionBold = createMemo(() => {
     return !!text?.selection && !!node.data?.text
       ? isWrapWith(text?.selection, BOLD_TAG)
