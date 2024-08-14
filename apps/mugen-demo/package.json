@@ -10,18 +10,18 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "autoprefixer": "^10.4.19",
-    "postcss": "^8.4.40",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.41",
     "solid-devtools": "^0.29.3",
-    "tailwindcss": "^3.4.7",
+    "tailwindcss": "^3.4.10",
     "typescript": "^5.5.4",
-    "vite": "^5.3.5",
+    "vite": "^5.4.0",
     "vite-plugin-solid": "^2.10.2"
   },
   "dependencies": {
     "@mugen/core": "workspace:^",
     "@mugen/theme": "workspace:^",
     "perfume.js": "^9.4.0",
-    "solid-js": "^1.8.19"
+    "solid-js": "^1.8.21"
   }
 }

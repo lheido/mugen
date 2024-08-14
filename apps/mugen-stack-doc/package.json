@@ -10,12 +10,12 @@
     "@kitae/core": "workspace:^",
     "@mugen/core": "workspace:^",
     "@mugen/theme": "workspace:^",
-    "@solidjs/router": "^0.14.1",
+    "@solidjs/router": "^0.14.2",
     "@solidjs/start": "^1.0.6",
-    "autoprefixer": "^10.4.19",
-    "postcss": "^8.4.40",
-    "solid-js": "^1.8.19",
-    "tailwindcss": "^3.4.7",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.41",
+    "solid-js": "^1.8.21",
+    "tailwindcss": "^3.4.10",
     "vinxi": "^0.3.14"
   },
   "engines": {
