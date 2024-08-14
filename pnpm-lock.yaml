@@ -153,7 +153,20 @@ importers:
         version: 1.6.0(jsdom@24.1.1)
 
   packages/mugen/cli:
+    dependencies:
+      commander:
+        specifier: ^12.1.0
+        version: 12.1.0
+      ora:
+        specifier: ^8.0.1
+        version: 8.0.1
+      prompts:
+        specifier: ^2.4.2
+        version: 2.4.2
     devDependencies:
+      '@types/prompts':
+        specifier: ^2.4.9
+        version: 2.4.9
       jsdom:
         specifier: ^24.1.1
         version: 24.1.1
@@ -2076,7 +2089,13 @@ packages:
     resolution: {integrity: sha512-nrWpWVaDZuaVc5X84xJ0vNrLvomM205oQyLsRt7OHNZbSHslcWsvgFR7O7hire2ZonjLrWBbedmotmIlJDVd6g==}
     dependencies:
       undici-types: 6.18.2
-    dev: false
+
+  /@types/prompts@2.4.9:
+    resolution: {integrity: sha512-qTxFi6Buiu8+50/+3DGIWLHM6QuWsEKugJnnP6iv2Mc4ncxE4A/OJkjuVOA+5X0X1S/nq5VJRa8Lu+nwcvbrKA==}
+    dependencies:
+      '@types/node': 22.3.0
+      kleur: 3.0.3
+    dev: true
 
   /@types/resolve@1.20.2:
     resolution: {integrity: sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==}
@@ -2963,6 +2982,11 @@ packages:
 
   /comma-separated-tokens@2.0.3:
     resolution: {integrity: sha512-Fu4hJdvzeylCfQPp9SGWidpzrMs7tTrlu6Vb8XGaRGck8QSNZJJp538Wrb60Lax4fPwR64ViY468OIUTbRlGZg==}
+    dev: false
+
+  /commander@12.1.0:
+    resolution: {integrity: sha512-Vw8qHK3bZM9y/P10u3Vib8o/DdkvA2OtPtZvD871QKjy74Wj1WSKFILMPRPSdUSx5RFK1arlJzEtA4PkFgnbuA==}
+    engines: {node: '>=18'}
     dev: false
 
   /commander@2.20.3:
@@ -4328,7 +4352,6 @@ packages:
   /kleur@3.0.3:
     resolution: {integrity: sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==}
     engines: {node: '>=6'}
-    dev: false
 
   /kleur@4.1.5:
     resolution: {integrity: sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ==}
@@ -6603,7 +6626,6 @@ packages:
 
   /undici-types@6.18.2:
     resolution: {integrity: sha512-5ruQbENj95yDYJNS3TvcaxPMshV7aizdv/hWYjGIKoANWKjhWNBsr2YEuYZKodQulB1b8l7ILOuDQep3afowQQ==}
-    dev: false
 
   /undici@5.28.4:
     resolution: {integrity: sha512-72RFADWFqKmUb2hmmvNODKL3p9hcB6Gt2DOQMis1SEBaV6a4MH8soBvzg+95CYhCKPFedut2JY9bMfrDl9D23g==}
