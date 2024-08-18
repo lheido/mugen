@@ -34,9 +34,9 @@ const cleanGitHistory = () => {
   );
 };
 
+// removeAppsContent();
 cleanGitHistory();
-removeAppsContent();
 installDependencies();
-removeInitScript();
+// removeInitScript();
 
 console.log("Mugen template initialized successfully!");
