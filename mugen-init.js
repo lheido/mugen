@@ -5,7 +5,7 @@
  * 1. Remove the apps content.
  * 2. Install dependencies.
  * 3. Remove itself.
- * 4. Commit the changes.
+ * 4. Clean git history.
  */
 
 const fs = require("fs");
@@ -16,7 +16,7 @@ const removeAppsContent = () => {
   const appsDir = path.join(__dirname, "apps");
   fs.readdirSync(appsDir).forEach((appDirectory) => {
     const appPath = path.join(appsDir, appDirectory);
-    fs.rmdirSync(appPath, { recursive: true });
+    fs.rmSync(appPath, { recursive: true });
   });
 };
 
@@ -28,14 +28,15 @@ const removeInitScript = () => {
   fs.unlinkSync(__filename);
 };
 
-const commitChanges = () => {
-  execSync("git add .");
-  execSync('git commit -m "Initialize Mugen template"');
+const cleanGitHistory = () => {
+  execSync(
+    "git filter-branch --index-filter 'git rm --cached --ignore-unmatch ./mugen-init.js ./apps/**' HEAD"
+  );
 };
 
+cleanGitHistory();
 removeAppsContent();
 installDependencies();
 removeInitScript();
-commitChanges();
 
 console.log("Mugen template initialized successfully!");
