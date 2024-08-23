@@ -26,7 +26,7 @@ const cleanGitHistory = () => {
 const updateRepository = () => {
   execSync("git add .");
   execSync("git commit -m 'Initialize Mugen template'");
-  execSync("git push --force origin master");
+  execSync("git push --force origin main");
 };
 
 cleanGitHistory();
